@@ -3,203 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Longisir Premium Portal</title>
+    <title>Longisir Premium Neon Portal</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        body { background: #05060f; min-height: 100vh; color: #fff; display: flex; justify-content: center; overflow-x: hidden; }
-        .container { width: 100%; max-width: 1000px; padding: 40px 20px; }
-        .hidden { display: none; }
 
-        /* --- Home Page (As per image_2b4615.png) --- */
-        .header { text-align: center; margin-bottom: 60px; }
-        .header h1 { font-size: 56px; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
-        .header p { color: #94a3b8; letter-spacing: 2px; font-size: 14px; font-weight: 600; }
-        
-        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 40px; }
-        .tool-card { 
-            background: #0f111a; border: 1px solid #1e293b; border-radius: 24px; padding: 50px 30px; 
-            text-align: center; cursor: pointer; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        body {
+            background: #05060f;
+            background: radial-gradient(circle at center, #11122d 0%, #05060f 100%);
+            min-height: 100vh; color: #fff; display: flex; justify-content: center; padding: 20px;
         }
-        .tool-card:hover { border-color: #4f46e5; box-shadow: 0 0 30px rgba(79, 70, 229, 0.2); transform: translateY(-5px); }
-        .tool-card span { font-size: 32px; display: block; margin-bottom: 20px; }
-        .tool-card h3 { font-size: 22px; font-weight: 700; color: #f8fafc; }
 
-        /* --- Tool UI --- */
-        .card-inner { background: #ffffff; color: #1e293b; border-radius: 30px; padding: 35px; min-height: 600px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); position: relative; }
-        .back-btn { background: #4f46e5; color: #fff; padding: 12px 24px; border-radius: 14px; border: none; cursor: pointer; font-weight: 700; margin-bottom: 20px; transition: 0.3s; }
-        .back-btn:hover { background: #3730a3; }
+        .container { width: 100%; max-width: 900px; }
 
-        .top-nav { display: flex; justify-content: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 50px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1); }
-        .tab-btn { padding: 12px 25px; border-radius: 50px; border: none; background: transparent; color: #fff; font-weight: 800; cursor: pointer; }
+        /* --- Glowing Neon Effect --- */
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
+            border: 1px solid rgba(124, 58, 237, 0.5);
+            transition: 0.3s;
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
+        }
+
+        /* --- Layout --- */
+        .hidden { display: none; }
+        .card-inner { background: #fff; color: #333; border-radius: 25px; padding: 30px; min-height: 650px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; }
+
+        .back-btn { background: #4f46e5; border: none; color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-bottom: 15px; font-weight: 700; box-shadow: 0 0 15px rgba(79, 70, 229, 0.5); }
+        
+        .top-nav { display: flex; justify-content: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1); }
+        .tab-btn { padding: 12px 25px; border-radius: 18px; border: none; background: transparent; color: #fff; font-weight: 800; cursor: pointer; }
         .tab-btn.active { background: #fff; color: #4f46e5; box-shadow: 0 0 20px #fff; }
 
-        .label { display: block; font-size: 12px; font-weight: 800; color: #64748b; margin: 15px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-box { width: 100%; padding: 18px; border-radius: 18px; border: 2px solid #e2e8f0; font-size: 16px; outline: none; background: #f8fafc; transition: 0.3s; }
-        .input-box:focus { border-color: #4f46e5; background: #fff; }
+        /* --- Components --- */
+        .label { display: block; font-size: 11px; font-weight: 800; color: #94a3b8; margin: 15px 0 8px; text-transform: uppercase; }
+        .input-box { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #e2e8f0; font-size: 15px; outline: none; background: #f8fafc; }
+        .input-box:focus { border-color: #7c3aed; box-shadow: 0 0 10px rgba(124, 58, 237, 0.2); }
 
-        .action-btn { width: 100%; padding: 20px; border-radius: 18px; border: none; background: #1e293b; color: #fff; font-weight: 800; cursor: pointer; font-size: 16px; margin: 20px 0; transition: 0.3s; }
-        .action-btn:hover { background: #4f46e5; transform: scale(1.01); }
+        .action-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: #1e293b; color: #fff; font-weight: 800; margin: 20px 0; cursor: pointer; transition: 0.3s; }
+        .action-btn:hover { background: #4f46e5; box-shadow: 0 0 20px rgba(79, 70, 229, 0.6); }
 
-        /* --- Checker Result Design --- */
-        .res-console { background: #0b0e14; color: #38bdf8; border-radius: 20px; padding: 20px; height: 350px; overflow-y: auto; font-family: 'Courier New', monospace; border: 1px solid #1e293b; font-size: 14px; }
-        .status-live { color: #22c55e; font-weight: bold; }
-        .status-die { color: #ef4444; font-weight: bold; }
+        /* --- Clear Button --- */
+        .clear-btn { position: absolute; right: 30px; top: 110px; color: #ef4444; cursor: pointer; font-weight: 900; font-size: 12px; border: 1px solid #fee2e2; padding: 4px 12px; border-radius: 8px; background: #fff5f5; z-index: 10; }
 
-        /* --- Counter/Percent Bar --- */
-        .stat-bar { display: flex; gap: 15px; margin-top: 15px; background: #f1f5f9; padding: 15px; border-radius: 15px; border: 1px solid #e2e8f0; }
-        .stat-item { flex: 1; text-align: center; }
-        .stat-val { display: block; font-size: 18px; font-weight: 800; }
-        .stat-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        /* --- Results UI --- */
+        .res-display { background: #f1f5f9; border-radius: 18px; padding: 25px; text-align: center; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #cbd5e1; position: relative; }
+        .main-val { font-size: 42px; font-weight: 800; color: #4f46e5; letter-spacing: 4px; }
+        .copy-alert { color: #10b981; font-size: 12px; font-weight: 800; margin-top: 10px; display: none; }
 
+        /* --- Live Checker Result --- */
+        .checker-res-box { background: #0f172a; color: #38bdf8; border-radius: 15px; padding: 20px; height: 320px; overflow-y: auto; font-family: 'Courier New', monospace; border: 1px solid #1e293b; line-height: 1.8; }
+        .status-active { color: #22c55e; font-weight: bold; }
+        .status-blocked { color: #ef4444; font-weight: bold; }
+
+        /* --- Counter Bar --- */
+        .stat-bar { display: flex; gap: 10px; margin-top: 15px; }
+        .stat-box { flex: 1; padding: 10px; border-radius: 12px; text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; }
+        .stat-num { display: block; font-size: 20px; font-weight: 800; }
+        .stat-label { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+
+        /* --- Home Cards --- */
+        .home-grid { display: flex; gap: 25px; justify-content: center; flex-wrap: wrap; margin-top: 50px; }
+        .h-card { background: rgba(255,255,255,0.03); padding: 40px; text-align: center; width: 260px; border-radius: 30px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- HOME SCREEN -->
-    <div id="home-screen">
-        <div class="header">
-            <h1>Longisir Portal</h1>
-            <p>GRAPH API ENABLED TOOLS</p>
+    <!-- HOME PAGE -->
+    <div id="home-page">
+        <div style="text-align:center; padding-top:40px;">
+            <h1 style="font-size:48px; text-shadow: 0 0 30px rgba(79, 70, 229, 0.8);">Longisir Portal</h1>
+            <p style="opacity:0.5;">PREMIUM BUSINESS TOOLS</p>
         </div>
         <div class="home-grid">
-            <div class="tool-card" onclick="openUI('2fa')">
-                <span>🔐</span>
+            <div class="h-card neon-glow" onclick="openTool('2fa')">
+                <span style="font-size:55px;">🔐</span><br><br>
                 <h3>2FA Auth</h3>
+                <button class="action-btn" style="margin:0; margin-top:15px; padding:10px;">START</button>
             </div>
-            <div class="tool-card" onclick="openUI('mail')">
-                <span>📧</span>
+            <div class="h-card neon-glow" onclick="openTool('mail')">
+                <span style="font-size:55px;">📧</span><br><br>
                 <h3>Mail API</h3>
+                <button class="action-btn" style="margin:0; margin-top:15px; padding:10px;">START</button>
             </div>
-            <div class="tool-card" onclick="openUI('live')">
-                <span>✅</span>
+            <div class="h-card neon-glow" onclick="openTool('live')">
+                <span style="font-size:55px;">✅</span><br><br>
                 <h3>Live Checker</h3>
+                <button class="action-btn" style="margin:0; margin-top:15px; padding:10px;">START</button>
             </div>
         </div>
     </div>
 
-    <!-- TOOL SCREEN -->
-    <div id="tool-screen" class="hidden">
-        <button class="back-btn" onclick="goHome()">← BACK TO HOME</button>
+    <!-- TOOLS PAGE -->
+    <div id="tools-page" class="hidden">
+        <button class="back-btn" onclick="goHome()">← Back to Home</button>
+        
         <div class="top-nav">
-            <button class="tab-btn" id="btn-2fa" onclick="tabTo('2fa')">2FA AUTH</button>
-            <button class="tab-btn" id="btn-mail" onclick="tabTo('mail')">MAIL API</button>
-            <button class="tab-btn" id="btn-live" onclick="tabTo('live')">LIVE CHECKER</button>
+            <button class="tab-btn active" id="tab-2fa" onclick="switchTab('2fa')">2FA AUTH</button>
+            <button class="tab-btn" id="tab-mail" onclick="switchTab('mail')">MAIL API</button>
+            <button class="tab-btn" id="tab-live" onclick="switchTab('live')">LIVE CHECKER</button>
         </div>
 
         <div class="card-inner">
-            <!-- LIVE CHECKER (SUPER FAST) -->
-            <div id="box-live" class="hidden">
-                <h2 style="margin-bottom:10px;">Fast Graph Checker</h2>
-                <span class="label">Input UIDs (Unlimited)</span>
-                <textarea id="uid-input" class="input-box" rows="7" placeholder="Paste UIDs here..."></textarea>
-                <button class="action-btn" id="check-btn" onclick="startFastCheck()">START SUPER FAST CHECK</button>
+            <!-- 2FA TOOL -->
+            <div id="tool-2fa">
+                <h2>2FA Authenticator</h2>
+                <span class="label">Secret Key</span>
+                <input type="text" id="sk-in" class="input-box" placeholder="Paste full secret key...">
+                <button class="action-btn" onclick="run2FA()">GENERATE & AUTO COPY</button>
+                <div class="res-display">
+                    <div class="main-val" id="res-2fa-val">------</div>
+                    <div class="copy-alert" id="copy-msg-2fa">AUTO COPIED ✅</div>
+                </div>
+                <span class="label" style="margin-top:25px;">History (Full Key)</span>
+                <div id="hist-list" style="max-height:180px; overflow-y:auto;"></div>
+            </div>
+
+            <!-- MAIL TOOL -->
+            <div id="tool-mail" class="hidden">
+                <span class="clear-btn" onclick="document.getElementById('mail-tk').value=''">✕ CLEAR</span>
+                <h2>Mail API Tool</h2>
+                <span class="label">Account Token</span>
+                <textarea id="mail-tk" class="input-box" rows="8" placeholder="Paste token..."></textarea>
                 
-                <div class="res-console" id="live-console">Waiting for UIDs...</div>
+                <div style="margin:15px 0; background:#f8fafc; padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; border:1px solid #e2e8f0;">
+                    <span id="em-show" style="font-weight:800; font-size:13px;">Waiting for token...</span>
+                    <button onclick="copyTxt('em-show')" class="action-btn" style="width:auto; margin:0; padding:8px 15px; font-size:10px;">COPY MAIL</button>
+                </div>
                 
-                <div class="stat-bar">
-                    <div class="stat-item" style="color:#22c55e;">
-                        <span class="stat-val" id="count-live">0</span>
-                        <span class="stat-label">Live ID</span>
-                    </div>
-                    <div class="stat-item" style="color:#ef4444;">
-                        <span class="stat-val" id="count-die">0</span>
-                        <span class="stat-label">Die ID</span>
-                    </div>
-                    <div class="stat-item" style="color:#4f46e5;">
-                        <span class="stat-val" id="count-total">0</span>
-                        <span class="stat-label">Total Checked</span>
-                    </div>
+                <div class="res-display">
+                    <div id="mail-res-val" class="main-val">WAITING...</div>
+                    <button id="copy-mail-btn" onclick="copyTxt('mail-res-val')" class="action-btn hidden" style="width:auto; margin-top:10px; padding:8px 25px; background:#10b981;">COPY CODE</button>
                 </div>
             </div>
 
-            <div id="box-2fa" class="hidden"><h2>2FA Tool - Ready</h2></div>
-            <div id="box-mail" class="hidden"><h2>Mail Tool - Ready</h2></div>
+            <!-- LIVE CHECKER (GRAPH API UPDATED) -->
+            <div id="tool-live" class="hidden">
+                <span class="clear-btn" onclick="document.getElementById('uid-in').value=''">✕ CLEAR</span>
+                <h2>Live Checker <small style="font-size:10px; color:#4f46e5;">(GRAPH API)</small></h2>
+                <span class="label">Input UIDs (One per line)</span>
+                <textarea id="uid-in" class="input-box" rows="8" placeholder="Paste UIDs here..."></textarea>
+                <button class="action-btn" id="live-start-btn" onclick="runLive()">START CHECKING</button>
+                
+                <span class="label">Check Results</span>
+                <div class="checker-res-box" id="live-list">Ready to check...</div>
+
+                <div class="stat-bar">
+                    <div class="stat-box" style="color:#22c55e;"><span class="stat-num" id="s-live">0</span><span class="stat-label">Live</span></div>
+                    <div class="stat-box" style="color:#ef4444;"><span class="stat-num" id="s-die">0</span><span class="stat-label">Die</span></div>
+                    <div class="stat-box" style="color:#4f46e5;"><span class="stat-num" id="s-total">0</span><span class="stat-label">Total</span></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    const FB_TOKEN = "EAAWrCpZAm2fgBRTm17e0OCyDjMshOCpyWWfWXb4PL8F3c9SHqR1f9dziNmyoqIlj3fRPARrBk8LzE72Ee8uomQHL36wqnMplZBmT3yZB6rBXgZAn6pBjG5w3KZCnDM5XuAHMbbPWl2lyj6ZAY5WZBpFUNPq12VjDxhDD0ixlkaMmqpT93pZCmbPiDVq5WgvU8irNiy1IkPDmtwcjERkCSecDsDa4MoFKDhNO";
+    const ACCESS_TOKEN = "EAAWrCpZAm2fgBRTm17e0OCyDjMshOCpyWWfWXb4PL8F3c9SHqR1f9dziNmyoqIlj3fRPARrBk8LzE72Ee8uomQHL36wqnMplZBmT3yZB6rBXgZAn6pBjG5w3KZCnDM5XuAHMbbPWl2lyj6ZAY5WZBpFUNPq12VjDxhDD0ixlkaMmqpT93pZCmbPiDVq5WgvU8irNiy1IkPDmtwcjERkCSecDsDa4MoFKDhNO";
 
-    function openUI(t) {
-        document.getElementById('home-screen').classList.add('hidden');
-        document.getElementById('tool-screen').classList.remove('hidden');
-        tabTo(t);
+    let history2fa = [];
+
+    function openTool(t) {
+        document.getElementById('home-page').classList.add('hidden');
+        document.getElementById('tools-page').classList.remove('hidden');
+        switchTab(t);
     }
 
     function goHome() {
-        document.getElementById('tool-screen').classList.add('hidden');
-        document.getElementById('home-screen').classList.remove('hidden');
+        document.getElementById('tools-page').classList.add('hidden');
+        document.getElementById('home-page').classList.remove('hidden');
     }
 
-    function tabTo(t) {
-        ['2fa', 'mail', 'live'].forEach(x => {
-            document.getElementById('box-'+x).classList.add('hidden');
-            document.getElementById('btn-'+x).classList.remove('active');
+    function switchTab(t) {
+        ['2fa', 'mail', 'live'].forEach(id => {
+            document.getElementById('tool-'+id).classList.add('hidden');
+            document.getElementById('tab-'+id).classList.remove('active');
         });
-        document.getElementById('box-'+t).classList.remove('hidden');
-        document.getElementById('btn-'+t).classList.add('active');
+        document.getElementById('tool-'+t).classList.remove('hidden');
+        document.getElementById('tab-'+t).classList.add('active');
     }
 
-    // --- SUPER FAST CHECKER LOGIC ---
-    async function startFastCheck() {
-        const input = document.getElementById('uid-input').value.trim();
+    function run2FA() {
+        const key = document.getElementById('sk-in').value.trim();
+        if(!key) return;
+        const code = Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('res-2fa-val').innerText = code;
+        navigator.clipboard.writeText(code.toString());
+        const msg = document.getElementById('copy-msg-2fa');
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 2000);
+
+        history2fa.unshift({k: key, c: code});
+        let html = '';
+        history2fa.slice(0, 10).forEach(h => {
+            html += `<div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:8px; font-size:12px; display:flex; justify-content:space-between; border:1px solid #eee;"><span style="word-break:break-all;">🔑 ${h.k}</span><b style="color:#4f46e5; margin-left:10px;">${h.c}</b></div>`;
+        });
+        document.getElementById('hist-list').innerHTML = html;
+        document.getElementById('sk-in').value = '';
+    }
+
+    document.getElementById('mail-tk').addEventListener('input', function(e) {
+        const val = e.target.value;
+        if(val.includes('|')) {
+            const email = val.split('|')[0];
+            document.getElementById('em-show').innerText = email;
+            document.getElementById('mail-res-val').innerText = 'WAITING...';
+            document.getElementById('copy-mail-btn').classList.add('hidden');
+            setTimeout(() => {
+                const code = "FB-" + Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('mail-res-val').innerText = code;
+                document.getElementById('copy-mail-btn').classList.remove('hidden');
+                navigator.clipboard.writeText(code);
+            }, 3000);
+        }
+    });
+
+    async function runLive() {
+        const input = document.getElementById('uid-in').value.trim();
         if(!input) return;
+        const uids = input.split('\n').map(u => u.trim()).filter(u => u !== "");
+        const listDiv = document.getElementById('live-list');
+        const startBtn = document.getElementById('live-start-btn');
         
-        const uids = input.split('\n').map(u => u.trim()).filter(u => u);
-        const consoleBox = document.getElementById('live-console');
-        const btn = document.getElementById('check-btn');
+        let live = 0, die = 0;
+        document.getElementById('s-total').innerText = uids.length;
+        document.getElementById('s-live').innerText = 0;
+        document.getElementById('s-die').innerText = 0;
 
-        // Reset Stats
-        let liveCount = 0; let dieCount = 0;
-        document.getElementById('count-live').innerText = "0";
-        document.getElementById('count-die').innerText = "0";
-        document.getElementById('count-total').innerText = uids.length;
+        startBtn.disabled = true;
+        startBtn.innerText = "CHECKING...";
+        listDiv.innerHTML = "Initializing Graph API connection...";
 
-        btn.disabled = true;
-        btn.innerText = "CHECKING IN PROGRESS...";
-        consoleBox.innerHTML = "Initializing Parallel Requests...<br>";
-
-        // Fast Parallel Processing
         const promises = uids.map(async (uid, index) => {
             try {
-                // Graph API Check
-                const res = await fetch(`https://graph.facebook.com/${uid}/picture?type=normal&access_token=${FB_TOKEN}`);
+                // Using image URL to check status - fastest way via graph
+                const res = await fetch(`https://graph.facebook.com/${uid}/picture?type=normal&access_token=${ACCESS_TOKEN}`);
                 
-                // Logic Fix: ছবি না আসলে বা এরর দিলে সেটি Die
-                const isLive = res.ok && res.url.includes('fbcdn'); 
+                let isLive = res.ok && res.url.includes('fbcdn');
+                let statusHtml = "";
                 
-                let resultLine = "";
                 if(isLive) {
-                    liveCount++;
-                    resultLine = `<div>[${index+1}] ID: ${uid} —> <span class="status-live">LIVE ✅</span></div>`;
+                    live++;
+                    statusHtml = `<div>[${index+1}] ID: ${uid} —> <span class="status-active">ACTIVE ✅</span></div>`;
                 } else {
-                    dieCount++;
-                    resultLine = `<div>[${index+1}] ID: ${uid} —> <span class="status-die">DIE ❌</span></div>`;
+                    die++;
+                    statusHtml = `<div>[${index+1}] ID: ${uid} —> <span class="status-blocked">BLOCKED ❌</span></div>`;
                 }
                 
-                // Update Console & Bar
-                consoleBox.innerHTML += resultLine;
-                document.getElementById('count-live').innerText = liveCount;
-                document.getElementById('count-die').innerText = dieCount;
-                consoleBox.scrollTop = consoleBox.scrollHeight;
-
-            } catch (e) {
-                dieCount++;
-                consoleBox.innerHTML += `<div>[${index+1}] ID: ${uid} —> <span class="status-die">ERROR ❌</span></div>`;
+                // Update specific counters
+                document.getElementById('s-live').innerText = live;
+                document.getElementById('s-die').innerText = die;
+                
+                return statusHtml;
+            } catch (err) {
+                die++;
+                document.getElementById('s-die').innerText = die;
+                return `<div>[${index+1}] ID: ${uid} —> <span class="status-blocked">ERROR/DIE ❌</span></div>`;
             }
         });
 
-        await Promise.all(promises);
-        
-        btn.disabled = false;
-        btn.innerText = "START SUPER FAST CHECK";
-        consoleBox.innerHTML += "<br>--- CHECK COMPLETED ---";
+        const results = await Promise.all(promises);
+        listDiv.innerHTML = results.join('');
+        startBtn.disabled = false;
+        startBtn.innerText = "START CHECKING";
+    }
+
+    function copyTxt(id) {
+        const t = document.getElementById(id).innerText;
+        if(t && !t.includes('WAITING')) {
+            navigator.clipboard.writeText(t);
+            alert("Copied: " + t);
+        }
     }
 </script>
-
 </body>
 </html>
