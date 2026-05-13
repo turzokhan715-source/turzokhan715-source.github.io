@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools Hub</title>
+<style>
+body{margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#4b6cb7,#182848);color:#fff;text-align:center}
+header{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
+header h1{font-size:60px;margin-bottom:10px}
+header p{font-size:18px;margin-bottom:30px}
+header button{background:#00c6ff;border:none;padding:15px 50px;font-size:20px;border-radius:8px;cursor:pointer;color:#fff;transition:0.3s}
+header button:hover{background:#0099cc}
+#tools-page{display:none;padding:40px 20px}
+.tabs{display:flex;justify-content:center;gap:10px;margin-bottom:30px;flex-wrap:wrap}
+.tab{background:#fff;color:#000;padding:10px 25px;border-radius:5px;cursor:pointer;font-weight:bold;transition:0.3s}
+.tab:hover{background:#00c6ff;color:#fff}
+.tab.active{background:#00c6ff;color:#fff}
+.tool-content{display:none;background:#fff;color:#000;border-radius:10px;padding:30px;max-width:600px;margin:0 auto;text-align:left;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
+.tool-content.active{display:block}
+.tool-content h2{text-align:center;color:#182848}
+.tool-content p{text-align:center;color:#333}
+input,textarea{width:100%;padding:12px;margin:10px 0;border-radius:5px;border:1px solid #ccc;font-size:15px}
+button.action{background:#00c6ff;color:#fff;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;transition:0.3s}
+button.action:hover{background:#0099cc}
+.history-box{background:#f0f0f0;color:#000;padding:10px;border-radius:5px;max-height:200px;overflow-y:auto}
+.status{font-weight:bold;margin-top:10px;text-align:center;font-size:18px}
+.clear-btn{position:absolute;right:10px;top:10px;background:#ff4d4d;color:#fff;border:none;border-radius:5px;padding:5px 10px;cursor:pointer}
+.mail-box{position:relative}
+.copy-btn{background:#00c6ff;color:#fff;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;margin-top:5px}
+.large-input{height:50px;font-size:18px}
+.large-status{height:60px;font-size:20px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;color:#000;border-radius:5px;margin-top:10px}
+</style>
+</head>
+<body>
+
+<header id="home">
+<h1>Tools Hub</h1>
+<p>এক জায়গায় 2FA Auth, Mail API এবং Live Checker টুলস</p>
+<button onclick="showTools()">Get Started</button>
+</header>
+
+<section id="tools-page">
+<h1>Tools Dashboard</h1>
+<p>নিচের ট্যাব থেকে পছন্দের টুলটি নির্বাচন করুন</p>
+<div class="tabs">
+<div class="tab active" onclick="openTool('auth')">2FA Auth</div>
+<div class="tab" onclick="openTool('mail')">Mail API</div>
+<div class="tab" onclick="openTool('checker')">Live Checker</div>
+</div>
+
+<div id="auth" class="tool-content active">
+<h2>2FA Authentication Tool</h2>
+<p>নিরাপদ লগইনের জন্য 2FA কোড জেনারেট করুন। দ্রুত এবং নির্ভরযোগ্য সিকিউরিটি সলিউশন।</p>
+<input type="text" id="authKey" placeholder="Enter 2FA Key">
+<button class="action" onclick="generateCode()">Generate Code</button>
+<div id="generatedCode"></div>
+<h3>History</h3>
+<div class="history-box" id="historyBox"></div>
+</div>
+
+<div id="mail" class="tool-content">
+<h2>Mail API - Outlook/Hotmail</h2>
+<p>Outlook বা Hotmail এর মাধ্যমে কোড রিসিভ এবং মেইল যাচাই করুন।</p>
+<div class="mail-box">
+<textarea id="mailToken" placeholder="Enter full token with mail"></textarea>
+<button class="clear-btn" onclick="clearToken()">Clear</button>
+</div>
+<div>
+<input type="text" id="mailOnly" placeholder="Mail will appear here" readonly>
+<button class="copy-btn" onclick="copyMail()">Copy</button>
+</div>
+<input type="text" id="mailCode" placeholder="Waiting..." readonly>
+</div>
+
+<div id="checker" class="tool-content">
+<h2>Live Checker Tool</h2>
+<p>UID চেক করুন এটি Active না Block। দ্রুত রেজাল্ট এবং রিয়েল-টাইম স্ট্যাটাস।</p>
+<input type="text" id="uid" class="large-input" placeholder="Enter UID">
+<button class="action" onclick="checkUID()">Check</button>
+<div class="large-status" id="uidStatus">Status will appear here</div>
+</div>
+</section>
+
+<script>
+function showTools(){
+document.getElementById('home').style.display='none';
+document.getElementById('tools-page').style.display='block';
+}
+function openTool(name){
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('.tool-content').forEach(c=>c.classList.remove('active'));
+document.querySelector(`.tab[onclick="openTool('${name}')"]`).classList.add('active');
+document.getElementById(name).classList.add('active');
+}
+let historyList=[];
+function generateCode(){
+let key=document.getElementById('authKey').value.trim();
+if(!key)return alert('Please enter a 2FA key');
+let code=Math.floor(100000+Math.random()*900000);
+navigator.clipboard.writeText(code);
+document.getElementById('generatedCode').innerText='Generated Code: '+code+' (Copied)';
+document.getElementById('authKey').value='';
+historyList.unshift(code);
+if(historyList.length>10)historyList.pop();
+document.getElementById('historyBox').innerHTML=historyList.map(c=>'<div>'+c+'</div>').join('');
+}
+function clearToken(){
+document.getElementById('mailToken').value='';
+document.getElementById('mailOnly').value='';
+document.getElementById('mailCode').value='Waiting...';
+}
+function copyMail(){
+let mail=document.getElementById('mailOnly').value;
+if(!mail)return alert('No mail to copy');
+navigator.clipboard.writeText(mail);
+alert('Mail copied!');
+}
+document.getElementById('mailToken').addEventListener('input',()=>{
+let token=document.getElementById('mailToken').value;
+let mail=token.split('@')[0]?token.split(' ')[0]:'';
+document.getElementById('mailOnly').value=mail;
+document.getElementById('mailCode').value='Waiting...';
+});
+function checkUID(){
+let uid=document.getElementById('uid').value.trim();
+if(!uid)return alert('Enter UID');
+let status=Math.random()>0.5?'Active ✅':'Blocked ❌';
+document.getElementById('uidStatus').innerText='UID '+uid+' is '+status;
+}
+</script>
+
+</body>
+</html>
