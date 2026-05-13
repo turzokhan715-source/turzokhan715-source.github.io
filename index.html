@@ -86,7 +86,7 @@
         .checker-res-box { background: 
 ; color: 
 ; border-radius: 15px; padding: 20px; height: 350px; overflow-y: auto; font-family: 'Courier New', monospace; border: 1px solid 
-; box-shadow: inset 0 0 20px #000; line-height: 1.8; }
+; box-shadow: inset 0 0 20px #000; }
         .status-active { color: 
 ; font-weight: bold; }
         .status-blocked { color: 
@@ -263,39 +263,31 @@
         const input = document.getElementById('uid-in').value.trim();
         const listDiv = document.getElementById('live-list');
         
-        // Check if input is empty
         if(!input) {
             listDiv.innerHTML = 'Error: No UID data found.';
             return;
         }
         
-        const uids = input.split('\n').filter(uid => uid.trim() !== '');
-        
-        // Check if there are valid UIDs
-        if(uids.length === 0) {
-            listDiv.innerHTML = 'Error: No UID data found.';
-            return;
-        }
-        
+        const uids = input.split('\n');
         listDiv.innerHTML = 'System Booting... <br>Connecting to server...';
 
         setTimeout(() => {
             let html = '';
             uids.forEach((uid, index) => {
-                const cleanUid = uid.trim();
-                // Logic: 70% Active, 30% Blocked based on random
-                const isActive = Math.random() > 0.3; 
-                const status = isActive ? '<span class="status-active">ACTIVE ✅</span>' : '<span class="status-blocked">BLOCKED ❌</span>';
-                html += `<div>[${index + 1}] ID: ${cleanUid} —> STATUS: ${status}</div>`;
+                if(uid.trim() !== "") {
+                    const isActive = Math.random() > 0.3; 
+                    const status = isActive ? '<span class="status-active">ACTIVE ✅</span>' : '<span class="status-blocked">BLOCKED ❌</span>';
+                    html += `<div>[${index + 1}] ID: ${uid.trim()} —> STATUS: ${status}</div>`;
+                }
             });
-            listDiv.innerHTML = html;
+            listDiv.innerHTML = html || 'Error: No UID data found.';
         }, 1500);
     }
 
     // Global Copy Helper
     function copyToClip(id) {
         const text = document.getElementById(id).innerText;
-        if(text && !text.includes('Waiting') && !text.includes('No Token')) {
+        if(text && !text.includes('Waiting')) {
             navigator.clipboard.writeText(text);
             alert("Copied: " + text);
         }
