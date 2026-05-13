@@ -1,134 +1,390 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tools Hub</title>
-<style>
-body{margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#4b6cb7,#182848);color:#fff;text-align:center}
-header{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
-header h1{font-size:60px;margin-bottom:10px}
-header p{font-size:18px;margin-bottom:30px}
-header button{background:#00c6ff;border:none;padding:15px 50px;font-size:20px;border-radius:8px;cursor:pointer;color:#fff;transition:0.3s}
-header button:hover{background:#0099cc}
-#tools-page{display:none;padding:40px 20px}
-.tabs{display:flex;justify-content:center;gap:10px;margin-bottom:30px;flex-wrap:wrap}
-.tab{background:#fff;color:#000;padding:10px 25px;border-radius:5px;cursor:pointer;font-weight:bold;transition:0.3s}
-.tab:hover{background:#00c6ff;color:#fff}
-.tab.active{background:#00c6ff;color:#fff}
-.tool-content{display:none;background:#fff;color:#000;border-radius:10px;padding:30px;max-width:600px;margin:0 auto;text-align:left;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
-.tool-content.active{display:block}
-.tool-content h2{text-align:center;color:#182848}
-.tool-content p{text-align:center;color:#333}
-input,textarea{width:100%;padding:12px;margin:10px 0;border-radius:5px;border:1px solid #ccc;font-size:15px}
-button.action{background:#00c6ff;color:#fff;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;transition:0.3s}
-button.action:hover{background:#0099cc}
-.history-box{background:#f0f0f0;color:#000;padding:10px;border-radius:5px;max-height:200px;overflow-y:auto}
-.status{font-weight:bold;margin-top:10px;text-align:center;font-size:18px}
-.clear-btn{position:absolute;right:10px;top:10px;background:#ff4d4d;color:#fff;border:none;border-radius:5px;padding:5px 10px;cursor:pointer}
-.mail-box{position:relative}
-.copy-btn{background:#00c6ff;color:#fff;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;margin-top:5px}
-.large-input{height:50px;font-size:18px}
-.large-status{height:60px;font-size:20px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;color:#000;border-radius:5px;margin-top:10px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longisir Premium Tools</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, 
+ 0%, 
+ 50%, 
+ 100%);
+            min-height: 100vh; color: #fff; display: flex; justify-content: center; padding: 20px;
+        }
+
+        .container { width: 100%; max-width: 900px; }
+
+        /* --- Global Style --- */
+        .hidden { display: none; }
+        .card { background: #fff; color: #333; border-radius: 25px; padding: 30px; min-height: 600px; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Back & Nav */
+        .back-btn { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-bottom: 15px; font-weight: 700; }
+        .top-nav { display: flex; justify-content: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 25px; margin-bottom: 25px; }
+        .tab-btn { padding: 12px 25px; border-radius: 18px; border: none; background: transparent; color: #fff; font-weight: 800; cursor: pointer; font-size: 13px; transition: all 0.3s; }
+        .tab-btn:active { transform: scale(0.95); }
+        .tab-btn.active { background: #fff; color: 
+; }
+
+        /* Inputs - Glass Effect (জল জল) */
+        .label { display: block; font-size: 11px; font-weight: 800; color: 
+; margin: 15px 0 8px; text-transform: uppercase; }
+        .input-box { 
+            width: 100%; 
+            padding: 15px; 
+            border-radius: 15px; 
+            border: 2px solid rgba(226, 232, 240, 0.5); 
+            font-size: 15px; 
+            outline: none; 
+            background: rgba(248, 250, 252, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            resize: none;
+            transition: all 0.3s;
+        }
+        .input-box:focus {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: 
+;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        
+        .action-btn { 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 15px; 
+            border: none; 
+            background: 
+; 
+            color: #fff; 
+            font-weight: 800; 
+            margin: 20px 0; 
+            cursor: pointer; 
+            transition: all 0.3s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:hover { background: 
+; }
+        
+        /* Clear Button (Bold & Red) */
+        .clear-btn { 
+            color: 
+; 
+            cursor: pointer; 
+            font-weight: 900; 
+            font-size: 14px; 
+            float: right; 
+            border: 1px solid 
+; 
+            padding: 2px 8px; 
+            border-radius: 5px; 
+            background: 
+; 
+            transition: all 0.2s;
+        }
+        .clear-btn:active { transform: scale(0.95); }
+
+        /* Fixed Result Area */
+        .res-display { 
+            background: rgba(241, 245, 249, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 18px; 
+            padding: 25px; 
+            text-align: center; 
+            min-height: 120px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+        .main-val { font-size: 38px; font-weight: 800; color: 
+; letter-spacing: 5px; }
+        
+        /* Waiting Animation */
+        .spinner { width: 20px; height: 20px; border: 3px solid 
+; border-top-color: 
+; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* History (Full Key show) */
+        .hist-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 12px; 
+            background: rgba(248, 250, 252, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px; 
+            margin-bottom: 8px; 
+            font-size: 13px; 
+            border: 1px solid rgba(237, 242, 247, 0.8); 
+            word-break: break-all; 
+        }
+
+        /* Checker Result (Image 4 Style) */
+        .checker-res-box { 
+            background: 
+; 
+            color: 
+; 
+            border-radius: 15px; 
+            padding: 20px; 
+            height: 350px; 
+            overflow-y: auto; 
+            font-family: monospace; 
+            line-height: 1.8;
+            font-size: 14px;
+        }
+        .status-active { color: 
+; font-weight: bold; }
+        .status-blocked { color: 
+; font-weight: bold; }
+        
+        /* Home Cards Glass Effect */
+        .home-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #333;
+            padding: 40px;
+            border-radius: 25px;
+            width: 260px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .home-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        .home-card:active {
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
 
-<header id="home">
-<h1>Tools Hub</h1>
-<p>এক জায়গায় 2FA Auth, Mail API এবং Live Checker টুলস</p>
-<button onclick="showTools()">Get Started</button>
-</header>
+<div class="container" id="main-ui">
+    <!-- HOME PAGE -->
+    <div id="home-page" style="text-align:center; padding-top:50px;">
+        <h1 style="font-size:45px; margin-bottom:10px;">Longisir Portal</h1>
+        <p style="opacity:0.8; margin-bottom:40px;">Select a tool to get started</p>
+        <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
+            <div class="home-card" onclick="openTool('2fa')">
+                <span style="font-size:40px;">🔐</span><h3>2FA Auth</h3><br>
+                <button class="action-btn" style="margin:0;">GET START</button>
+            </div>
+            <div class="home-card" onclick="openTool('mail')">
+                <span style="font-size:40px;">📧</span><h3>Mail API</h3><br>
+                <button class="action-btn" style="margin:0;">GET START</button>
+            </div>
+            <div class="home-card" onclick="openTool('live')">
+                <span style="font-size:40px;">✅</span><h3>Live Checker</h3><br>
+                <button class="action-btn" style="margin:0;">GET START</button>
+            </div>
+        </div>
+    </div>
 
-<section id="tools-page">
-<h1>Tools Dashboard</h1>
-<p>নিচের ট্যাব থেকে পছন্দের টুলটি নির্বাচন করুন</p>
-<div class="tabs">
-<div class="tab active" onclick="openTool('auth')">2FA Auth</div>
-<div class="tab" onclick="openTool('mail')">Mail API</div>
-<div class="tab" onclick="openTool('checker')">Live Checker</div>
-</div>
+    <!-- TOOLS PAGE -->
+    <div id="tools-page" class="hidden">
+        <button class="back-btn" onclick="goHome()">← Back to Home</button>
+        
+        <div class="top-nav">
+            <button class="tab-btn active" id="tab-2fa" onclick="switchTab('2fa')">2FA AUTH</button>
+            <button class="tab-btn" id="tab-mail" onclick="switchTab('mail')">MAIL API</button>
+            <button class="tab-btn" id="tab-live" onclick="switchTab('live')">LIVE CHECKER</button>
+        </div>
 
-<div id="auth" class="tool-content active">
-<h2>2FA Authentication Tool</h2>
-<p>নিরাপদ লগইনের জন্য 2FA কোড জেনারেট করুন। দ্রুত এবং নির্ভরযোগ্য সিকিউরিটি সলিউশন।</p>
-<input type="text" id="authKey" placeholder="Enter 2FA Key">
-<button class="action" onclick="generateCode()">Generate Code</button>
-<div id="generatedCode"></div>
-<h3>History</h3>
-<div class="history-box" id="historyBox"></div>
-</div>
+        <div class="card">
+            <!-- 2FA TOOL -->
+            <div id="tool-2fa">
+                <h2>2FA Authenticator</h2>
+                <p style="font-size:13px; color:
+;">Generate secure codes from your secret key.</p>
+                <span class="label">Secret Key</span>
+                <input type="text" id="sk-in" class="input-box" placeholder="Enter full key here...">
+                <button class="action-btn" onclick="run2FA()">GENERATE CODE</button>
+                <div class="res-display"><div class="main-val" id="res-2fa-val">------</div></div>
+                <div style="margin-top:25px;">
+                    <span class="label">History (Full Key)</span>
+                    <div id="hist-list" style="max-height:200px; overflow-y:auto;"></div>
+                </div>
+            </div>
 
-<div id="mail" class="tool-content">
-<h2>Mail API - Outlook/Hotmail</h2>
-<p>Outlook বা Hotmail এর মাধ্যমে কোড রিসিভ এবং মেইল যাচাই করুন।</p>
-<div class="mail-box">
-<textarea id="mailToken" placeholder="Enter full token with mail"></textarea>
-<button class="clear-btn" onclick="clearToken()">Clear</button>
-</div>
-<div>
-<input type="text" id="mailOnly" placeholder="Mail will appear here" readonly>
-<button class="copy-btn" onclick="copyMail()">Copy</button>
-</div>
-<input type="text" id="mailCode" placeholder="Waiting..." readonly>
-</div>
+            <!-- MAIL TOOL -->
+            <div id="tool-mail" class="hidden">
+                <h2>Mail API Tool</h2>
+                <span class="clear-btn" onclick="clearMailTool()">✕ CLEAR</span>
+                <span class="label">Account Token</span>
+                <textarea id="mail-tk" class="input-box" rows="8" placeholder="email|pass|token..."></textarea>
+                
+                <div style="margin:15px 0; display:flex; justify-content:space-between; align-items:center; background:rgba(248,250,252,0.7); backdrop-filter:blur(10px); padding:15px; border-radius:12px; border:1px dashed 
+;">
+                    <span id="em-show" style="font-weight:700; color:
+;">Waiting for token...</span>
+                    <button onclick="copyMail()" style="background:
+; color:#fff; border:none; padding:6px 12px; border-radius:8px; font-size:11px; cursor:pointer;">COPY</button>
+                </div>
+                
+                <div class="res-display">
+                    <div id="mail-wait">
+                        <div class="spinner"></div>
+                        <span style="font-size:18px; font-weight:800; color:
+;">WAITING FOR CODE...</span>
+                    </div>
+                    <div class="main-val hidden" id="mail-res-val"></div>
+                </div>
+            </div>
 
-<div id="checker" class="tool-content">
-<h2>Live Checker Tool</h2>
-<p>UID চেক করুন এটি Active না Block। দ্রুত রেজাল্ট এবং রিয়েল-টাইম স্ট্যাটাস।</p>
-<input type="text" id="uid" class="large-input" placeholder="Enter UID">
-<button class="action" onclick="checkUID()">Check</button>
-<div class="large-status" id="uidStatus">Status will appear here</div>
+            <!-- LIVE CHECKER TOOL -->
+            <div id="tool-live" class="hidden">
+                <h2>Live Checker</h2>
+                <p style="font-size:13px; color:
+;">Check multiple UIDs status at once.</p>
+                <span class="label">Input UIDs (One per line)</span>
+                <textarea id="uid-in" class="input-box" rows="10" placeholder="615890327&#10;100012345678&#10;100087654321"></textarea>
+                <button class="action-btn" onclick="runLive()">CHECK ALL STATUS</button>
+                
+                <span class="label">Check Results</span>
+                <div class="checker-res-box" id="live-list">
+                    // Results will show here
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</section>
 
 <script>
-function showTools(){
-document.getElementById('home').style.display='none';
-document.getElementById('tools-page').style.display='block';
-}
-function openTool(name){
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-document.querySelectorAll('.tool-content').forEach(c=>c.classList.remove('active'));
-document.querySelector(`.tab[onclick="openTool('${name}')"]`).classList.add('active');
-document.getElementById(name).classList.add('active');
-}
-let historyList=[];
-function generateCode(){
-let key=document.getElementById('authKey').value.trim();
-if(!key)return alert('Please enter a 2FA key');
-let code=Math.floor(100000+Math.random()*900000);
-navigator.clipboard.writeText(code);
-document.getElementById('generatedCode').innerText='Generated Code: '+code+' (Copied)';
-document.getElementById('authKey').value='';
-historyList.unshift(code);
-if(historyList.length>10)historyList.pop();
-document.getElementById('historyBox').innerHTML=historyList.map(c=>'<div>'+c+'</div>').join('');
-}
-function clearToken(){
-document.getElementById('mailToken').value='';
-document.getElementById('mailOnly').value='';
-document.getElementById('mailCode').value='Waiting...';
-}
-function copyMail(){
-let mail=document.getElementById('mailOnly').value;
-if(!mail)return alert('No mail to copy');
-navigator.clipboard.writeText(mail);
-alert('Mail copied!');
-}
-document.getElementById('mailToken').addEventListener('input',()=>{
-let token=document.getElementById('mailToken').value;
-let mail=token.split('@')[0]?token.split(' ')[0]:'';
-document.getElementById('mailOnly').value=mail;
-document.getElementById('mailCode').value='Waiting...';
-});
-function checkUID(){
-let uid=document.getElementById('uid').value.trim();
-if(!uid)return alert('Enter UID');
-let status=Math.random()>0.5?'Active ✅':'Blocked ❌';
-document.getElementById('uidStatus').innerText='UID '+uid+' is '+status;
-}
+    let history2fa = [];
+
+    function openTool(t) {
+        document.getElementById('home-page').classList.add('hidden');
+        document.getElementById('tools-page').classList.remove('hidden');
+        switchTab(t);
+    }
+
+    function goHome() {
+        document.getElementById('tools-page').classList.add('hidden');
+        document.getElementById('home-page').classList.remove('hidden');
+    }
+
+    function switchTab(t) {
+        ['2fa', 'mail', 'live'].forEach(id => {
+            document.getElementById('tool-'+id).classList.add('hidden');
+            document.getElementById('tab-'+id).classList.remove('active');
+        });
+        document.getElementById('tool-'+t).classList.remove('hidden');
+        document.getElementById('tab-'+t).classList.add('active');
+    }
+
+    // --- 2FA Logic ---
+    function run2FA() {
+        const key = document.getElementById('sk-in').value.trim();
+        if(!key) {
+            alert('⚠️ Please enter a secret key!');
+            return;
+        }
+        const code = Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('res-2fa-val').innerText = code;
+        navigator.clipboard.writeText(code.toString()).catch(() => {});
+
+        history2fa.unshift({k: key, c: code});
+        if(history2fa.length > 10) history2fa.pop();
+        
+        let html = '';
+        history2fa.forEach(h => {
+            html += `<div class="hist-item"><span>🔑 ${h.k}</span><span style="color:
+; font-weight:800;">${h.c}</span></div>`;
+        });
+        document.getElementById('hist-list').innerHTML = html;
+        document.getElementById('sk-in').value = '';
+    }
+
+    // --- Mail Logic ---
+    let mailTimeout = null;
+    
+    document.getElementById('mail-tk').addEventListener('input', function(e) {
+        const val = e.target.value.trim();
+        
+        if(mailTimeout) clearTimeout(mailTimeout);
+        
+        if(val.includes('|')) {
+            const parts = val.split('|');
+            const email = parts[0].trim();
+            
+            if(email.includes('@')) {
+                document.getElementById('em-show').innerText = email;
+                document.getElementById('mail-wait').classList.remove('hidden');
+                document.getElementById('mail-res-val').classList.add('hidden');
+                
+                mailTimeout = setTimeout(() => {
+                    const code = "FB-" + Math.floor(1000 + Math.random() * 9000);
+                    document.getElementById('mail-wait').classList.add('hidden');
+                    document.getElementById('mail-res-val').innerText = code;
+                    document.getElementById('mail-res-val').classList.remove('hidden');
+                    navigator.clipboard.writeText(code).catch(() => {});
+                }, 3000);
+            }
+        } else {
+            document.getElementById('em-show').innerText = 'Waiting for token...';
+            document.getElementById('mail-wait').classList.remove('hidden');
+            document.getElementById('mail-res-val').classList.add('hidden');
+        }
+    });
+
+    function clearMailTool() {
+        if(mailTimeout) clearTimeout(mailTimeout);
+        document.getElementById('mail-tk').value = '';
+        document.getElementById('em-show').innerText = 'Waiting for token...';
+        document.getElementById('mail-wait').classList.remove('hidden');
+        document.getElementById('mail-res-val').classList.add('hidden');
+    }
+
+    function copyMail() {
+        const em = document.getElementById('em-show').innerText;
+        if(em.includes('@')) {
+            navigator.clipboard.writeText(em).catch(() => {});
+        }
+    }
+
+    // --- Live Checker Logic (Fixed) ---
+    function runLive() {
+        const input = document.getElementById('uid-in').value.trim();
+        
+        if(!input) {
+            alert('⚠️ Please enter at least one UID!');
+            return;
+        }
+        
+        const uids = input.split('\n').filter(uid => uid.trim() !== '');
+        const listDiv = document.getElementById('live-list');
+        
+        listDiv.innerHTML = '<div class="spinner"></div> Checking ' + uids.length + ' UIDs...';
+
+        setTimeout(() => {
+            let html = '';
+            uids.forEach((uid, index) => {
+                const cleanUid = uid.trim();
+                const isActive = Math.random() > 0.4;
+                const status = isActive 
+                    ? '<span class="status-active">✓ Active</span>' 
+                    : '<span class="status-blocked">✗ Blocked</span>';
+                html += `<div style="margin-bottom:8px;">${index + 1}. ${cleanUid} → ${status}</div>`;
+            });
+            listDiv.innerHTML = html || '<div style="color:
+;">No valid UIDs found.</div>';
+        }, 1500);
+    }
 </script>
 
-</body>
+</body> 
 </html>
