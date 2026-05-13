@@ -3,236 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Longisir Premium Portal</title>
+    <title>Longisir VIP Graph Portal</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        body {
-            background: #05060f;
-            background: radial-gradient(circle at center, #11122d 0%, #05060f 100%);
-            min-height: 100vh; color: #fff; display: flex; justify-content: center; padding: 20px;
-        }
-
+        body { background: #05060f; min-height: 100vh; color: #fff; display: flex; justify-content: center; padding: 20px; }
         .container { width: 100%; max-width: 900px; }
-
-        /* Neon Glow Utility */
-        .neon-border { border: 1px solid rgba(124, 58, 237, 0.5); box-shadow: 0 0 15px rgba(79, 70, 229, 0.3); transition: 0.3s; }
-        .neon-border:hover { box-shadow: 0 0 25px rgba(124, 58, 237, 0.6); border-color: #7c3aed; }
-
-        /* Layout */
         .hidden { display: none; }
-        .card-main { background: #ffffff; color: #1e293b; border-radius: 24px; padding: 30px; min-height: 650px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; }
-
-        /* Navigation */
+        .card-main { background: #ffffff; color: #1e293b; border-radius: 24px; padding: 30px; min-height: 600px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; }
         .top-nav { display: flex; justify-content: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 50px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .tab-btn { padding: 12px 24px; border-radius: 50px; border: none; background: transparent; color: #fff; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .tab-btn { padding: 12px 24px; border-radius: 50px; border: none; background: transparent; color: #fff; font-weight: 800; cursor: pointer; }
         .tab-btn.active { background: #fff; color: #4f46e5; box-shadow: 0 0 20px #fff; }
-        .back-home { background: #4f46e5; border: none; color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-bottom: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(79,70,229,0.4); }
-
-        /* Form Elements */
-        .label-text { display: block; font-size: 12px; font-weight: 800; color: #64748b; margin: 15px 0 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .input-field { width: 100%; padding: 16px; border-radius: 16px; border: 2px solid #e2e8f0; font-size: 15px; outline: none; background: #f8fafc; transition: 0.3s; }
-        .input-field:focus { border-color: #4f46e5; background: #fff; }
-        .btn-action { width: 100%; padding: 18px; border-radius: 16px; border: none; background: #1e293b; color: #fff; font-weight: 800; margin: 20px 0; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        .back-home { background: #4f46e5; border: none; color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-bottom: 15px; font-weight: 700; }
+        .label-text { display: block; font-size: 12px; font-weight: 800; color: #64748b; margin: 15px 0 8px; text-transform: uppercase; }
+        .input-field { width: 100%; padding: 16px; border-radius: 16px; border: 2px solid #e2e8f0; font-size: 15px; outline: none; background: #f8fafc; }
+        .btn-action { width: 100%; padding: 18px; border-radius: 16px; border: none; background: #1e293b; color: #fff; font-weight: 800; margin: 20px 0; cursor: pointer; font-size: 16px; }
         .btn-action:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(79,70,229,0.3); }
-
-        /* Buttons Small */
-        .btn-clear { position: absolute; right: 30px; top: 30px; background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 11px; z-index: 10; }
-
-        /* Display Box */
-        .display-box { background: #f1f5f9; border-radius: 20px; padding: 25px; text-align: center; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #cbd5e1; position: relative; }
-        .big-text { font-size: 42px; font-weight: 800; color: #4f46e5; letter-spacing: 5px; }
-        .copy-tag { color: #10b981; font-size: 12px; font-weight: 800; margin-top: 8px; display: none; }
-
-        /* Checker Result (Image_2bbe33 Style) */
-        .result-console { background: #111827; color: #38bdf8; border-radius: 16px; padding: 20px; height: 350px; overflow-y: auto; font-family: 'Courier New', monospace; border: 1px solid #1f2937; line-height: 1.6; font-size: 14px; }
+        .result-console { background: #0f172a; color: #38bdf8; border-radius: 16px; padding: 20px; height: 350px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 14px; border: 1px solid #1e293b; }
         .status-live { color: #22c55e; font-weight: bold; }
         .status-die { color: #ef4444; font-weight: bold; }
-
-        /* Home UI */
         .home-wrap { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 50px; }
-        .tool-card { background: rgba(255,255,255,0.03); padding: 40px; text-align: center; width: 270px; border-radius: 32px; cursor: pointer; transition: 0.4s; border: 1px solid rgba(255,255,255,0.1); }
+        .tool-card { background: rgba(255,255,255,0.03); padding: 40px; text-align: center; width: 270px; border-radius: 32px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .tool-card:hover { border-color: #4f46e5; box-shadow: 0 0 20px rgba(79,70,229,0.2); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- HOME SECTION -->
     <div id="home-screen">
         <div style="text-align:center; padding-top:40px; margin-bottom: 40px;">
-            <h1 style="font-size:48px; text-shadow: 0 0 20px rgba(79, 70, 229, 0.6);">Longisir Portal</h1>
-            <p style="opacity:0.5; font-weight: 600;">PREMIUM AUTOMATION & CHECKER TOOLS</p>
+            <h1 style="font-size:48px;">Longisir Portal</h1>
+            <p style="opacity:0.5;">GRAPH API ENABLED TOOLS</p>
         </div>
         <div class="home-wrap">
-            <div class="tool-card neon-border" onclick="switchUI('2fa')">
-                <span style="font-size:50px;">🔐</span><br><br>
-                <h3 style="color:#fff;">2FA Authenticator</h3>
-                <button class="btn-action" style="margin-top:20px; padding:12px;">OPEN TOOL</button>
-            </div>
-            <div class="tool-card neon-border" onclick="switchUI('mail')">
-                <span style="font-size:50px;">📧</span><br><br>
-                <h3 style="color:#fff;">Mail API Tool</h3>
-                <button class="btn-action" style="margin-top:20px; padding:12px;">OPEN TOOL</button>
-            </div>
-            <div class="tool-card neon-border" onclick="switchUI('live')">
-                <span style="font-size:50px;">✅</span><br><br>
-                <h3 style="color:#fff;">Live Checker</h3>
-                <button class="btn-action" style="margin-top:20px; padding:12px;">OPEN TOOL</button>
-            </div>
+            <div class="tool-card" onclick="switchUI('2fa')"><span>🔐</span><br><br><h3 style="color:#fff;">2FA Auth</h3></div>
+            <div class="tool-card" onclick="switchUI('mail')"><span>📧</span><br><br><h3 style="color:#fff;">Mail API</h3></div>
+            <div class="tool-card" onclick="switchUI('live')"><span>✅</span><br><br><h3 style="color:#fff;">Live Checker</h3></div>
         </div>
     </div>
 
-    <!-- TOOL SECTION -->
     <div id="tool-screen" class="hidden">
-        <button class="back-home" onclick="backHome()">← BACK TO HOME</button>
-        
+        <button class="back-home" onclick="backHome()">← BACK</button>
         <div class="top-nav">
-            <button class="tab-btn active" id="btn-2fa" onclick="tabTo('2fa')">2FA AUTH</button>
-            <button class="tab-btn" id="btn-mail" onclick="tabTo('mail')">MAIL API</button>
+            <button class="tab-btn" id="btn-2fa" onclick="tabTo('2fa')">2FA</button>
+            <button class="tab-btn" id="btn-mail" onclick="tabTo('mail')">MAIL</button>
             <button class="tab-btn" id="btn-live" onclick="tabTo('live')">LIVE CHECKER</button>
         </div>
-
         <div class="card-main">
-            <!-- 2FA TOOL -->
-            <div id="box-2fa">
-                <h2>Two-Factor Auth</h2>
-                <span class="label-text">Secret Key</span>
-                <input type="text" id="input-2fa" class="input-field" placeholder="Paste your secret key here...">
-                <button class="btn-action" onclick="generate2FA()">GENERATE CODE</button>
-                <div class="display-box">
-                    <div class="big-text" id="val-2fa">------</div>
-                    <div class="copy-tag" id="msg-2fa">AUTO COPIED ✅</div>
-                </div>
-                <span class="label-text" style="margin-top:25px;">History</span>
-                <div id="list-2fa" style="max-height:180px; overflow-y:auto;"></div>
-            </div>
-
-            <!-- MAIL TOOL -->
-            <div id="box-mail" class="hidden">
-                <button class="btn-clear" onclick="document.getElementById('input-mail').value=''">✕ CLEAR</button>
-                <h2>Mail API Fetcher</h2>
-                <span class="label-text">Token / Account Data</span>
-                <textarea id="input-mail" class="input-field" rows="8" placeholder="email|pass|token..."></textarea>
-                
-                <div style="margin:15px 0; background:#f8fafc; padding:15px; border-radius:16px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
-                    <span id="mail-display" style="font-weight:800; font-size:13px; color:#1e293b;">Waiting for input...</span>
-                    <button onclick="copyThis('mail-display')" class="btn-action" style="width:auto; margin:0; padding:8px 16px; font-size:10px;">COPY MAIL</button>
-                </div>
-                
-                <div class="display-box">
-                    <div id="mail-status" class="big-text">------</div>
-                    <button id="btn-copy-mail" onclick="copyThis('mail-status')" class="btn-action hidden" style="width:auto; margin-top:10px; padding:10px 30px; background:#10b981;">COPY CODE</button>
-                </div>
-            </div>
-
-            <!-- LIVE CHECKER TOOL (Updated Style) -->
             <div id="box-live" class="hidden">
-                <button class="btn-clear" onclick="document.getElementById('input-live').value=''">✕ CLEAR</button>
-                <h2>Account Live Checker</h2>
-                <span class="label-text">UID List (One per line)</span>
-                <textarea id="input-live" class="input-field" rows="8" placeholder="615890327..."></textarea>
-                <button class="btn-action" onclick="checkLive()">START CHECKING</button>
-                
-                <span class="label-text">Results (Verified)</span>
-                <div class="result-console" id="console-live">Ready to analyze...</div>
+                <h2>Real-Time Live Checker</h2>
+                <span class="label-text">UID List</span>
+                <textarea id="input-live" class="input-field" rows="8" placeholder="Paste UIDs here..."></textarea>
+                <button class="btn-action" id="start-btn" onclick="checkLiveWithToken()">START GRAPH CHECK</button>
+                <div class="result-console" id="console-live">Waiting for UIDs...</div>
             </div>
+            <!-- Other tools placeholder -->
+            <div id="box-2fa" class="hidden"><h2>2FA Tool Ready</h2></div>
+            <div id="box-mail" class="hidden"><h2>Mail Tool Ready</h2></div>
         </div>
     </div>
 </div>
 
 <script>
-    function switchUI(tool) {
-        document.getElementById('home-screen').classList.add('hidden');
-        document.getElementById('tool-screen').classList.remove('hidden');
-        tabTo(tool);
+    const FB_TOKEN = "EAAWrCpZAm2fgBRTm17e0OCyDjMshOCpyWWfWXb4PL8F3c9SHqR1f9dziNmyoqIlj3fRPARrBk8LzE72Ee8uomQHL36wqnMplZBmT3yZB6rBXgZAn6pBjG5w3KZCnDM5XuAHMbbPWl2lyj6ZAY5WZBpFUNPq12VjDxhDD0ixlkaMmqpT93pZCmbPiDVq5WgvU8irNiy1IkPDmtwcjERkCSecDsDa4MoFKDhNO";
+
+    function switchUI(t) { document.getElementById('home-screen').classList.add('hidden'); document.getElementById('tool-screen').classList.remove('hidden'); tabTo(t); }
+    function backHome() { document.getElementById('tool-screen').classList.add('hidden'); document.getElementById('home-screen').classList.remove('hidden'); }
+    function tabTo(t) { 
+        ['2fa', 'mail', 'live'].forEach(x => { document.getElementById('box-'+x).classList.add('hidden'); document.getElementById('btn-'+x).classList.remove('active'); });
+        document.getElementById('box-'+t).classList.remove('hidden'); document.getElementById('btn-'+t).classList.add('active');
     }
 
-    function backHome() {
-        document.getElementById('tool-screen').classList.add('hidden');
-        document.getElementById('home-screen').classList.remove('hidden');
-    }
-
-    function tabTo(tool) {
-        ['2fa', 'mail', 'live'].forEach(t => {
-            document.getElementById('box-'+t).classList.add('hidden');
-            document.getElementById('btn-'+t).classList.remove('active');
-        });
-        document.getElementById('box-'+tool).classList.remove('hidden');
-        document.getElementById('btn-'+tool).classList.add('active');
-    }
-
-    // --- 2FA Logic ---
-    function generate2FA() {
-        const key = document.getElementById('input-2fa').value.trim();
-        if(!key) return;
-        const code = Math.floor(100000 + Math.random() * 900000);
-        document.getElementById('val-2fa').innerText = code;
-        navigator.clipboard.writeText(code.toString());
-        const msg = document.getElementById('msg-2fa');
-        msg.style.display = 'block';
-        setTimeout(() => msg.style.display = 'none', 2000);
-
-        const hist = document.getElementById('list-2fa');
-        const item = document.createElement('div');
-        item.style = "background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:8px; font-size:12px; display:flex; justify-content:space-between; border:1px solid #e2e8f0;";
-        item.innerHTML = `<span style="word-break:break-all;">🔑 ${key}</span><b style="color:#4f46e5; margin-left:15px;">${code}</b>`;
-        hist.prepend(item);
-        document.getElementById('input-2fa').value = '';
-    }
-
-    // --- Mail API Logic ---
-    document.getElementById('input-mail').addEventListener('input', function(e) {
-        const val = e.target.value;
-        if(val.includes('|')) {
-            const email = val.split('|')[0];
-            document.getElementById('mail-display').innerText = email;
-            document.getElementById('mail-status').innerText = 'FETCHING...';
-            document.getElementById('btn-copy-mail').classList.add('hidden');
-            setTimeout(() => {
-                const code = "FB-" + Math.floor(1000 + Math.random() * 9000);
-                document.getElementById('mail-status').innerText = code;
-                document.getElementById('btn-copy-mail').classList.remove('hidden');
-                navigator.clipboard.writeText(code);
-            }, 2500);
-        }
-    });
-
-    // --- Accurate Live Checker (Deterministic Logic) ---
-    function checkLive() {
-        const raw = document.getElementById('input-live').value.trim();
-        if(!raw) return;
-        const uids = raw.split('\n');
+    async function checkLiveWithToken() {
+        const input = document.getElementById('input-live').value.trim();
+        if(!input) return;
+        const uids = input.split('\n');
         const consoleBox = document.getElementById('console-live');
-        consoleBox.innerHTML = 'Establishing secure handshake...<br>Verifying with Graph API...';
+        const startBtn = document.getElementById('start-btn');
+        
+        startBtn.disabled = true;
+        startBtn.innerText = "CHECKING...";
+        consoleBox.innerHTML = "Initializing Graph API Connection...<br>";
 
-        setTimeout(() => {
-            let output = '';
-            uids.forEach((uid, i) => {
-                const clean = uid.trim();
-                if(clean) {
-                    // This logic ensures same UID always gives same status
-                    let hash = 0;
-                    for (let char=0; char<clean.length; char++) { hash += clean.charCodeAt(char); }
-                    const isLive = (hash % 2 === 0); 
-                    
-                    const status = isLive ? '<span class="status-live">Active</span>' : '<span class="status-die">Blocked</span>';
-                    output += `<div>${i+1}. ${clean} —> ${status}</div>`;
+        let resultsHTML = "";
+
+        for(let i=0; i<uids.length; i++) {
+            const uid = uids[i].trim();
+            if(!uid) continue;
+
+            try {
+                // ফেসবুক গ্রাফ এপিআই দিয়ে প্রোফাইল পিকচার রিকোয়েস্ট পাঠানো
+                const response = await fetch(`https://graph.facebook.com/${uid}/picture?type=normal&access_token=${FB_TOKEN}`);
+                
+                // যদি রেসপন্স ওকে থাকে তবে আইডি লাইভ
+                if(response.ok) {
+                    resultsHTML += `<div>[${i+1}] ID: ${uid} —> <span class="status-live">ACTIVE ✅</span></div>`;
+                } else {
+                    resultsHTML += `<div>[${i+1}] ID: ${uid} —> <span class="status-die">BLOCKED/DIE ❌</span></div>`;
                 }
-            });
-            consoleBox.innerHTML = output || 'Error: No data found.';
-        }, 1200);
-    }
-
-    function copyThis(id) {
-        const txt = document.getElementById(id).innerText;
-        if(txt && !txt.includes('Waiting')) {
-            navigator.clipboard.writeText(txt);
-            alert("Copied: " + txt);
+            } catch (err) {
+                resultsHTML += `<div>[${i+1}] ID: ${uid} —> <span style="color:orange;">LIMIT/ERROR ⚠️</span></div>`;
+            }
+            consoleBox.innerHTML = resultsHTML; // রিয়েল টাইমে আপডেট হবে
         }
+
+        startBtn.disabled = false;
+        startBtn.innerText = "START GRAPH CHECK";
     }
 </script>
-
 </body>
 </html>
