@@ -1,4 +1,4 @@
-// app.js - Optimized OTP Extractor
+// app.js - Complete Solution
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -7,19 +7,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Outlook API URL
 const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
 
-// এই ফাংশনটি এখন ৫-৮ ডিজিটের কোড আরও গভীরভাবে খুঁজবে
+// ৫-৮ ডিজিট কোড বের করার শক্তিশালী লজিক
 function extractOTP(text) {
     if (!text) return null;
-    
-    // ৫ থেকে ৮ ডিজিটের নম্বর খোঁজার নিয়ম
+    // HTML ট্যাগ ক্লিন করা
+    const cleanText = text.replace(/<[^>]*>?/gm, ' ');
+    // ৫-৮ ডিজিটের নম্বর খোঁজা
     const otpRegex = /\b\d{5,8}\b/g;
-    const matches = text.match(otpRegex);
+    const matches = cleanText.match(otpRegex);
     
     if (matches) {
-        // সাধারণত সবচেয়ে শেষের কোডটিই লেটেস্ট ওটিপি হয়
+        // সাধারণত লিস্টের শেষ কোডটিই লেটেস্ট হয়
         return matches[matches.length - 1];
     }
     return null;
@@ -29,106 +29,158 @@ function extractOTP(text) {
 app.post('/api/get-code', async (req, res) => {
     try {
         const { email, token, service } = req.body;
-        if (!token) return res.json({ success: false, error: 'Token required' });
+        if (!token) return res.json({ success: false, error: 'Token is missing!' });
 
-        // আমরা সরাসরি ইনবক্সের শেষ ২০টি মেসেজ চেক করবো যেন মিস না হয়
         const response = await axios.get(OUTLOOK_API, {
             headers: { 'Authorization': `Bearer ${token}` },
             params: { 
-                '$top': 20, 
+                '$top': 15, 
                 '$orderby': 'receivedDateTime DESC',
-                '$select': 'subject,bodyPreview,body' // বডিও চেক করবো
+                '$select': 'subject,bodyPreview,body' 
             }
         });
 
         const messages = response.data.value || [];
-        const keywords = service === 'instagram' ? ['instagram', 'ig'] : ['facebook', 'fb', 'security'];
+        const keywords = service === 'instagram' ? ['instagram', 'ig'] : ['facebook', 'fb', 'security', 'microsoft'];
         
-        // কিউওয়ার্ড দিয়ে ইমেইল খোঁজা
+        // সঠিক ইমেইল খুঁজে বের করা
         let targetMsg = messages.find(m => {
             const subject = (m.subject || '').toLowerCase();
-            const preview = (m.bodyPreview || '').toLowerCase();
-            return keywords.some(k => subject.includes(k) || preview.includes(k));
+            const from = (m.from?.emailAddress?.address || '').toLowerCase();
+            return keywords.some(k => subject.includes(k) || from.includes(k));
         });
 
-        if (!targetMsg) return res.json({ success: false, error: 'Email not found in Inbox' });
+        if (!targetMsg) return res.json({ success: false, error: 'Target email not found!' });
 
-        // সাবজেক্ট, প্রিভিউ এবং মেইন বডি—সব জায়গায় কোড খুঁজবে
-        const contentToSearch = `${targetMsg.subject} ${targetMsg.bodyPreview} ${targetMsg.body?.content || ''}`;
-        const code = extractOTP(contentToSearch);
+        const fullContent = `${targetMsg.subject} ${targetMsg.bodyPreview} ${targetMsg.body?.content || ''}`;
+        const code = extractOTP(fullContent);
 
         if (code) {
             return res.json({ success: true, code: code });
         } else {
-            return res.json({ success: false, error: 'Code not found in the email content' });
+            return res.json({ success: false, error: 'Code not found in email content' });
         }
     } catch (error) {
-        console.error(error.message);
-        return res.json({ success: false, error: 'Connection Error with Outlook' });
+        return res.json({ success: false, error: 'Invalid Token or Network Issue' });
     }
 });
 
-// HTML Frontend (Fixed Colors & Design)
+// HTML Frontend (Premium Canva Design with Fixed Colors)
 app.get('/', (req, res) => {
     res.send(`
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Extractor Pro</title>
     <style>
-        body { background: #0a0a0a; color: #ffffff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: #151515; border: 1px solid #333; padding: 30px; border-radius: 15px; width: 450px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        h2 { color: #0088ff; text-align: center; margin-bottom: 20px; font-size: 22px; }
-        textarea { width: 100%; height: 120px; background: #1e1e1e; color: #00ff00; border: 1px solid #444; border-radius: 10px; padding: 12px; outline: none; font-family: monospace; font-size: 13px; }
-        .btn { width: 100%; background: #0088ff; color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 16px; }
-        .btn:hover { background: #0066cc; }
-        .result-box { background: #000; padding: 25px; border-radius: 12px; margin-top: 20px; text-align: center; border: 2px solid #333; }
-        #otp { font-size: 50px; color: #ffffff; font-weight: 900; letter-spacing: 5px; }
-        #status { color: #666; font-size: 13px; margin-top: 10px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { 
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0a 100%); 
+            color: #ffffff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        .card { 
+            background: #151515; 
+            border: 1px solid #333; 
+            width: 100%; 
+            max-width: 480px; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, #0088ff, #00ff00);
+        }
+        h2 { color: #0088ff; text-align: center; margin-bottom: 25px; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        textarea { 
+            width: 100%; height: 110px; background: #1e1e1e; border: 1px solid #444; 
+            border-radius: 12px; padding: 15px; color: #00ff00; font-size: 14px; 
+            outline: none; transition: 0.3s; resize: none; font-family: monospace;
+        }
+        textarea:focus { border-color: #0088ff; box-shadow: 0 0 10px rgba(0, 136, 255, 0.2); }
+        .btn { 
+            width: 100%; background: #0088ff; color: #fff; border: none; padding: 16px; 
+            border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; 
+            transition: 0.3s; box-shadow: 0 5px 15px rgba(0, 136, 255, 0.3);
+        }
+        .btn:hover { background: #0066cc; transform: translateY(-2px); }
+        .btn:active { transform: translateY(0); }
+        .result-area { 
+            margin-top: 25px; background: #000; border: 1px solid #333; 
+            border-radius: 15px; padding: 25px; text-align: center;
+        }
+        #otp-display { 
+            font-size: 50px; font-weight: 900; color: #ffffff; 
+            letter-spacing: 8px; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        #status-text { font-size: 13px; color: #666; }
+        .copy-hint { font-size: 11px; color: #0088ff; margin-top: 10px; opacity: 0.7; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>OTP EXTRACTOR PRO</h2>
-        <textarea id="data" placeholder="Paste: email|pass|token|uuid"></textarea>
-        <button class="btn" onclick="getCode()">EXTRACT CODE</button>
-        <div class="result-box">
-            <div id="otp">------</div>
-            <div id="status">Waiting for input...</div>
+        <h2>OTP Extractor</h2>
+        <div class="input-group">
+            <label>Paste Account Data (email|pass|token|uuid)</label>
+            <textarea id="raw-data" placeholder="user@outlook.com|password123|eyJ0eX...|uuid-code"></textarea>
+        </div>
+        <button class="btn" onclick="fetchOTP()">EXTRACT CODE</button>
+        
+        <div class="result-area">
+            <div id="otp-display">------</div>
+            <div id="status-text">Ready to work</div>
+            <div class="copy-hint">Auto-copies to clipboard when found</div>
         </div>
     </div>
+
     <script>
-        async function getCode() {
-            const input = document.getElementById('data').value;
-            if(!input) return alert('Paste your data first!');
+        async function fetchOTP() {
+            const input = document.getElementById('raw-data').value.trim();
+            if(!input) return alert('Please paste your data first!');
             
             const parts = input.split('|');
-            const otpBox = document.getElementById('otp');
-            const statusBox = document.getElementById('status');
+            const otpDisplay = document.getElementById('otp-display');
+            const statusText = document.getElementById('status-text');
 
-            otpBox.innerText = 'WAIT...';
-            otpBox.style.color = '#fff';
-            statusBox.innerText = 'Searching in Outlook...';
+            otpDisplay.innerText = 'WAIT';
+            otpDisplay.style.color = '#555';
+            statusText.innerText = 'Connecting to Outlook...';
 
             try {
                 const res = await fetch('/api/get-code', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ email: parts[0], token: parts[2], service: 'facebook' })
+                    body: JSON.stringify({ 
+                        email: parts[0], 
+                        token: parts[2], 
+                        service: 'facebook' 
+                    })
                 });
                 const data = await res.json();
+                
                 if(data.success) {
-                    otpBox.innerText = data.code;
-                    otpBox.style.color = '#00ff00';
-                    statusBox.innerText = '✅ Code Found and Copied!';
+                    otpDisplay.innerText = data.code;
+                    otpDisplay.style.color = '#00ff00';
+                    statusText.innerText = '✅ Success! Code Extracted.';
                     navigator.clipboard.writeText(data.code);
                 } else {
-                    otpBox.innerText = 'FAILED';
-                    otpBox.style.color = '#ff4444';
-                    statusBox.innerText = '❌ ' + data.error;
+                    otpDisplay.innerText = 'FAIL';
+                    otpDisplay.style.color = '#ff4444';
+                    statusText.innerText = '❌ ' + data.error;
                 }
-            } catch(e) { 
-                otpBox.innerText = 'ERROR';
-                statusBox.innerText = 'Network error!';
+            } catch(err) {
+                otpDisplay.innerText = 'ERR';
+                statusText.innerText = 'Network error. Try again.';
             }
         }
     </script>
@@ -137,5 +189,7 @@ app.get('/', (req, res) => {
     `);
 });
 
-const PORT = 3000;
-app.listen(PORT, () => console.log('✅ Tool running on http://localhost:' + PORT));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`\x1b[32m[✔] Tool is Live: http://localhost:${PORT}\x1b[0m`);
+});
