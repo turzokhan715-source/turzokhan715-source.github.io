@@ -3,44 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Longisir VIP Portal</title>
+    <title>Longisir VIP Portal - Premium Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        :root { --primary: #8b5cf6; --bg: #03050a; --card-bg: #0f111a; --text-gray: #94a3b8; --glow: 0 0 12px rgba(139, 92, 246, 0.5); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        
+        :root { 
+            --primary: 
+; 
+            --primary-dark: 
+;
+            --bg: 
+; 
+            --card-bg: 
+; 
+            --text-gray: 
+; 
+            --glow: 0 0 20px rgba(139, 92, 246, 0.6);
+            --glow-green: 0 0 20px rgba(16, 185, 129, 0.6);
+            --glow-red: 0 0 20px rgba(239, 68, 68, 0.6);
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: #fff; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
+        
+        body { 
+            background: linear-gradient(135deg, 
+ 0%, 
+ 100%);
+            color: #fff; 
+            padding: 20px; 
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container { max-width: 1100px; margin: auto; position: relative; z-index: 1; }
         .hidden { display: none !important; }
 
-        /* --- GLOW BUTTONS --- */
-        .btn { border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 12px; text-transform: uppercase; color: #fff; box-shadow: var(--glow); }
-        .btn-p { background: var(--primary); }
-        .btn-r { background: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
-        .btn-g { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
-        .btn:hover { transform: scale(1.03); opacity: 0.9; }
-
-        /* --- HOME --- */
-        .hero { text-align: center; margin: 30px 0; }
-        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .h-card { background: var(--card-bg); border: 1px solid #1e293b; padding: 30px 15px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .h-card:hover { border-color: var(--primary); box-shadow: var(--glow); }
-
-        /* --- UI BOX --- */
-        .tool-box { background: #fff; color: #000; border-radius: 20px; padding: 25px; min-height: 450px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); margin-top: 20px; }
-        .input-s { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #f8fafc; margin-bottom: 10px; outline: none; font-weight: 600; font-size: 14px; }
+        /* --- PREMIUM BUTTONS --- */
+        .btn { 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 8px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            color: #fff; 
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
         
-        /* --- 2FA COMPACT --- */
-        .code-v { font-size: 45px; font-weight: 800; text-align: center; color: var(--primary); margin: 10px 0; line-height: 1; }
-        .copy-msg { font-size: 11px; color: #10b981; font-weight: 700; text-align: center; height: 15px; margin-bottom: 10px; }
-        .hist-box { margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; max-height: 120px; overflow-y: auto; font-size: 11px; }
-        .hist-item { display: flex; justify-content: space-between; background: #f9fafb; padding: 6px 10px; margin-bottom: 5px; border-radius: 5px; border: 1px solid #edf2f7; }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-p { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); box-shadow: var(--glow); }
+        .btn-r { background: linear-gradient(135deg, 
+ 0%, 
+ 100%); box-shadow: var(--glow-red); }
+        .btn-g { background: linear-gradient(135deg, 
+ 0%, 
+ 100%); box-shadow: var(--glow-green); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4); }
+        .btn:active { transform: translateY(0); }
 
-        /* --- CHECKER STATS --- */
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
-        .stat-card { background: #f1f5f9; padding: 8px; border-radius: 10px; text-align: center; border: 1px solid #e2e8f0; }
-        .stat-card b { display: block; font-size: 16px; }
-        .stat-card span { font-size: 10px; color: #64748b; font-weight: 700; }
-        .console { background: #000; color: #10b981; padding: 12px; border-radius: 10px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 11px; margin-top: 10px; }
+        /* --- PREMIUM HOME --- */
+        .hero { 
+            text-align: center; 
+            margin: 40px 0 50px; 
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero h1 { 
+            font-size: 48px; 
+            letter-spacing: -2px; 
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+        
+        .hero p { 
+            color: var(--text-gray); 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 3px;
+            font-weight: 600;
+        }
+        
+        .home-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .h-card { 
+            background: linear-gradient(135deg, var(--card-bg) 0%, 
+ 100%);
+            border: 2px solid 
+; 
+            padding: 40px 20px; 
+            border-radius: 20px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .h-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+        
+        .h-card:hover::before {
+            left: 100%;
+        }
+        
+        .h-card:hover { 
+            border-color: var(--primary); 
+            box-shadow: var(--glow), 0 10px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .h-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-weight: 900;
+        }
+        
+        .h-card p {
+            color: var(--text-gray);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* --- PREMIUM TOOL BOX --- */
+        .tool-box { 
+            background: linear-gradient(135deg, 
+ 0%, 
+ 100%);
+            color: #000; 
+            border-radius: 25px; 
+            padding: 35px; 
+            min-height: 500px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(139, 92, 246, 0.1);
+            margin-top: 25px;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .input-s { 
+            width: 100%; 
+            padding: 15px; 
+            border-radius: 12px; 
+            border: 2px solid 
+; 
+            background: 
+; 
+            margin-bottom: 15px; 
+            outline: none; 
+            font-weight: 600; 
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-s:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            background: #fff;
+        }
+        
+        /* --- 2FA PREMIUM --- */
+        .code-v { 
+            font-size: 56px; 
+            font-weight: 900; 
+            text-align: center; 
+            background: linear-gradient(135deg, var(--primary) 0%, 
+ 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0; 
+            line-height: 1;
+            letter-spacing: 5px;
+            animation: pulse 2s ease infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .copy-msg { 
+            font-size: 12px; 
+            color: 
+; 
+            font-weight: 800; 
+            text-align: center; 
+            height: 20px; 
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hist-box { 
+            margin-top: 20px; 
+            border-top: 2px solid 
+; 
+            padding-top: 15px; 
+            max-height: 150px; 
+            overflow-y: auto; 
+            font-size: 12px;
+        }
+        
+        .hist-item { 
+            display: flex; 
+            justify-content: space-between; 
+            background: linear-gradient(135deg, 
+ 0%, 
+ 100%);
+            padding: 10px 15px; 
+            margin-bottom: 8px; 
+            border-radius: 8px; 
+            border: 1px solid 
+;
+            transition: all 0.3s ease;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .hist-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        /* --- CHECKER PREMIUM STATS --- */
+        .stat-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 12px; 
+            margin-top: 20px;
+        }
+        
+        .stat-card { 
+            background: linear-gradient(135deg, 
+ 0%, 
+ 100%);
+            padding: 15px; 
+            border-radius: 15px; 
+            text-align: center; 
+            border: 2px solid 
+;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), 
+);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stat-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .stat-card b { 
+            display: block; 
+            font-size: 28px; 
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card span { 
+            font-size: 11px; 
+            color: 
+; 
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .console { 
+            background: linear-gradient(135deg, #000 0%, 
+ 100%);
+            color: 
+; 
+            padding: 15px; 
+            border-radius: 12px; 
+            height: 180px; 
+            overflow-y: auto; 
+            font-family: 'Courier New', monospace; 
+            font-size: 12px; 
+            margin-top: 15px;
+            border: 2px solid 
+;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .console::-webkit-scrollbar { width: 8px; }
+        .console::-webkit-scrollbar-track { background: 
+; }
+        .console::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        
+        /* --- MAIL BOX PREMIUM --- */
+        .mail-display {
+            background: linear-gradient(135deg, 
+ 0%, 
+ 100%);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 900;
+            margin-bottom: 15px;
+            border: 2px solid 
+;
+            font-size: 16px;
+            color: var(--primary);
+        }
+        
+        .code-box {
+            background: linear-gradient(135deg, #000 0%, 
+ 100%);
+            color: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid var(--primary);
+            box-shadow: var(--glow);
+        }
+        
+        .code-box p {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .code-box h2 {
+            font-size: 42px;
+            color: 
+;
+            font-weight: 900;
+            letter-spacing: 3px;
+            animation: pulse 2s ease infinite;
+        }
+        
+        /* --- TOP NAV PREMIUM --- */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: fadeInDown 0.5s ease;
+        }
+        
+        .nav-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .home-grid { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .tool-box { padding: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -48,20 +452,29 @@
 <div class="container">
     <div id="p-home">
         <div class="hero">
-            <h1 style="font-size:38px; letter-spacing:-1px;">Longisir VIP Portal</h1>
-            <p style="color:var(--text-gray); font-size:11px; text-transform:uppercase; letter-spacing:2px;">Advanced Automation Suite</p>
+            <h1>Longisir VIP Portal</h1>
+            <p>Advanced Automation Suite</p>
         </div>
         <div class="home-grid">
-            <div class="h-card" onclick="show('2fa')"><h3>2FA AUTH</h3><p>Fast Generator</p></div>
-            <div class="h-card" onclick="show('mail')"><h3>API MAIL</h3><p>Instant Scraper</p></div>
-            <div class="h-card" onclick="show('live')"><h3>CHECKER</h3><p>Bulk Validator</p></div>
+            <div class="h-card" onclick="show('2fa')">
+                <h3>🔐 2FA AUTH</h3>
+                <p>Lightning Fast Generator</p>
+            </div>
+            <div class="h-card" onclick="show('mail')">
+                <h3>📧 API MAIL</h3>
+                <p>Instant Email Scraper</p>
+            </div>
+            <div class="h-card" onclick="show('live')">
+                <h3>✅ CHECKER</h3>
+                <p>Bulk Account Validator</p>
+            </div>
         </div>
     </div>
 
     <div id="p-tool" class="hidden">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="top-nav">
             <button class="btn btn-p" onclick="location.reload()">← Home</button>
-            <div style="display:flex; gap:8px;">
+            <div class="nav-group">
                 <button class="btn btn-p" onclick="show('2fa')">2FA</button>
                 <button class="btn btn-p" onclick="show('mail')">Mail</button>
                 <button class="btn btn-p" onclick="show('live')">Checker</button>
@@ -71,8 +484,8 @@
         <div class="tool-box">
             <!-- 2FA -->
             <div id="box-2fa" class="hidden">
-                <input type="text" id="2fa-in" class="input-s" placeholder="Paste 2FA Key Here...">
-                <button class="btn btn-p" style="width:100%" onclick="gen2FA()">Generate Code</button>
+                <input type="text" id="2fa-in" class="input-s" placeholder="🔑 Paste 2FA Secret Key Here...">
+                <button class="btn btn-p" style="width:100%" onclick="gen2FA()">🚀 Generate Code</button>
                 <div class="code-v" id="2fa-res">------</div>
                 <div class="copy-msg" id="copy-msg"></div>
                 <div class="hist-box" id="hist-list"></div>
@@ -80,27 +493,29 @@
 
             <!-- MAIL -->
             <div id="box-mail" class="hidden">
-                <textarea id="mail-in" class="input-s" style="height:80px;" placeholder="Paste Outlook/Hotmail Data..." oninput="getMail()"></textarea>
-                <div style="background:#f1f5f9; padding:10px; border-radius:8px; text-align:center; font-weight:800; margin-bottom:10px;" id="mail-out">No Email Found</div>
-                <div style="background:#000; color:#fff; padding:20px; border-radius:15px; text-align:center;">
-                    <p style="font-size:10px; color:var(--text-gray);">INBOX CODE</p>
-                    <h2 id="mail-code" style="font-size:30px; color:#10b981;">Waiting...</h2>
+                <textarea id="mail-in" class="input-s" style="height:100px;" placeholder="📋 Paste Outlook/Hotmail Data..." oninput="getMail()"></textarea>
+                <div class="mail-display" id="mail-out">No Email Found</div>
+                <div class="code-box">
+                    <p>INBOX VERIFICATION CODE</p>
+                    <h2 id="mail-code">Waiting...</h2>
                 </div>
             </div>
 
             <!-- CHECKER -->
             <div id="box-live" class="hidden">
-                <textarea id="check-in" class="input-s" style="height:100px;" placeholder="UID|PASS|2FA"></textarea>
-                <div style="display:flex; gap:8px;">
-                    <button class="btn btn-p" onclick="runCheck()">Run Scan</button>
-                    <button class="btn btn-r" onclick="document.getElementById('check-in').value=''">Clear</button>
-                    <button class="btn btn-g" onclick="dlCSV()">Download CSV</button>
+                <textarea id="check-in" class="input-s" style="height:120px;" placeholder="📝 UID|PASS|2FA (one per line)"></textarea>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-p" onclick="runCheck()">▶ Run Scan</button>
+                    <button class="btn btn-r" onclick="clearCheck()">🗑 Clear</button>
+                    <button class="btn btn-g" onclick="dlCSV()">📥 Download CSV</button>
                 </div>
                 <div class="console" id="log">System ready...</div>
                 <div class="stat-grid">
                     <div class="stat-card"><b id="s-total">0</b><span>TOTAL</span></div>
-                    <div class="stat-card"><b id="s-live" style="color:#10b981;">0</b><span id="p-live">0%</span></div>
-                    <div class="stat-card"><b id="s-die" style="color:#ef4444;">0</b><span id="p-die">0%</span></div>
+                    <div class="stat-card"><b id="s-live" style="color:
+;">0</b><span id="p-live">0%</span></div>
+                    <div class="stat-card"><b id="s-die" style="color:
+;">0</b><span id="p-die">0%</span></div>
                     <div class="stat-card"><b id="s-rem">0</b><span>REMAIN</span></div>
                 </div>
             </div>
@@ -120,30 +535,42 @@
 
     function gen2FA() {
         let key = document.getElementById('2fa-in').value.trim();
-        if(!key) return;
+        if(!key) {
+            alert('⚠️ Please enter a 2FA key first!');
+            return;
+        }
         let code = Math.floor(100000 + Math.random() * 900000);
         document.getElementById('2fa-res').innerText = code;
         navigator.clipboard.writeText(code);
-        document.getElementById('copy-msg').innerText = "✓ Auto Copied!";
+        document.getElementById('copy-msg').innerText = "✓ Code Copied to Clipboard!";
         
         let hist = document.getElementById('hist-list');
-        hist.innerHTML = `<div class="hist-item"><span>${key}</span><b>${code}</b></div>` + hist.innerHTML;
+        let time = new Date().toLocaleTimeString();
+        hist.innerHTML = `<div class="hist-item"><span>${key.substring(0, 20)}...</span><b>${code}</b><small style="color:
+;">${time}</small></div>` + hist.innerHTML;
         
-        document.getElementById('2fa-in').value = ""; // Auto clear key box
-        setTimeout(() => { document.getElementById('copy-msg').innerText = ""; }, 2000);
+        document.getElementById('2fa-in').value = "";
+        setTimeout(() => { document.getElementById('copy-msg').innerText = ""; }, 3000);
     }
 
-    function runCheck() {
+    async function runCheck() {
         let lines = document.getElementById('check-in').value.split('\n').filter(l => l.trim() != "");
-        if(!lines.length) return;
+        if(!lines.length) {
+            alert('⚠️ Please paste account data first!');
+            return;
+        }
+        
         let l=0, d=0, t=lines.length;
         document.getElementById('s-total').innerText = t;
+        document.getElementById('log').innerHTML = '🚀 Starting scan...<br>';
         results = [];
 
-        let i = 0;
-        let timer = setInterval(() => {
-            if(i >= t) { clearInterval(timer); return; }
+        for(let i = 0; i < t; i++) {
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            let uid = lines[i].split('|')[0];
             let status = Math.random() > 0.5 ? 'LIVE' : 'DIE';
+            
             if(status=='LIVE') l++; else d++;
             
             results.push(lines[i] + "," + status);
@@ -153,29 +580,46 @@
             document.getElementById('p-live').innerText = Math.round((l/t)*100) + "%";
             document.getElementById('p-die').innerText = Math.round((d/t)*100) + "%";
             
-            document.getElementById('log').innerHTML += `[${i+1}] ${lines[i].split('|')[0]} -> ${status}<br>`;
+            let icon = status == 'LIVE' ? '✅' : '❌';
+            document.getElementById('log').innerHTML += `${icon} [${i+1}/${t}] ${uid} → ${status}<br>`;
             document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
-            i++;
-        }, 200);
+        }
+        
+        document.getElementById('log').innerHTML += '<br>✓ Scan completed!';
+    }
+
+    function clearCheck() {
+        document.getElementById('check-in').value = '';
+        document.getElementById('log').innerHTML = 'System ready...';
+        ['s-total', 's-live', 's-die', 's-rem'].forEach(id => document.getElementById(id).innerText = '0');
+        ['p-live', 'p-die'].forEach(id => document.getElementById(id).innerText = '0%');
+        results = [];
     }
 
     function dlCSV() {
-        if(!results.length) return;
+        if(!results.length) {
+            alert('⚠️ No results to export!');
+            return;
+        }
         let csvContent = "data:text/csv;charset=utf-8,Account Data,Status\n" + results.join("\n");
         let encodedUri = encodeURI(csvContent);
         let link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "longisir_results.csv");
+        link.setAttribute("download", "longisir_results_" + Date.now() + ".csv");
         document.body.appendChild(link);
         link.click();
+        alert('✅ Results exported successfully!');
     }
 
     function getMail() {
         let val = document.getElementById('mail-in').value;
         let mail = val.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
         if(mail) {
-            document.getElementById('mail-out').innerText = mail[0];
+            document.getElementById('mail-out').innerText = '📧 ' + mail[0];
             document.getElementById('mail-code').innerText = Math.floor(100000 + Math.random() * 899999);
+        } else {
+            document.getElementById('mail-out').innerText = 'No Email Found';
+            document.getElementById('mail-code').innerText = 'Waiting...';
         }
     }
 </script>
