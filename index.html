@@ -3,174 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Mail Scraper - Longisir VIP</title>
+    <title>API Mail Scraper - Ultra Fast</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         
-        :root { 
-            --primary: #a855f7; 
-            --bg: #05060b; 
-            --card-bg: #ffffff; 
-            --text-gray: #94a3b8;
-        }
+        :root { --primary: #a855f7; --bg: #05060b; --card-bg: #ffffff; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { max-width: 800px; width: 100%; }
+        .tool-card { background: var(--card-bg); padding: 35px; border-radius: 40px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        h2 { color: var(--primary); font-size: 28px; margin-bottom: 20px; font-weight: 800; }
         
-        body { 
-            background: var(--bg); 
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .container { 
-            max-width: 800px; 
-            width: 100%;
-        }
-
-        .tool-card {
-            background: var(--card-bg);
-            padding: 40px 30px;
-            border-radius: 45px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        .tool-header h2 {
-            color: var(--primary);
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 30px;
-        }
-
         .input-area {
-            width: 100%;
-            height: 150px;
-            padding: 20px;
-            border-radius: 20px;
-            border: 2px solid #f1f5f9;
-            background: #f8fafc;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 10px;
-            outline: none;
-            resize: none;
-            color: #1e293b;
-        }
-
-        .action-row {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
+            width: 100%; height: 140px; padding: 15px; border-radius: 20px;
+            border: 2px solid #f1f5f9; background: #f8fafc; font-size: 13px;
+            margin-bottom: 10px; outline: none; resize: none; color: #1e293b;
         }
 
         .clear-btn {
-            background: #ef4444;
-            color: #fff;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 800;
-            font-size: 12px;
-            text-transform: uppercase;
+            background: #ef4444; color: #fff; border: none; padding: 8px 20px;
+            border-radius: 10px; cursor: pointer; font-weight: 800; float: right; margin-bottom: 15px;
         }
 
         .mail-box-display {
-            background: #f8fafc;
-            border-radius: 18px;
-            padding: 15px 25px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #f1f5f9;
+            background: #f1f5f9; border-radius: 15px; padding: 12px 20px;
+            margin: 10px 0 20px 0; display: flex; justify-content: space-between; align-items: center;
+            clear: both;
         }
 
-        #detected-mail {
-            color: #3b82f6;
-            font-weight: 800;
-            font-size: 15px;
-            word-break: break-all;
-        }
-
-        .copy-mail-btn {
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 20px;
-        }
+        #detected-mail { color: #3b82f6; font-weight: 700; font-size: 14px; }
 
         .code-box-wrapper { 
-            background: #fff; 
-            border: 3px solid var(--primary); 
-            padding: 10px 35px;
-            border-radius: 22px; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 15px; 
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
-            margin-bottom: 10px;
+            background: #fff; border: 3px solid var(--primary); 
+            padding: 15px 30px; border-radius: 20px; 
+            display: inline-flex; align-items: center; gap: 15px; 
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); margin-bottom: 5px;
         }
 
-        .code-display { 
-            font-size: 34px;
-            font-weight: 800; 
-            color: #000; 
-            letter-spacing: 2px; 
-        }
+        .code-display { font-size: 40px; font-weight: 800; color: #000; letter-spacing: 3px; }
+        .copy-btn { color: var(--primary); cursor: pointer; font-size: 22px; }
+        .status { color: #94a3b8; font-size: 11px; margin-bottom: 25px; font-weight: 600; }
 
-        .copy-icon {
-            font-size: 22px;
-            color: var(--primary);
-            cursor: pointer;
-        }
-
-        .status-text {
-            color: var(--text-gray);
-            font-weight: 600;
-            font-size: 12px;
-            margin-bottom: 35px;
-        }
-
-        .history-section {
-            text-align: left;
-            border-top: 2px dashed #f1f5f9;
-            padding-top: 20px;
-        }
-
-        .history-section h3 {
-            font-size: 18px;
-            font-weight: 800;
-            color: #1e293b;
-            margin-bottom: 15px;
-        }
-
-        .history-list {
-            height: 220px;
-            overflow-y: auto;
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .history-item {
-            background: #fff;
-            padding: 15px;
-            border-radius: 15px;
-            font-size: 13px;
-            border-left: 5px solid var(--primary);
-            color: #475569;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.01);
-            word-break: break-all;
-        }
-
-        .history-list::-webkit-scrollbar { width: 5px; }
-        .history-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        .history-section { text-align: left; border-top: 2px dashed #f1f5f9; padding-top: 15px; }
+        .history-list { height: 200px; overflow-y: auto; background: #f8fafc; border-radius: 15px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .history-item { background: #fff; padding: 12px; border-radius: 12px; border-left: 4px solid var(--primary); font-size: 12px; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -178,101 +55,84 @@
 
 <div class="container">
     <main class="tool-card">
-        <div class="tool-header">
-            <h2>API Mail Scraper</h2>
-        </div>
+        <h2>API Mail Scraper</h2>
 
-        <textarea id="mail-input" class="input-area" placeholder="Paste full data here..."></textarea>
-
-        <div class="action-row">
-            <button class="clear-btn" onclick="clearAll()">CLEAR ALL</button>
-        </div>
+        <textarea id="mail-input" class="input-area" placeholder="Paste data here..."></textarea>
+        <button class="clear-btn" onclick="clearAll()">CLEAR ALL</button>
 
         <div class="mail-box-display">
-            <span id="detected-mail">WAITING FOR MAIL...</span>
-            <i class="fa-solid fa-copy copy-mail-btn" onclick="copyMail()"></i>
+            <span id="detected-mail">WAITING FOR DATA...</span>
+            <i class="fa-solid fa-copy copy-btn" style="font-size: 16px;" onclick="copyMail()"></i>
         </div>
 
-        <center>
-            <div class="code-box-wrapper">
-                <span id="otp-result" class="code-display">WAITING</span>
-                <i class="fa-solid fa-copy copy-icon" onclick="copyOTP()"></i>
-            </div>
-            <p class="status-text">Scanning for FB/IG codes (any length)...</p>
-        </center>
+        <div class="code-box-wrapper">
+            <span id="otp-result" class="code-display">WAITING</span>
+            <i class="fa-solid fa-copy copy-btn" onclick="copyOTP()"></i>
+        </div>
+        <p class="status">Checking every second for any code...</p>
 
         <div class="history-section">
-            <h3>Historey</h3>
+            <h4 style="margin-bottom:10px;">History</h4>
             <div id="history-container" class="history-list"></div>
         </div>
     </main>
 </div>
 
 <script>
-    let lastProcessedCode = "";
+    let lastCode = "";
 
+    // প্রতি ১ সেকেন্ডে চেক হবে
     setInterval(() => {
-        const input = document.getElementById('mail-input').value.trim();
-        if (!input) return;
+        const rawData = document.getElementById('mail-input').value.trim();
+        if (!rawData) return;
 
-        // ১. মেইল খোঁজা
-        const emailMatch = input.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-        let currentEmail = "Unknown Mail";
+        // ১. মেইল বের করা
+        const emailMatch = rawData.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+        let emailFound = "No Email Found";
         if (emailMatch) {
-            currentEmail = emailMatch[0];
-            document.getElementById('detected-mail').innerText = currentEmail;
+            emailFound = emailMatch[0];
+            document.getElementById('detected-mail').innerText = emailFound;
         }
 
-        // ২. ফেসবুক বা ইনস্টাগ্রাম চেক
-        const isTarget = /facebook|fb|instagram|ig/i.test(input);
+        // ২. ৫ থেকে ৮ ডিজিটের যেকোনো সংখ্যা খোঁজা (কোনো ফিল্টার ছাড়া)
+        const codeMatch = rawData.match(/\b\d{5,8}\b/);
+        
+        if (codeMatch) {
+            const newCode = codeMatch[0];
 
-        if (isTarget) {
-            // ৫ থেকে ১০ ডিজিটের যেকোনো সংখ্যা খুঁজবে
-            const codeMatch = input.match(/\b\d{5,10}\b/);
-            if (codeMatch) {
-                const otp = codeMatch[0];
+            // যদি নতুন কোড আসে
+            if (newCode !== lastCode) {
+                lastCode = newCode;
+                document.getElementById('otp-result').innerText = newCode;
+                
+                // অটো কপি
+                navigator.clipboard.writeText(newCode).catch(() => {});
 
-                if (otp !== lastProcessedCode) {
-                    lastProcessedCode = otp;
-                    document.getElementById('otp-result').innerText = otp;
-                    
-                    navigator.clipboard.writeText(otp).catch(() => {});
-                    addToHistory(currentEmail, otp);
-                }
+                // হিস্ট্রিতে সেভ করা
+                const container = document.getElementById('history-container');
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `<strong>CODE: ${newCode}</strong> | Mail: ${emailFound}`;
+                container.insertBefore(div, container.firstChild);
             }
         }
     }, 1000);
 
-    function addToHistory(email, otp) {
-        const container = document.getElementById('history-container');
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.innerHTML = `<b>CODE: ${otp}</b><br><span style="font-size:11px; color:var(--text-gray);">MAIL: ${email}</span>`;
-        
-        container.insertBefore(item, container.firstChild);
-
-        if (container.children.length > 30) {
-            container.removeChild(container.lastChild);
-        }
+    function copyOTP() {
+        const res = document.getElementById('otp-result').innerText;
+        if(res !== "WAITING") navigator.clipboard.writeText(res);
     }
 
     function copyMail() {
         const mail = document.getElementById('detected-mail').innerText;
-        if(mail.includes("WAITING")) return;
-        navigator.clipboard.writeText(mail);
-    }
-
-    function copyOTP() {
-        const otp = document.getElementById('otp-result').innerText;
-        if(otp === "WAITING") return;
-        navigator.clipboard.writeText(otp);
+        if(!mail.includes("WAITING")) navigator.clipboard.writeText(mail);
     }
 
     function clearAll() {
         document.getElementById('mail-input').value = "";
-        document.getElementById('detected-mail').innerText = "WAITING FOR MAIL...";
         document.getElementById('otp-result').innerText = "WAITING";
-        lastProcessedCode = ""; 
+        document.getElementById('detected-mail').innerText = "WAITING FOR DATA...";
+        lastCode = "";
     }
 </script>
 
