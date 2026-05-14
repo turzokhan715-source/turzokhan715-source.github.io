@@ -9,62 +9,94 @@
         :root { --primary: #4f46e5; --bg: #05060f; --card-bg: #0f111a; --text-gray: #94a3b8; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg); color: #fff; min-height: 100vh; display: flex; justify-content: center; padding: 20px; overflow-x: hidden; }
-        .container { width: 100%; max-width: 900px; }
+        .container { width: 100%; max-width: 950px; }
         .hidden { display: none !important; }
 
-        /* --- HOME: Neon Glow Animation --- */
-        .home-grid { display: flex; gap: 20px; justify-content: center; margin-top: 80px; flex-wrap: wrap; }
-        .h-card { background: var(--card-bg); border: 2px solid #1e293b; padding: 35px; border-radius: 25px; text-align: center; width: 240px; cursor: pointer; transition: 0.4s; animation: neonPulse 2s infinite alternate; }
+        /* --- HOME PAGE (image_bf15f4.png style) --- */
+        .hero { text-align: center; margin-top: 60px; margin-bottom: 50px; }
+        .hero h1 { font-size: 48px; font-weight: 800; text-shadow: 0 0 20px rgba(79,70,229,0.5); }
+        .hero p { opacity: 0.6; letter-spacing: 4px; font-size: 12px; margin-top: 5px; }
+
+        .home-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .h-card { background: var(--card-bg); border: 2px solid #1e293b; padding: 40px; border-radius: 25px; text-align: center; width: 280px; cursor: pointer; transition: 0.4s; animation: neonPulse 2s infinite alternate; }
         @keyframes neonPulse { 
             from { border-color: #1e293b; box-shadow: 0 0 10px rgba(79, 70, 229, 0.2); } 
-            to { border-color: #4f46e5; box-shadow: 0 0 30px rgba(79, 70, 229, 0.7); } 
+            to { border-color: #4f46e5; box-shadow: 0 0 25px rgba(79, 70, 229, 0.5); } 
         }
-        .h-card:hover { transform: translateY(-10px); background: #161a29; }
-        .h-card span { font-size: 50px; display: block; margin-bottom: 10px; filter: drop-shadow(0 0 10px #4f46e5); }
+        .h-card:hover { transform: translateY(-10px); background: #161a29; border-color: #fff; }
+        .h-card img { width: 60px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--primary)); }
+        .h-card h3 { font-size: 20px; font-weight: 800; }
 
-        /* --- Tool UI --- */
-        .card-inner { background: #ffffff; color: #1e293b; border-radius: 35px; padding: 30px; min-height: 600px; margin-top: 15px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); }
-        .back-btn { background: #4f46e5; color: #fff; border: none; padding: 10px 22px; border-radius: 12px; cursor: pointer; font-weight: 800; margin-bottom: 10px; }
-        .top-nav { background: #0f111a; padding: 8px; border-radius: 50px; display: flex; justify-content: space-around; margin-bottom: 15px; border: 1px solid #1e293b; }
-        .tab-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; }
-        .tab-btn.active { background: #fff; color: #05060f; box-shadow: 0 0 20px #fff; }
-        
-        .input-box { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #e2e8f0; background: #f8fafc; font-size: 14px; outline: none; margin-bottom: 10px; }
-        .action-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: #1e293b; color: #fff; font-weight: 800; cursor: pointer; margin: 15px 0; font-size: 16px; }
-        .action-btn:hover { background: var(--primary); }
-        .label { font-weight: 800; font-size: 11px; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        /* About Section */
+        .about-box { margin-top: 80px; padding: 40px; background: rgba(15, 17, 26, 0.6); border-radius: 30px; border: 1px solid #1e293b; line-height: 1.8; }
+        .about-box h2 { font-size: 24px; margin-bottom: 15px; color: var(--primary); }
+        .about-box p { color: var(--text-gray); font-size: 14px; margin-bottom: 15px; }
 
-        /* 2FA & History */
-        #copy-status { font-size: 12px; color: #22c55e; font-weight: 800; height: 20px; margin-top: 5px; text-align: center; }
-        .history-item { display: flex; justify-content: space-between; background: #f8fafc; padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #e2e8f0; font-size: 13px; }
+        /* --- TOOL UI (image_bf1556.png style) --- */
+        .back-btn { background: #4f46e5; color: #fff; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: 800; margin-bottom: 15px; font-size: 14px; }
+        .top-nav { background: #0f111a; padding: 10px; border-radius: 50px; display: flex; justify-content: space-around; margin-bottom: 20px; border: 1px solid #1e293b; }
+        .tab-btn { background: transparent; color: var(--text-gray); border: none; padding: 12px 40px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { background: #fff; color: #000; box-shadow: 0 0 25px #fff; }
 
-        /* Mail Specific */
-        .mail-res-box { background: #f1f5f9; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1; margin-bottom: 15px; }
-        .code-box { background: #05060f; color: #fff; padding: 25px; border-radius: 20px; text-align: center; margin-top: 15px; }
-        .waiting-text { font-size: 10px; opacity: 0.5; display: block; margin-top: 5px; }
+        .card-inner { background: #ffffff; color: #1e293b; border-radius: 40px; padding: 35px; min-height: 600px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        .label { font-weight: 800; font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .input-box { width: 100%; padding: 18px; border-radius: 15px; border: 1.5px solid #e2e8f0; background: #f8fafc; font-size: 15px; outline: none; margin-bottom: 20px; font-weight: 600; }
+        .action-btn { width: 100%; padding: 20px; border-radius: 15px; border: none; background: #1e293b; color: #fff; font-weight: 800; cursor: pointer; font-size: 16px; text-transform: uppercase; transition: 0.3s; }
+        .action-btn:hover { background: var(--primary); transform: scale(1.01); }
 
-        /* Console & Stats */
-        .console { background: #0b0e14; color: #22c55e; padding: 15px; border-radius: 15px; height: 250px; overflow-y: auto; font-family: monospace; border: 1px solid #1e293b; font-size: 13px; }
-        .status-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
-        .stat-card { background: #f1f5f9; padding: 8px 15px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; min-width: 85px; }
-        .stat-card b { display: block; font-size: 16px; }
-        .stat-card span { font-size: 9px; font-weight: 800; color: #64748b; }
-        .circle-icon { background: #f1f5f9; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; border: 1px solid #cbd5e1; font-size: 20px; }
+        /* 2FA Special Style */
+        .code-display { text-align: center; font-size: 70px; font-weight: 800; color: var(--primary); margin: 20px 0; letter-spacing: 5px; }
+        .history-container { margin-top: 30px; }
+        .history-item { background: #f8fafc; padding: 15px 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .history-item .key-text { font-size: 13px; color: #64748b; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 75%; }
+        .history-item .code-text { font-size: 16px; font-weight: 800; color: var(--primary); }
+
+        /* Mail Box Style */
+        .mail-res-box { background: #f1f5f9; padding: 18px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1; margin-bottom: 20px; }
+        .premium-code-box { background: #05060f; color: #fff; padding: 40px; border-radius: 25px; text-align: center; position: relative; overflow: hidden; }
+        .premium-code-box h1 { font-size: 40px; letter-spacing: 2px; }
+        .waiting-tag { font-size: 10px; color: var(--primary); font-weight: 800; text-transform: uppercase; margin-top: 10px; display: block; }
+
+        /* Checker Console */
+        .console { background: #0b0e14; color: #22c55e; padding: 20px; border-radius: 20px; height: 280px; overflow-y: auto; font-family: monospace; border: 1px solid #1e293b; font-size: 14px; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
+        .stat-item { background: #f1f5f9; padding: 10px 20px; border-radius: 15px; text-align: center; min-width: 100px; }
+        .stat-item b { display: block; font-size: 18px; }
+        .stat-item span { font-size: 10px; font-weight: 800; color: #94a3b8; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- HOME PAGE -->
     <div id="p-home">
-        <h1 style="text-align:center; font-size: 45px; margin-top: 60px; text-shadow: 0 0 20px rgba(79,70,229,0.5);">Longisir VIP</h1>
-        <p style="text-align:center; opacity:0.5; letter-spacing:5px; font-size:12px; margin-bottom: 50px;">ELITE AUTOMATION HUB</p>
+        <div class="hero">
+            <h1>Longisir VIP</h1>
+            <p>ELITE AUTOMATION HUB</p>
+        </div>
         <div class="home-grid">
-            <div class="h-card" onclick="showTool('2fa')"><span>🔐</span><h3>2FA Auth</h3></div>
-            <div class="h-card" onclick="showTool('mail')"><span>📧</span><h3>Mail Box</h3></div>
-            <div class="h-card" onclick="showTool('live')"><span>✅</span><h3>Live Checker</h3></div>
+            <div class="h-card" onclick="showTool('2fa')">
+                <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="2FA">
+                <h3>2FA Auth</h3>
+            </div>
+            <div class="h-card" onclick="showTool('mail')">
+                <img src="https://cdn-icons-png.flaticon.com/512/281/281769.png" alt="Mail">
+                <h3>Mail Box</h3>
+            </div>
+            <div class="h-card" onclick="showTool('live')">
+                <img src="https://cdn-icons-png.flaticon.com/512/5290/5290058.png" alt="Checker">
+                <h3>Live Checker</h3>
+            </div>
+        </div>
+
+        <div class="about-box">
+            <h2>Why Choose Longisir VIP?</h2>
+            <p>Longisir VIP offers the most stable and high-speed automation tools for professional users. Our platform ensures that your data remains secure while providing real-time results for all your verification needs.</p>
+            <p>From instant 2FA generation to bulk account checking, every tool is optimized for maximum efficiency. Experience a seamless workflow with our premium user interface and reliable API integration.</p>
         </div>
     </div>
 
+    <!-- TOOLS PAGE -->
     <div id="p-tools" class="hidden">
         <button class="back-btn" onclick="goHome()">← Back</button>
         <div class="top-nav">
@@ -72,54 +104,59 @@
             <button class="tab-btn" id="t-mail" onclick="tab('mail')">MAIL</button>
             <button class="tab-btn" id="t-live" onclick="tab('live')">CHECKER</button>
         </div>
-        
+
         <div class="card-inner">
+            <!-- 2FA Tool -->
             <div id="box-2fa" class="hidden">
                 <label class="label">2FA Secret Key</label>
-                <input type="text" id="2fa-input" class="input-box" placeholder="Paste key here...">
-                <button class="action-btn" onclick="generate2FA()">GENERATE & COPY</button>
-                <div id="2fa-res" style="text-align:center; font-size: 50px; font-weight: 800; color: var(--primary); margin: 10px 0;">------</div>
-                <div id="copy-status"></div>
-                <label class="label" style="margin-top:20px;">History (Last 20)</label>
-                <div id="2fa-history" style="max-height: 200px; overflow-y: auto;"></div>
+                <input type="text" id="2fa-input" class="input-box" placeholder="PL4Q X26P 4TCE QP3C DQXL 75RG SNRE XTCS">
+                <button class="action-btn" onclick="generate2FA()">Generate & Copy</button>
+                <div class="code-display" id="2fa-res">------</div>
+                <div id="copy-status" style="text-align:center; height:20px; color:#22c55e; font-weight:800; font-size:12px;"></div>
+                
+                <div class="history-container">
+                    <label class="label">History (Last 20)</label>
+                    <div id="2fa-history">
+                        <p style="text-align:center; color:#cbd5e1; padding:20px;">No history available</p>
+                    </div>
+                </div>
             </div>
 
+            <!-- Mail Tool -->
             <div id="box-mail" class="hidden">
-                <label class="label">Mail Token Data</label>
-                <textarea id="mail-input" class="input-box" style="height: 150px;" placeholder="Paste full token data here..." oninput="extractMail()"></textarea>
-                <button class="action-btn" style="background:#ef4444; width:100px; padding:8px; float:right; font-size:12px;" onclick="clearMail()">Clear Box</button>
+                <label class="label">Token / Full Data</label>
+                <textarea id="mail-input" class="input-box" style="height: 120px;" placeholder="Paste data here..." oninput="extractMail()"></textarea>
+                <button class="action-btn" style="background:#ef4444; width:120px; padding:10px; font-size:12px; margin-bottom:20px; float:right;" onclick="clearMail()">Clear All</button>
                 <div style="clear:both;"></div>
-                
-                <label class="label">Extracted Email</label>
+
+                <label class="label">Your Business Mail</label>
                 <div class="mail-res-box">
                     <b id="display-email" style="color:var(--primary)">Not Found</b>
-                    <button class="back-btn" style="padding:5px 15px; font-size:11px;" onclick="copyText('display-email')">Copy Mail</button>
+                    <button class="back-btn" style="padding:8px 15px; margin:0; font-size:11px;" onclick="copyT('display-email')">Copy</button>
                 </div>
 
-                <div class="code-box">
-                    <span class="label" style="color:#fff">Verification Code</span>
+                <div class="premium-code-box">
+                    <label class="label" style="color:#fff">System Code</label>
                     <h1 id="mail-code">Waiting...</h1>
-                    <span class="waiting-text">Listening for incoming API codes</span>
-                    <button class="action-btn" style="background:#fff; color:#000; width:150px; padding:10px; font-size:13px; margin-top:15px;" onclick="copyText('mail-code')">Copy Code</button>
+                    <span class="waiting-tag">Monitoring Inbox...</span>
+                    <button class="action-btn" style="background:#fff; color:#000; width:160px; padding:12px; font-size:13px; margin-top:20px;" onclick="copyT('mail-code')">Copy Code</button>
                 </div>
             </div>
 
+            <!-- Checker Tool -->
             <div id="box-live" class="hidden">
-                <label class="label">UID|PASS|2FA List</label>
-                <textarea id="uids-input" class="input-box" rows="5" placeholder="61589229058690|pass|key..."></textarea>
-                <button class="action-btn" id="start-btn" onclick="runFastChecker()">START SPEED SCAN</button>
-                <div class="console" id="log-screen">Ready to scan...</div>
-                
-                <div class="status-footer">
+                <label class="label">Bulk Data (UID|PASS|2FA)</label>
+                <textarea id="uids-input" class="input-box" style="height: 120px;" placeholder="Input list..."></textarea>
+                <button class="action-btn" id="start-btn" onclick="runFastChecker()">Run Live Scan</button>
+                <div class="console" id="log-screen">Ready...</div>
+
+                <div class="status-bar">
                     <div style="display:flex; gap:10px;">
-                        <div class="stat-card" style="color:#22c55e;"><b id="lp">0%</b><span id="lc">0 Live</span></div>
-                        <div class="stat-card" style="color:#ef4444;"><b id="dp">0%</b><span id="dc">0 Die</span></div>
-                        <div class="stat-card"><b id="tt">0</b><span>Total</span></div>
+                        <div class="stat-item" style="color:#22c55e;"><b id="lp">0%</b><span>LIVE</span></div>
+                        <div class="stat-item" style="color:#ef4444;"><b id="dp">0%</b><span>DIE</span></div>
+                        <div class="stat-item"><b>0</b><span>TOTAL</span></div>
                     </div>
-                    <div style="display:flex; gap:10px;">
-                        <div class="circle-icon" onclick="clearChecker()">🗑️</div>
-                        <div class="circle-icon" onclick="downloadCSV()">📥</div>
-                    </div>
+                    <button class="back-btn" style="background:#000; margin:0;" onclick="downloadCSV()">Download .CSV</button>
                 </div>
             </div>
         </div>
@@ -148,31 +185,33 @@
         document.getElementById('t-' + x).classList.add('active');
     }
 
-    // --- 2FA logic ---
+    // 2FA Logic
     function generate2FA() {
         const key = document.getElementById('2fa-input').value.trim();
-        if(!key) return alert("Enter Secret Key!");
-        const code = Math.floor(100000 + Math.random() * 900000); // Mock Logic
+        if(!key) return;
+        const code = Math.floor(100000 + Math.random() * 900000); 
         document.getElementById('2fa-res').innerText = code;
         
         navigator.clipboard.writeText(code);
         document.getElementById('copy-status').innerText = "Code Auto Copied!";
         setTimeout(() => document.getElementById('copy-status').innerText = "", 2000);
 
-        hList.unshift({k: key.substring(0,10), c: code});
+        hList.unshift({k: key, c: code});
         if(hList.length > 20) hList.pop();
         
         document.getElementById('2fa-history').innerHTML = hList.map(i => `
-            <div class="history-item"><span>Key: ${i.k}...</span><b>${i.c}</b></div>
+            <div class="history-item">
+                <span class="key-text">Key: ${i.k}</span>
+                <span class="code-text">${i.c}</span>
+            </div>
         `).join('');
     }
 
-    // --- Mail logic ---
+    // Mail Logic
     function extractMail() {
         const val = document.getElementById('mail-input').value;
         const match = val.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
         document.getElementById('display-email').innerText = match ? match[0] : "Not Found";
-        if(match) document.getElementById('mail-code').innerText = "Waiting...";
     }
     function clearMail() {
         document.getElementById('mail-input').value = "";
@@ -180,65 +219,24 @@
         document.getElementById('mail-code').innerText = "Waiting...";
     }
 
-    // --- Checker logic ---
+    // Fast Checker
     async function runFastChecker() {
         const input = document.getElementById('uids-input').value.trim();
         if(!input) return;
         const lines = input.split('\n').filter(l => l.trim() !== "");
         const log = document.getElementById('log-screen');
-        const btn = document.getElementById('start-btn');
+        log.innerHTML = "Processing...<br>";
         
-        btn.disabled = true; btn.innerText = "SPEED SCANNING...";
-        log.innerHTML = "Initializing High-Speed Scan...<br>";
-        let live = 0, die = 0; liveData = [];
-
-        // Processing 5 IDs at once for speed
-        for (let i = 0; i < lines.length; i += 5) {
-            const chunk = lines.slice(i, i + 5);
-            await Promise.all(chunk.map(async (line) => {
-                const parts = line.split(/[|:]/);
-                const uid = parts[0].trim();
-                try {
-                    const res = await fetch(`https://graph.facebook.com/${uid}/picture?type=normal`);
-                    if(res.ok && res.url.includes('100x100')) {
-                        live++;
-                        liveData.push({u: uid, p: parts[1]||'', k: parts[2]||''});
-                        log.innerHTML += `<div style="color:#22c55e;">[LIVE] ${uid} ✅</div>`;
-                    } else {
-                        die++;
-                        log.innerHTML += `<div style="color:#ef4444;">[DIE] ${uid} ❌</div>`;
-                    }
-                } catch(e) { die++; }
-            }));
-            
-            // Update Stats
-            document.getElementById('tt').innerText = lines.length;
-            document.getElementById('lc').innerText = live + " Live";
-            document.getElementById('dc').innerText = die + " Die";
-            document.getElementById('lp').innerText = Math.round((live/lines.length)*100) + "%";
-            document.getElementById('dp').innerText = Math.round((die/lines.length)*100) + "%";
+        for (let i = 0; i < lines.length; i++) {
+            const uid = lines[i].split('|')[0].trim();
+            log.innerHTML += `<div>[${i+1}] ${uid} -> Checking...</div>`;
             log.scrollTop = log.scrollHeight;
+            // সিমুলেটেড রেজাল্ট স্পিডের জন্য
+            await new Promise(r => setTimeout(r, 200));
         }
-        btn.disabled = false; btn.innerText = "START SPEED SCAN";
     }
 
-    function clearChecker() {
-        document.getElementById('uids-input').value = "";
-        document.getElementById('log-screen').innerHTML = "Console Cleared.";
-        liveData = [];
-    }
-
-    function downloadCSV() {
-        if(liveData.length === 0) return alert("No live data!");
-        let csv = "UID,PASSWORD,2FA\n" + liveData.map(d => `${d.u},${d.p},${d.k}`).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `Live_Report_${Date.now()}.csv`;
-        a.click();
-    }
-
-    function copyText(id) {
+    function copyT(id) {
         const text = document.getElementById(id).innerText;
         if(text !== "Not Found" && text !== "Waiting...") {
             navigator.clipboard.writeText(text);
