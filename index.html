@@ -3,55 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Token OTP Extractor</title>
+    <title>FB & Insta OTP Extractor</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: #0a0a0a; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         
         .extractor-card { 
             width: 100%; 
-            max-width: 600px; 
+            max-width: 550px; 
             background: #151515; 
-            border: 1px solid #333; 
+            border: 1px solid #333333; 
             border-radius: 15px; 
             padding: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
 
-        h2 { color: #0088ff; text-align: center; margin-bottom: 20px; font-size: 22px; letter-spacing: 1px; }
+        h2 { color: #0088ff; text-align: center; margin-bottom: 20px; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; }
 
         .input-box { 
             width: 100%; 
-            height: 120px; 
+            height: 150px; 
             background: #1e1e1e; 
-            border: 1px solid #444; 
+            border: 1px solid #444444; 
             border-radius: 10px; 
             padding: 15px; 
-            color: #bbbbbb; 
+            color: #00ff00; 
             font-size: 13px; 
             outline: none; 
             resize: none;
             margin-bottom: 20px;
+            font-family: monospace;
         }
-        .input-box:focus { border-color: #0088ff; color: #00ff00; }
+        .input-box:focus { border-color: #0088ff; }
 
         .result-section { 
-            background: #000; 
+            background: #000000; 
             border-radius: 12px; 
-            padding: 20px; 
+            padding: 25px; 
             text-align: center; 
-            border: 2px dashed #333;
+            border: 2px solid #333333;
             margin-bottom: 20px;
         }
 
-        .otp-title { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 10px; }
-        .otp-display { font-size: 50px; font-weight: 900; color: #00ff00; letter-spacing: 5px; margin: 10px 0; }
-        .mail-display { font-size: 14px; color: #0088ff; font-family: monospace; }
+        .otp-title { font-size: 11px; color: #888888; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 2px; }
+        .otp-display { font-size: 55px; font-weight: 900; color: #ffffff; letter-spacing: 5px; margin: 10px 0; }
+        .mail-display { font-size: 14px; color: #0088ff; font-family: monospace; border-top: 1px solid #222; pt: 10px; margin-top: 10px; padding-top: 10px; }
 
         .btn-extract { 
             width: 100%; 
             background: #0088ff; 
-            color: #fff; 
+            color: #ffffff; 
             border: none; 
             padding: 15px; 
             border-radius: 8px; 
@@ -60,27 +61,27 @@
             cursor: pointer; 
             transition: 0.3s;
         }
-        .btn-extract:hover { background: #0066cc; transform: translateY(-2px); }
+        .btn-extract:hover { background: #0066cc; transform: translateY(-1px); }
 
-        .status-msg { text-align: center; font-size: 12px; margin-top: 10px; color: #555; }
+        .footer-info { text-align: center; font-size: 11px; margin-top: 15px; color: #555555; }
     </style>
 </head>
 <body>
 
 <div class="extractor-card">
-    <h2>MAIL API OTP EXTRACTOR</h2>
+    <h2>FB/Insta Mail Extractor</h2>
     
-    <textarea id="rawInput" class="input-box" placeholder="Paste your API Token / Data here..."></textarea>
+    <textarea id="rawInput" class="input-box" placeholder="Paste your API Data or Email Text here..."></textarea>
     
     <div class="result-section">
-        <div class="otp-title">Extracted OTP Code</div>
+        <div class="otp-title">Extracted OTP (5-8 Digits)</div>
         <div id="otpResult" class="otp-display">------</div>
-        <div id="mailResult" class="mail-display">No Data Detected</div>
+        <div id="mailResult" class="mail-display">No Data Found</div>
     </div>
 
-    <button class="btn-extract" onclick="doExtract()">EXTRACT OTP NOW</button>
+    <button class="btn-extract" onclick="doExtract()">EXTRACT CODE</button>
     
-    <div class="status-msg">Auto-detects Email & 6-digit verification codes</div>
+    <div class="footer-info">Support: Facebook, Instagram & Microsoft Codes</div>
 </div>
 
 <script>
@@ -89,29 +90,29 @@
         const otpDisplay = document.getElementById('otpResult');
         const mailDisplay = document.getElementById('mailResult');
 
-        // ১. ইমেইল খুঁজে বের করা
+        // ১. ইমেইল ফিল্টার
         const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
         const emailFound = input.match(emailRegex);
         mailDisplay.innerText = emailFound ? emailFound[0] : "Email not found";
 
-        // ২. OTP কোড খুঁজে বের করা (সাধারণত ৬ ডিজিট হয়)
-        // আমরা এমনভাবে খুঁজবো যেন স্ট্রিংয়ের মাঝখান থেকে শুধু নম্বরগুলো নেয়
-        const otpRegex = /\b\d{6}\b/; 
+        // ২. ৫ থেকে ৮ ডিজিটের কোড ফিল্টার
+        // এই রেজেক্সটি শুধুমাত্র ৫, ৬, ৭ বা ৮ ডিজিটের নম্বর খুঁজে বের করবে
+        const otpRegex = /\b\d{5,8}\b/; 
         const otpFound = input.match(otpRegex);
 
         if (otpFound) {
             otpDisplay.innerText = otpFound[0];
-            otpDisplay.style.color = "#00ff00"; // Green color for found
+            otpDisplay.style.color = "#00ff00"; // গ্রিন কালার
             
-            // ক্লিপবোর্ডে অটো কপি
+            // অটো কপি
             navigator.clipboard.writeText(otpFound[0]);
         } else {
             otpDisplay.innerText = "EMPTY";
-            otpDisplay.style.color = "#ff4444"; // Red for not found
+            otpDisplay.style.color = "#ff4444"; // রেড কালার
         }
     }
 
-    // ইনপুট দেওয়ার সাথে সাথে যেন কাজ করে
+    // পেস্ট করার সাথে সাথে অটোমেটিক কাজ করবে
     document.getElementById('rawInput').addEventListener('input', doExtract);
 </script>
 
