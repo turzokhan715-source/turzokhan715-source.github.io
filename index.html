@@ -13,7 +13,6 @@ const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
 function extractOTP(text) {
     if (!text) return null;
     
-    // Decode HTML
     text = text.replace(/&quot;/g, '"')
                .replace(/&amp;/g, '&')
                .replace(/&lt;/g, '<')
@@ -21,16 +20,10 @@ function extractOTP(text) {
                .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
     
     const allCodes = [];
-    
-    // Pattern 1: "123456 is your code"
     const p1 = text.match(/(\d{4,8})\s+is\s+your/gi);
     if (p1) p1.forEach(m => { const c = m.match(/(\d{4,8})/); if(c) allCodes.push(c[1]); });
-    
-    // Pattern 2: "code is 123456"
     const p2 = text.match(/code[\s:is]+(\d{4,8})/gi);
     if (p2) p2.forEach(m => { const c = m.match(/(\d{4,8})/); if(c) allCodes.push(c[1]); });
-    
-    // Pattern 3: Standalone codes
     const p3 = text.match(/\b(\d{4,8})\b/g);
     if (p3) {
         p3.forEach(code => {
@@ -39,7 +32,6 @@ function extractOTP(text) {
             }
         });
     }
-    
     return allCodes.length > 0 ? allCodes[allCodes.length - 1] : null;
 }
 
@@ -47,82 +39,38 @@ function extractOTP(text) {
 app.post('/api/get-code', async (req, res) => {
     try {
         const { email, password, token, uuid, service } = req.body;
-        
-        if (!token) {
-            return res.json({ success: false, error: 'Token required' });
-        }
+        if (!token) return res.json({ success: false, error: 'Token required' });
         
         console.log(`📧 Fetching ${service} code for ${email}...`);
-        
-        // Call Outlook API
         const response = await axios.get(OUTLOOK_API, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            params: {
-                '$top': 10,
-                '$orderby': 'receivedDateTime DESC',
-                '$select': 'subject,bodyPreview,body,from,receivedDateTime'
-            }
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            params: { '$top': 10, '$orderby': 'receivedDateTime DESC' }
         });
         
         const messages = response.data.value || [];
-        
-        if (messages.length === 0) {
-            return res.json({ success: false, error: 'No emails found' });
-        }
-        
-        // Filter by service
         const keywords = service === 'instagram' ? ['instagram', 'ig'] : ['facebook', 'fb'];
-        
-        let targetEmail = null;
-        for (const msg of messages) {
+        let targetEmail = messages.find(msg => {
             const from = (msg.from?.emailAddress?.address || '').toLowerCase();
             const subject = (msg.subject || '').toLowerCase();
-            
-            if (keywords.some(k => from.includes(k) || subject.includes(k))) {
-                targetEmail = msg;
-                break;
-            }
-        }
-        
-        if (!targetEmail) {
-            return res.json({ success: false, error: `No ${service} email found` });
-        }
-        
-        // Extract code
-        const subject = targetEmail.subject || '';
-        const bodyPreview = targetEmail.bodyPreview || '';
-        const bodyContent = targetEmail.body?.content || '';
-        
-        const fullText = `${subject} ${bodyPreview} ${bodyContent}`;
+            return keywords.some(k => from.includes(k) || subject.includes(k));
+        });
+
+        if (!targetEmail) return res.json({ success: false, error: `No ${service} email found` });
+
+        const fullText = `${targetEmail.subject} ${targetEmail.bodyPreview} ${targetEmail.body?.content}`;
         const code = extractOTP(fullText);
         
         if (code) {
             console.log(`✅ Code found: ${code}`);
-            return res.json({
-                success: true,
-                code: code,
-                email: email,
-                service: service,
-                subject: subject,
-                from: targetEmail.from?.emailAddress?.address
-            });
-        } else {
-            return res.json({ success: false, error: 'No code found in email' });
+            return res.json({ success: true, code: code, email: email, service: service });
         }
-        
+        return res.json({ success: false, error: 'No code found in email' });
     } catch (error) {
-        console.error('❌ Error:', error.response?.data || error.message);
-        return res.json({
-            success: false,
-            error: error.response?.data?.error?.message || error.message
-        });
+        return res.json({ success: false, error: error.message });
     }
 });
 
-// Serve HTML frontend
+// Serve HTML frontend with FIXED COLORS
 app.get('/', (req, res) => {
     res.send(`
 <!DOCTYPE html>
@@ -134,9 +82,7 @@ app.get('/', (req, res) => {
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, 
- 0%, 
- 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             font-family: 'Segoe UI', Arial, sans-serif;
             padding: 20px;
             display: flex;
@@ -145,227 +91,37 @@ app.get('/', (req, res) => {
             min-height: 100vh;
         }
         .container {
-            background: white;
+            background: #ffffff;
             padding: 40px;
             border-radius: 20px;
             width: 600px;
             max-width: 95%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            color: 
-;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        .header p {
-            color: #666;
-            font-size: 14px;
-        }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid 
-;
-        }
-        .tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-size: 16px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
-        }
-        .tab:hover { color: 
-; }
-        .tab.active {
-            color: 
-;
-            border-bottom-color: 
-;
-        }
-        .service-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-        .service-tab {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid 
-;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-            text-align: center;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .service-tab:hover {
-            border-color: 
-;
-            transform: translateY(-2px);
-        }
-        .service-tab.active {
-            background: linear-gradient(135deg, 
-, 
-);
-            color: white;
-            border-color: 
-;
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #333;
-        }
-        .input-box {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid 
-;
-            border-radius: 10px;
-            font-size: 13px;
-            font-family: 'Courier New', monospace;
-            resize: vertical;
-            min-height: 120px;
-            transition: all 0.3s;
-        }
-        .input-box:focus {
-            border-color: 
-;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        .format-hint {
-            font-size: 12px;
-            color: #666;
-            margin-top: 8px;
-            padding: 10px;
-            background: 
-;
-            border-radius: 5px;
-        }
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, 
-, 
-);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
-        }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .result-box {
-            margin-top: 25px;
-            padding: 25px;
-            background: linear-gradient(135deg, 
-, 
-);
-            border-radius: 15px;
-            text-align: center;
-            display: none;
-        }
-        .code-display {
-            font-size: 48px;
-            font-weight: 900;
-            color: #0f0;
-            letter-spacing: 12px;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 20px rgba(0,255,0,0.5);
-            cursor: pointer;
-            user-select: all;
-            margin: 20px 0;
-        }
-        .code-display.waiting {
-            font-size: 24px;
-            color: #666;
-            letter-spacing: 3px;
-        }
-        .code-display.error {
-            font-size: 20px;
-            color: 
-;
-            letter-spacing: 2px;
-        }
-        .status-msg {
-            color: #aaa;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-        .status-msg.success { color: #0f0; }
-        .status-msg.error { color: 
-; }
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: 
-;
-            border-radius: 10px;
-            border-left: 4px solid 
-;
-        }
-        .info-section h3 {
-            color: 
-;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-        .info-section ul {
-            list-style: none;
-            padding: 0;
-        }
-        .info-section li {
-            padding: 8px 0;
-            color: #555;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .info-section li::before {
-            content: '✓';
-            color: 
-;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .header h1 { color: #4a5568; font-size: 28px; margin-bottom: 10px; text-align: center; }
+        .header p { color: #718096; font-size: 14px; text-align: center; margin-bottom: 30px; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #edf2f7; }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; border: none; background: none; font-size: 16px; font-weight: 600; color: #718096; transition: 0.3s; }
+        .tab.active { color: #667eea; border-bottom: 3px solid #667eea; }
+
+        .service-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+        .service-tab { flex: 1; padding: 12px; border: 2px solid #edf2f7; border-radius: 10px; background: white; cursor: pointer; text-align: center; font-weight: 600; transition: 0.3s; }
+        .service-tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-color: #667eea; }
+
+        .input-box { width: 100%; padding: 15px; border: 2px solid #edf2f7; border-radius: 10px; font-size: 13px; font-family: monospace; min-height: 120px; outline: none; transition: 0.3s; }
+        .input-box:focus { border-color: #667eea; }
+
+        .btn-primary { width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102,126,234,0.3); }
+
+        .result-box { margin-top: 25px; padding: 25px; background: #1a202c; border-radius: 15px; text-align: center; display: none; }
+        .code-display { font-size: 48px; font-weight: 900; color: #48bb78; letter-spacing: 10px; margin: 20px 0; }
+        .code-display.error { font-size: 20px; color: #f56565; letter-spacing: 1px; }
+
+        .info-section { margin-top: 30px; padding: 20px; background: #f7fafc; border-radius: 10px; border-left: 4px solid #667eea; }
+        .info-section h3 { color: #2d3748; margin-bottom: 10px; font-size: 16px; }
+        .info-section li { font-size: 14px; color: #4a5568; margin-bottom: 5px; list-style: none; }
     </style>
 </head>
 <body>
@@ -376,159 +132,70 @@ app.get('/', (req, res) => {
         </div>
 
         <div class="tabs">
-            <button class="tab" id="gmailTab" onclick="selectProvider('gmail')">📬 Gmail</button>
-            <button class="tab active" id="outlookTab" onclick="selectProvider('outlook')">📧 Hotmail/Outlook</button>
+            <button class="tab active">📧 Hotmail/Outlook</button>
+            <button class="tab">📬 Gmail</button>
         </div>
 
         <div class="service-tabs">
-            <button class="service-tab active" id="fbTab" onclick="selectService('facebook')">📘 Facebook</button>
-            <button class="service-tab" id="igTab" onclick="selectService('instagram')">📷 Instagram</button>
+            <button class="service-tab active" id="fbTab" onclick="setSrv('facebook')">📘 Facebook</button>
+            <button class="service-tab" id="igTab" onclick="setSrv('instagram')">📷 Instagram</button>
         </div>
 
-        <div class="section-title">📋 Account Details</div>
-        
-        <textarea class="input-box" id="accountInput" placeholder="Enter details in format: email|password|token|uuid
+        <textarea class="input-box" id="accInput" placeholder="email|password|token|uuid"></textarea>
 
-Example:
-user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|9e5f94bc-e8a4-4e73-b8be-63364c29d753"></textarea>
+        <button class="btn-primary" onclick="getCode()">🔍 Get Verification Code</button>
 
-        <div class="format-hint">
-            <strong>Format:</strong> email|password|token|uuid<br>
-            <strong>Supports:</strong> @hotmail.com, @outlook.com, @live.com addresses
-        </div>
-
-        <button class="btn-primary" id="getCodeBtn" onclick="getVerificationCode()">
-            🔍 Get Verification Code
-        </button>
-
-        <div class="result-box" id="resultBox">
-            <div class="code-display waiting" id="codeDisplay">------</div>
-            <div class="status-msg" id="statusMsg">Waiting...</div>
+        <div class="result-box" id="resBox">
+            <div class="code-display" id="codeOut">------</div>
+            <div id="status" style="color: #a0aec0; font-size: 14px;">Waiting...</div>
         </div>
 
         <div class="info-section">
-            <h3>📖 How to Use</h3>
-            <ul>
-                <li>Enter details in format: email|password|token|uuid</li>
-                <li>Separate each field with a pipe (|) character</li>
-                <li>Use a valid Hotmail/Outlook address</li>
-                <li>Click "Get Verification Code" to retrieve code</li>
-                <li>Code will be automatically copied to clipboard</li>
-            </ul>
+            <h3>📖 Instructions</h3>
+            <li>• Format: email|password|token|uuid</li>
+            <li>• Supports 5-8 digit FB/IG codes</li>
         </div>
     </div>
 
     <script>
-        let currentProvider = 'outlook';
-        let currentService = 'facebook';
-
-        function selectProvider(provider) {
-            currentProvider = provider;
-            document.getElementById('gmailTab').classList.toggle('active', provider === 'gmail');
-            document.getElementById('outlookTab').classList.toggle('active', provider === 'outlook');
+        let srv = 'facebook';
+        function setSrv(s) { 
+            srv = s; 
+            document.getElementById('fbTab').className = s==='facebook'?'service-tab active':'service-tab';
+            document.getElementById('igTab').className = s==='instagram'?'service-tab active':'service-tab';
         }
 
-        function selectService(service) {
-            currentService = service;
-            document.getElementById('fbTab').classList.toggle('active', service === 'facebook');
-            document.getElementById('igTab').classList.toggle('active', service === 'instagram');
-        }
-
-        async function getVerificationCode() {
-            const input = document.getElementById('accountInput').value.trim();
+        async function getCode() {
+            const val = document.getElementById('accInput').value.trim();
+            if(!val) return alert('Enter data!');
+            const parts = val.split('|');
             
-            if (!input) {
-                alert('⚠️ Please enter account details!');
-                return;
-            }
-
-            const parts = input.split('|');
-            if (parts.length < 4) {
-                alert('⚠️ Invalid format! Use: email|password|token|uuid');
-                return;
-            }
-
-            const [email, password, token, uuid] = parts.map(p => p.trim());
-
-            const btn = document.getElementById('getCodeBtn');
-            const resultBox = document.getElementById('resultBox');
-            const codeDisplay = document.getElementById('codeDisplay');
-            const statusMsg = document.getElementById('statusMsg');
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loader"></span> Fetching...';
-            
-            resultBox.style.display = 'block';
-            codeDisplay.className = 'code-display waiting';
-            codeDisplay.innerText = 'FETCHING...';
-            statusMsg.className = 'status-msg';
-            statusMsg.innerText = '🔄 Connecting to server...';
+            const resBox = document.getElementById('resBox');
+            const codeOut = document.getElementById('codeOut');
+            resBox.style.display = 'block';
+            codeOut.innerText = 'FETCHING...';
 
             try {
-                const response = await fetch('/api/get-code', {
+                const res = await fetch('/api/get-code', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, token, uuid, service: currentService })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email:parts[0], token:parts[2], service:srv})
                 });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    codeDisplay.className = 'code-display';
-                    codeDisplay.innerText = data.code;
-                    statusMsg.className = 'status-msg success';
-                    statusMsg.innerText = '✅ Code extracted successfully!';
-
-                    try {
-                        await navigator.clipboard.writeText(data.code);
-                        statusMsg.innerText = '✅ Code copied to clipboard: ' + data.code;
-                    } catch(e) {
-                        statusMsg.innerText = '✅ Code found! Click to copy: ' + data.code;
-                    }
+                const data = await res.json();
+                if(data.success) {
+                    codeOut.innerText = data.code;
+                    codeOut.className = 'code-display';
+                    navigator.clipboard.writeText(data.code);
                 } else {
-                    codeDisplay.className = 'code-display error';
-                    codeDisplay.innerText = 'ERROR';
-                    statusMsg.className = 'status-msg error';
-                    statusMsg.innerText = '❌ ' + data.error;
+                    codeOut.innerText = data.error;
+                    codeOut.className = 'code-display error';
                 }
-
-            } catch (error) {
-                codeDisplay.className = 'code-display error';
-                codeDisplay.innerText = 'ERROR';
-                statusMsg.className = 'status-msg error';
-                statusMsg.innerText = '❌ Network error: ' + error.message;
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = '🔍 Get Verification Code';
+            } catch(e) { codeOut.innerText = 'Error!'; }
         }
-
-        document.getElementById('codeDisplay').addEventListener('click', function() {
-            const code = this.innerText;
-            if (code !== '------' && code !== 'FETCHING...' && code !== 'ERROR') {
-                navigator.clipboard.writeText(code);
-                document.getElementById('statusMsg').className = 'status-msg success';
-                document.getElementById('statusMsg').innerText = '✅ Copied: ' + code;
-            }
-        });
     </script>
 </body>
 </html>
     `);
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`
-╔════════════════════════════════════════════════════════╗
-║                                                        ║
-║   ✅ Server Running Successfully!                     ║
-║                                                        ║
-║   🌐 URL: http://localhost:${PORT}                       ║
-║                                                        ║
-║   📧 Email Verification Code Extractor                ║
-║   🔥 Ready to extract OTP codes!                      ║
-║                                                        ║
-╚════════════════════════════════════════════════════════╝
-    `);
-});
+app.listen(3000, () => console.log('✅ Server on http://localhost:3000'));
