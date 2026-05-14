@@ -1,682 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>FB/IG OTP Extractor - Fixed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mail OTP Extractor - FIXED</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: linear-gradient(135deg, 
-, 
-, 
-);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            width: 750px;
-            max-width: 95%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            background: linear-gradient(135deg, 
-, 
-, 
-);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 32px;
-            margin-bottom: 8px;
-            font-weight: 800;
-        }
-        .header p {
-            color: #666;
-            font-size: 14px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0a0a0a; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         
-        .tab-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 25px;
+        .container { 
+            width: 100%; max-width: 550px; background: #151515; 
+            border: 1px solid #333333; border-radius: 15px; padding: 25px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
-        .tab-button {
-            flex: 1;
-            padding: 15px 25px;
-            border: 3px solid #ddd;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: white;
+
+        .header-box { background: #0088ff; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        h2 { font-size: 18px; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; }
+
+        .label { font-size: 12px; color: #aaaaaa; margin-bottom: 8px; display: block; }
+
+        textarea { 
+            width: 100%; height: 140px; background: #1e1e1e; border: 1px solid #444444; 
+            border-radius: 10px; padding: 15px; color: #00ff00; font-size: 13px; 
+            outline: none; resize: none; margin-bottom: 20px; font-family: monospace;
         }
-        .tab-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        textarea:focus { border-color: #0088ff; }
+
+        .result-section { 
+            background: #000000; border-radius: 12px; padding: 25px; 
+            text-align: center; border: 2px solid #333333; margin-bottom: 20px;
         }
-        .tab-button.active.fb {
-            background: linear-gradient(135deg, 
-, 
-);
-            color: white;
-            border-color: 
-;
-            box-shadow: 0 5px 25px rgba(24, 119, 242, 0.4);
+
+        .otp-title { font-size: 11px; color: #888888; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 2px; }
+        .otp-display { font-size: 55px; font-weight: 900; color: #ffffff; letter-spacing: 5px; margin: 10px 0; }
+        .mail-display { font-size: 14px; color: #0088ff; font-family: monospace; border-top: 1px solid #222; padding-top: 10px; margin-top: 10px; }
+
+        .btn-extract { 
+            width: 100%; background: #0088ff; color: #ffffff; border: none; 
+            padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; 
+            cursor: pointer; transition: 0.3s;
         }
-        .tab-button.active.ig {
-            background: linear-gradient(45deg, 
-, 
-, 
-, 
-, 
-);
-            color: white;
-            border-color: 
-;
-            box-shadow: 0 5px 25px rgba(225, 48, 108, 0.4);
-        }
-        .tab-button.inactive {
-            color: #999;
-            background: 
-;
-        }
-        
-        .input-section {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-            font-size: 15px;
-        }
-        textarea {
-            width: 100%;
-            height: 180px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            font-size: 11px;
-            font-family: 'Courier New', monospace;
-            resize: vertical;
-            transition: all 0.3s;
-        }
-        textarea:focus {
-            border-color: 
-;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
-        }
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-        button {
-            flex: 1;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-extract {
-            background: linear-gradient(135deg, 
-, 
-);
-            color: white;
-        }
-        .btn-extract:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 120, 212, 0.4);
-        }
-        .btn-clear {
-            background: 
-;
-            color: white;
-        }
-        .btn-clear:hover {
-            background: 
-;
-        }
-        
-        .warning-box {
-            background: 
-;
-            border: 2px solid 
-;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        .warning-box h4 {
-            color: 
-;
-            margin-bottom: 10px;
-            font-size: 15px;
-        }
-        .warning-box p {
-            color: 
-;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-        
-        .format-detected {
-            background: 
-;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid 
-;
-            font-size: 13px;
-            color: 
-;
-            font-weight: 600;
-            display: none;
-        }
-        
-        .result-section {
-            margin-top: 25px;
-        }
-        .data-display {
-            background: 
-;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            font-family: monospace;
-        }
-        .data-row {
-            padding: 8px;
-            margin: 5px 0;
-            background: white;
-            border-radius: 5px;
-            border-left: 3px solid 
-;
-            word-break: break-all;
-        }
-        .data-label {
-            font-weight: bold;
-            color: 
-;
-            display: inline-block;
-            min-width: 80px;
-        }
-        .platform-detected {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        .platform-detected.waiting {
-            background: 
-;
-            color: #666;
-        }
-        .platform-detected.fb {
-            background: linear-gradient(135deg, 
-, 
-);
-            color: 
-;
-            border-left: 5px solid 
-;
-        }
-        .platform-detected.ig {
-            background: linear-gradient(135deg, 
-, 
-);
-            color: 
-;
-            border-left: 5px solid 
-;
-        }
-        .code-container {
-            background: linear-gradient(135deg, 
-, 
-);
-            padding: 45px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            position: relative;
-            overflow: hidden;
-        }
-        .code-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0,255,0,0.15) 0%, transparent 70%);
-            animation: pulse 3s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-        .code-display {
-            position: relative;
-            z-index: 1;
-            color: #0f0;
-            font-size: 58px;
-            font-weight: bold;
-            letter-spacing: 16px;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 25px rgba(0,255,0,0.6);
-            cursor: pointer;
-            user-select: all;
-            transition: all 0.3s;
-        }
-        .code-display:hover {
-            transform: scale(1.05);
-            text-shadow: 0 0 35px rgba(0,255,0,0.8);
-        }
-        .code-display.waiting {
-            color: #666;
-            font-size: 28px;
-            letter-spacing: 3px;
-            text-shadow: none;
-        }
-        .code-display.error {
-            color: 
-;
-            font-size: 22px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255,68,68,0.3);
-        }
-        .copy-indicator {
-            text-align: center;
-            margin-top: 15px;
-            min-height: 25px;
-            font-weight: bold;
-            font-size: 15px;
-        }
-        .copy-indicator.success {
-            color: 
-;
-        }
-        .info-panel {
-            background: linear-gradient(135deg, 
-, 
-);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 25px;
-            border-left: 5px solid 
-;
-        }
-        .info-panel h3 {
-            color: 
-;
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-        .info-panel ul {
-            list-style: none;
-            padding: 0;
-        }
-        .info-panel li {
-            padding: 6px 0;
-            color: 
-;
-            font-size: 14px;
-        }
-        .info-panel li::before {
-            content: '✓ ';
-            color: 
-;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-        .example-box {
-            background: 
-;
-            border: 2px solid 
-;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 10px;
-            font-family: monospace;
-            font-size: 12px;
-            color: 
-;
-        }
+        .btn-extract:hover { background: #0066cc; transform: translateY(-1px); }
+
+        .footer { text-align: center; font-size: 11px; margin-top: 15px; color: #555555; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📧 FB/IG OTP Extractor</h1>
-            <p>Paste email data WITH subject/body containing code</p>
-        </div>
-        
-        <div class="tab-container">
-            <div class="tab-button active fb" id="fbTab" onclick="selectPlatform('facebook')">
-                📘 Facebook
-            </div>
-            <div class="tab-button inactive" id="igTab" onclick="selectPlatform('instagram')">
-                📷 Instagram
-            </div>
-        </div>
-        
-        <div class="warning-box" id="warningBox">
-            <h4>⚠️ Important: Email Body Required!</h4>
-            <p>Your data must include the email SUBJECT or BODY where the verification code is located. Just email|password|token|uuid is NOT enough!</p>
-            <div class="example-box">
-✅ Good: email|password|token|uuid|123456 is your Facebook code<br>
-✅ Good: 123456 is your Instagram code<br>
-❌ Bad: email|password|token|uuid (no code!)
-            </div>
-        </div>
-        
-        <div class="input-section">
-            <label>📋 Paste Data (MUST include email subject/body with code):</label>
-            <textarea id="emailInput" placeholder="Paste your data here...
 
-✅ REQUIRED: Data must contain email subject or body with verification code!
-
-Supported formats:
-• email|password|token|uuid|SUBJECT_WITH_CODE
-• email|password|token|uuid|SUBJECT|BODY_WITH_CODE
-• Just the subject/body text: &quot;123456 is your Facebook code&quot;
-• JSON: {&quot;subject&quot;:&quot;123456 is your code&quot;,...}
-
-Example:
-user@outlook.com|pass123|token|uuid|123456 is your Facebook code"></textarea>
-        </div>
-        
-        <div class="btn-group">
-            <button class="btn-extract" onclick="extractOTP()">🔍 Extract OTP Code</button>
-            <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
-        </div>
-        
-        <div class="format-detected" id="formatDetected"></div>
-        
-        <div class="result-section">
-            <div class="data-display" id="dataDisplay" style="display:none;">
-                <div class="data-row">
-                    <span class="data-label">📧 Email:</span>
-                    <span id="emailOut">-</span>
-                </div>
-            </div>
-            
-            <div class="platform-detected waiting" id="platformDisplay">
-                ⏳ Select platform and paste data...
-            </div>
-            
-            <div class="code-container">
-                <div class="code-display waiting" id="codeDisplay">------</div>
-            </div>
-            
-            <div class="copy-indicator" id="copyMsg"></div>
-        </div>
-        
-        <div class="info-panel">
-            <h3>✨ How To Use</h3>
-            <ul>
-                <li>Your data MUST include email subject or body with code</li>
-                <li>Format: email|password|token|uuid|SUBJECT_OR_BODY</li>
-                <li>Or just paste: "123456 is your Facebook code"</li>
-                <li>Works with Facebook & Instagram verification emails</li>
-                <li>Auto-copies code to clipboard</li>
-            </ul>
-        </div>
+<div class="container">
+    <div class="header-box">
+        <h2>Mail API OTP Extractor</h2>
+    </div>
+    
+    <span class="label">Paste API Token / Data:</span>
+    <textarea id="rawInput" placeholder="Paste your outlook/fb mail data string here..."></textarea>
+    
+    <div class="result-section">
+        <div class="otp-title">Extracted OTP (5-8 Digits)</div>
+        <div id="otpResult" class="otp-display">------</div>
+        <div id="mailResult" class="mail-display">No email detected</div>
     </div>
 
-    <script>
-        var selectedPlatform = 'facebook';
-        
-        function selectPlatform(platform) {
-            selectedPlatform = platform;
+    <button class="btn-extract" onclick="extractData()">GET VERIFICATION CODE</button>
+    
+    <div class="footer">Supports: Facebook, Instagram, Outlook & Microsoft Codes</div>
+</div>
+
+<script>
+    function extractData() {
+        const input = document.getElementById('rawInput').value;
+        const otpDisplay = document.getElementById('otpResult');
+        const mailDisplay = document.getElementById('mailResult');
+
+        // Extract Email
+        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+        const emailFound = input.match(emailRegex);
+        mailDisplay.innerText = emailFound ? emailFound[0] : "Email not found";
+
+        // Extract 5 to 8 Digit OTP (Facebook/Insta Pattern)
+        const otpRegex = /\b\d{5,8}\b/; 
+        const otpFound = input.match(otpRegex);
+
+        if (otpFound) {
+            otpDisplay.innerText = otpFound[0];
+            otpDisplay.style.color = "#00ff00"; // Green color
             
-            var fbTab = document.getElementById('fbTab');
-            var igTab = document.getElementById('igTab');
-            
-            if(platform === 'facebook') {
-                fbTab.className = 'tab-button active fb';
-                igTab.className = 'tab-button inactive';
-            } else {
-                fbTab.className = 'tab-button inactive';
-                igTab.className = 'tab-button active ig';
-            }
+            // Auto Copy to clipboard
+            navigator.clipboard.writeText(otpFound[0]);
+        } else {
+            otpDisplay.innerText = "EMPTY";
+            otpDisplay.style.color = "#ff4444"; // Red color
         }
-        
-        function clearAll() {
-            document.getElementById('emailInput').value = '';
-            document.getElementById('dataDisplay').style.display = 'none';
-            document.getElementById('formatDetected').style.display = 'none';
-            document.getElementById('warningBox').style.display = 'none';
-            document.getElementById('emailOut').innerText = '-';
-            document.getElementById('codeDisplay').className = 'code-display waiting';
-            document.getElementById('codeDisplay').innerText = '------';
-            document.getElementById('copyMsg').innerText = '';
-            
-            var platformDisplay = document.getElementById('platformDisplay');
-            platformDisplay.className = 'platform-detected waiting';
-            platformDisplay.innerText = '⏳ Select platform and paste data...';
-        }
-        
-        function decodeHTML(html) {
-            var txt = document.createElement('textarea');
-            txt.innerHTML = html;
-            return txt.value;
-        }
-        
-        function extractOTP() {
-            var input = document.getElementById('emailInput').value.trim();
-            
-            if(!input) {
-                alert('⚠️ Please paste data first!');
-                return;
-            }
-            
-            // RESET
-            document.getElementById('codeDisplay').className = 'code-display waiting';
-            document.getElementById('codeDisplay').innerText = 'SEARCHING...';
-            document.getElementById('copyMsg').innerText = '';
-            document.getElementById('warningBox').style.display = 'none';
-            
-            var formatMsg = '';
-            var decoded = input;
-            var email = '';
-            var hasEmailBody = false;
-            
-            // Check if pipe-separated
-            if(input.includes('|')) {
-                var parts = input.split('|');
-                formatMsg = '🔍 Detected: Pipe-separated format (' + parts.length + ' fields)';
-                
-                if(parts.length >= 1 && parts[0].includes('@')) {
-                    email = parts[0].trim();
-                }
-                
-                // Check if has 5+ fields (includes subject/body)
-                if(parts.length >= 5) {
-                    hasEmailBody = true;
-                    // Combine all fields after uuid as email content
-                    decoded = parts.slice(4).join(' ');
-                } else {
-                    // Only 4 fields - no email body!
-                    hasEmailBody = false;
-                }
-            } else if(input.trim().startsWith('{')) {
-                // JSON format
-                try {
-                    var json = JSON.parse(input);
-                    formatMsg = '🔍 Detected: JSON format';
-                    hasEmailBody = true;
-                    
-                    if(json.subject) decoded = json.subject + ' ';
-                    if(json.bodyPreview) decoded += json.bodyPreview + ' ';
-                    if(json.body && json.body.content) decoded += json.body.content;
-                } catch(e) {
-                    formatMsg = '⚠️ JSON parse failed';
-                }
-            } else {
-                // Plain text
-                formatMsg = '🔍 Detected: Plain text';
-                hasEmailBody = true;
-            }
-            
-            document.getElementById('formatDetected').innerText = formatMsg;
-            document.getElementById('formatDetected').style.display = 'block';
-            
-            // Show warning if no email body
-            if(!hasEmailBody) {
-                document.getElementById('warningBox').style.display = 'block';
-            }
-            
-            // Decode HTML
-            decoded = decodeHTML(decoded);
-            
-            // URL decode
-            try {
-                decoded = decodeURIComponent(decoded);
-            } catch(e) {}
-            
-            // Display email
-            if(email) {
-                document.getElementById('emailOut').innerText = email;
-                document.getElementById('dataDisplay').style.display = 'block';
-            }
-            
-            // Platform display
-            var platformDisplay = document.getElementById('platformDisplay');
-            if(selectedPlatform === 'facebook') {
-                platformDisplay.className = 'platform-detected fb';
-                platformDisplay.innerText = '✅ Extracting Facebook Code';
-            } else {
-                platformDisplay.className = 'platform-detected ig';
-                platformDisplay.innerText = '✅ Extracting Instagram Code';
-            }
-            
-            // EXTRACT CODE
-            var allCodes = [];
-            
-            // Pattern 1: "123456 is your code"
-            var p1 = decoded.match(/(\d{4,8})[\s]+is[\s]+your/gi);
-            if(p1) {
-                for(var i = 0; i < p1.length; i++) {
-                    var m = p1[i].match(/(\d{4,8})/);
-                    if(m) allCodes.push(m[1]);
-                }
-            }
-            
-            // Pattern 2: "code is 123456"
-            var p2 = decoded.match(/code[\s:is]+(\d{4,8})/gi);
-            if(p2) {
-                for(var j = 0; j < p2.length; j++) {
-                    var m2 = p2[j].match(/(\d{4,8})/);
-                    if(m2) allCodes.push(m2[1]);
-                }
-            }
-            
-            // Pattern 3: Standalone codes
-            var p3 = decoded.match(/\b(\d{4,8})\b/g);
-            if(p3) {
-                for(var k = 0; k < p3.length; k++) {
-                    var code = p3[k];
-                    
-                    // Skip common numbers
-                    if(code === '2024' || code === '2025' || code === '2026' || 
-                       code === '8080' || code === '443' || code === '80' ||
-                       code === '1234' || code === '0000' || code === '9999') {
-                        continue;
-                    }
-                    
-                    allCodes.push(code);
-                }
-            }
-            
-            // Get last code
-            var otp = null;
-            if(allCodes.length > 0) {
-                otp = allCodes[allCodes.length - 1];
-            }
-            
-            // Display result
-            var codeDisplay = document.getElementById('codeDisplay');
-            var copyMsg = document.getElementById('copyMsg');
-            
-            if(otp) {
-                codeDisplay.className = 'code-display';
-                codeDisplay.innerText = otp;
-                
-                navigator.clipboard.writeText(otp).then(function() {
-                    copyMsg.className = 'copy-indicator success';
-                    
-                    if(selectedPlatform === 'facebook') {
-                        copyMsg.innerText = '✓ Facebook code copied: ' + otp;
-                    } else {
-                        copyMsg.innerText = '✓ Instagram code copied: ' + otp;
-                    }
-                    
-                    setTimeout(function() {
-                        copyMsg.innerText = '';
-                    }, 3000);
-                }).catch(function() {
-                    copyMsg.innerText = '💡 Click code to copy';
-                });
-                
-            } else {
-                codeDisplay.className = 'code-display error';
-                codeDisplay.innerText = 'NO CODE FOUND';
-                
-                if(!hasEmailBody) {
-                    copyMsg.innerText = '❌ No email body found! Add subject/body with code.';
-                } else {
-                    copyMsg.innerText = '❌ No verification code detected in data';
-                }
-            }
-        }
-        
-        // Auto-extract on paste
-        document.getElementById('emailInput').addEventListener('paste', function() {
-            setTimeout(extractOTP, 500);
-        });
-        
-        // Click to copy
-        document.getElementById('codeDisplay').addEventListener('click', function() {
-            var code = this.innerText;
-            if(code !== '------' && code !== 'SEARCHING...' && code !== 'NO CODE FOUND') {
-                navigator.clipboard.writeText(code);
-                document.getElementById('copyMsg').className = 'copy-indicator success';
-                document.getElementById('copyMsg').innerText = '✓ Copied: ' + code;
-            }
-        });
-    </script>
+    }
+
+    // Auto trigger on input
+    document.getElementById('rawInput').addEventListener('input', extractData);
+</script>
+
 </body>
 </html>
