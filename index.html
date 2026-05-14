@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>FB/IG OTP Extractor - Single File</title>
+    <title>FB/IG OTP Extractor - Fixed 401</title>
     <style>
         * {
             margin: 0;
@@ -89,8 +89,7 @@
 , 
 , 
 , 
-, 
-);
+, #bc1888);
             color: white;
             border-color: 
 ;
@@ -98,8 +97,7 @@
         }
         .tab-button.inactive {
             color: #999;
-            background: 
-;
+            background: #f8f9fa;
         }
         
         .input-section {
@@ -166,6 +164,28 @@
         .btn-clear:hover {
             background: 
 ;
+        }
+        
+        .error-box {
+            background: 
+;
+            border: 2px solid 
+;
+            color: 
+;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .error-box h4 {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .error-box ul {
+            margin-left: 20px;
+            font-size: 13px;
+            line-height: 1.8;
         }
         
         .status-box {
@@ -235,8 +255,7 @@
 ;
         }
         .platform-detected.ig {
-            background: linear-gradient(135deg, 
-, 
+            background: linear-gradient(135deg, #fce4ec, 
 );
             color: 
 ;
@@ -331,8 +350,7 @@
         }
         .info-panel li {
             padding: 6px 0;
-            color: 
-;
+            color: #495057;
             font-size: 14px;
         }
         .info-panel li::before {
@@ -381,16 +399,26 @@ Format: email|password|token|uuid
 Example:
 user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|uuid-here
 
-The tool will automatically:
-✅ Use token to fetch Outlook emails
-✅ Find latest Facebook/Instagram email
-✅ Extract verification code
-✅ Auto-copy to clipboard"></textarea>
+⚠️ IMPORTANT: Make sure your token:
+• Is a valid Microsoft Graph API access token
+• Has Mail.Read permission
+• Is not expired (tokens expire after 1 hour)
+• Has no extra spaces before/after"></textarea>
         </div>
         
         <div class="btn-group">
             <button class="btn-extract" id="extractBtn" onclick="extractOTP()">🔍 Extract OTP Code</button>
             <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+        
+        <div class="error-box" id="errorBox">
+            <h4>❌ 401 Unauthorized Error - Token Issue</h4>
+            <ul>
+                <li><strong>Token expired:</strong> Access tokens expire after 1 hour. Get a fresh token.</li>
+                <li><strong>Invalid token:</strong> Make sure you copied the complete token without spaces.</li>
+                <li><strong>Missing permissions:</strong> Token needs Mail.Read permission.</li>
+                <li><strong>Wrong token type:</strong> Must be a Microsoft Graph API access token.</li>
+            </ul>
         </div>
         
         <div class="status-box" id="statusBox"></div>
@@ -423,13 +451,13 @@ The tool will automatically:
         </div>
         
         <div class="info-panel">
-            <h3>✨ Automatic Features</h3>
+            <h3>🔧 Troubleshooting 401 Error</h3>
             <ul>
-                <li>Paste email|password|token|uuid format</li>
-                <li>Automatically fetches Outlook emails</li>
-                <li>Finds latest Facebook/Instagram email</li>
-                <li>Extracts verification code</li>
-                <li>Auto-copies code to clipboard</li>
+                <li>Get a fresh access token (they expire hourly)</li>
+                <li>Ensure token has Mail.Read permission</li>
+                <li>Remove any spaces before/after the token</li>
+                <li>Use Microsoft Graph API token, not other types</li>
+                <li>Check token format: starts with "eyJ..."</li>
             </ul>
         </div>
     </div>
@@ -437,8 +465,13 @@ The tool will automatically:
     <script>
         var selectedPlatform = 'facebook';
         
-        // CORS Proxy (you can use your own or public ones)
-        const CORS_PROXY = 'https://corsproxy.io/?';
+        // Try multiple CORS proxies
+        const CORS_PROXIES = [
+            'https://api.allorigins.win/raw?url=',
+            'https://corsproxy.io/?',
+            'https://cors-anywhere.herokuapp.com/'
+        ];
+        
         const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
         
         function selectPlatform(platform) {
@@ -460,6 +493,7 @@ The tool will automatically:
             document.getElementById('emailInput').value = '';
             document.getElementById('dataDisplay').style.display = 'none';
             document.getElementById('statusBox').style.display = 'none';
+            document.getElementById('errorBox').style.display = 'none';
             document.getElementById('fromRow').style.display = 'none';
             document.getElementById('subjectRow').style.display = 'none';
             document.getElementById('emailOut').innerText = '-';
@@ -483,7 +517,6 @@ The tool will automatically:
         function extractCodeFromText(text) {
             if (!text) return null;
             
-            // Decode HTML entities
             text = decodeHTML(text);
             
             const allCodes = [];
@@ -510,15 +543,51 @@ The tool will automatically:
             const p3 = text.match(/\b(\d{4,8})\b/g);
             if (p3) {
                 p3.forEach(code => {
-                    // Skip common numbers
                     if (!['2024', '2025', '2026', '8080', '443', '80', '1234', '0000'].includes(code)) {
                         allCodes.push(code);
                     }
                 });
             }
             
-            // Return most recent (last) code
             return allCodes.length > 0 ? allCodes[allCodes.length - 1] : null;
+        }
+        
+        async function tryFetchWithProxy(token, proxyIndex = 0) {
+            if (proxyIndex >= CORS_PROXIES.length) {
+                throw new Error('All CORS proxies failed');
+            }
+            
+            const proxy = CORS_PROXIES[proxyIndex];
+            const apiUrl = OUTLOOK_API + '?$top=10&$orderby=receivedDateTime DESC&$select=subject,bodyPreview,body,from,receivedDateTime';
+            
+            try {
+                const response = await fetch(proxy + encodeURIComponent(apiUrl), {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token.trim(),
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.status === 401) {
+                    throw new Error('401_UNAUTHORIZED');
+                }
+                
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                
+                return await response.json();
+                
+            } catch (error) {
+                if (error.message === '401_UNAUTHORIZED') {
+                    throw error;
+                }
+                
+                // Try next proxy
+                console.log('Proxy ' + proxyIndex + ' failed, trying next...');
+                return await tryFetchWithProxy(token, proxyIndex + 1);
+            }
         }
         
         async function extractOTP() {
@@ -546,16 +615,23 @@ The tool will automatically:
                 return;
             }
             
+            // Validate token format
+            if(!token.startsWith('eyJ')) {
+                alert('⚠️ Invalid token format! Microsoft Graph tokens start with "eyJ"');
+                return;
+            }
+            
             // UI updates
             document.getElementById('extractBtn').disabled = true;
             document.getElementById('extractBtn').innerHTML = '<span class="loader"></span> Fetching...';
             document.getElementById('codeDisplay').className = 'code-display waiting';
             document.getElementById('codeDisplay').innerText = 'FETCHING...';
             document.getElementById('copyMsg').innerText = '';
+            document.getElementById('errorBox').style.display = 'none';
             
             var statusBox = document.getElementById('statusBox');
             statusBox.style.display = 'block';
-            statusBox.innerText = '🔄 Calling Outlook API...';
+            statusBox.innerText = '🔄 Validating token...';
             
             var platformDisplay = document.getElementById('platformDisplay');
             if(selectedPlatform === 'facebook') {
@@ -567,26 +643,15 @@ The tool will automatically:
             }
             
             try {
-                // Call Outlook API
-                const apiUrl = OUTLOOK_API + '?$top=10&$orderby=receivedDateTime DESC&$select=subject,bodyPreview,body,from,receivedDateTime';
+                statusBox.innerText = '🔄 Calling Outlook API...';
                 
-                const response = await fetch(CORS_PROXY + encodeURIComponent(apiUrl), {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                        'Content-Type': 'application/json'
-                    }
-                });
+                // Try fetching with multiple proxies
+                const data = await tryFetchWithProxy(token);
                 
-                if (!response.ok) {
-                    throw new Error('API call failed: ' + response.status);
-                }
-                
-                const data = await response.json();
                 const messages = data.value || [];
                 
                 if (messages.length === 0) {
-                    throw new Error('No emails found');
+                    throw new Error('No emails found in inbox');
                 }
                 
                 statusBox.innerText = '🔍 Searching for ' + selectedPlatform + ' email...';
@@ -663,11 +728,19 @@ The tool will automatically:
                 
             } catch(error) {
                 console.error('Error:', error);
-                statusBox.innerText = '❌ Error: ' + error.message;
+                
+                if (error.message === '401_UNAUTHORIZED') {
+                    // Show 401 error box
+                    document.getElementById('errorBox').style.display = 'block';
+                    statusBox.innerText = '❌ 401 Unauthorized - Token issue!';
+                    document.getElementById('copyMsg').innerText = '❌ Token expired or invalid. Get a fresh token!';
+                } else {
+                    statusBox.innerText = '❌ Error: ' + error.message;
+                    document.getElementById('copyMsg').innerText = '❌ ' + error.message;
+                }
                 
                 document.getElementById('codeDisplay').className = 'code-display error';
                 document.getElementById('codeDisplay').innerText = 'ERROR';
-                document.getElementById('copyMsg').innerText = '❌ ' + error.message;
             }
             
             // Re-enable button
