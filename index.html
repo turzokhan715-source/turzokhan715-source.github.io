@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Outlook → FB/IG OTP Extractor</title>
+    <title>Outlook → FB/IG OTP Extractor [DEBUG]</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,7 @@
             background: white;
             padding: 40px;
             border-radius: 20px;
-            width: 650px;
+            width: 700px;
             max-width: 95%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
@@ -50,7 +50,6 @@
             font-size: 14px;
         }
         
-        /* TAB SYSTEM */
         .tab-container {
             display: flex;
             gap: 15px;
@@ -155,9 +154,6 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 120, 212, 0.4);
         }
-        .btn-extract:active {
-            transform: translateY(0);
-        }
         .btn-clear {
             background: 
 ;
@@ -167,6 +163,34 @@
             background: 
 ;
         }
+        
+        .debug-panel {
+            background: 
+;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid 
+;
+            display: none;
+        }
+        .debug-panel h4 {
+            color: 
+;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .debug-panel .debug-codes {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #333;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        
         .result-section {
             margin-top: 25px;
         }
@@ -293,49 +317,15 @@
             color: 
 ;
         }
-        .info-panel {
-            background: linear-gradient(135deg, 
-, 
-);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 25px;
-            border-left: 5px solid 
-;
-        }
-        .info-panel h3 {
-            color: 
-;
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-        .info-panel ul {
-            list-style: none;
-            padding: 0;
-        }
-        .info-panel li {
-            padding: 6px 0;
-            color: 
-;
-            font-size: 14px;
-        }
-        .info-panel li::before {
-            content: '✓ ';
-            color: 
-;
-            font-weight: bold;
-            margin-right: 8px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📧 Outlook → FB/IG OTP</h1>
+            <h1>📧 Outlook → FB/IG OTP [DEBUG]</h1>
             <p>Extract Facebook/Instagram codes from Outlook/Hotmail data</p>
         </div>
         
-        <!-- TAB SELECTION -->
         <div class="tab-container">
             <div class="tab-button active fb" id="fbTab" onclick="selectPlatform('facebook')">
                 📘 Facebook
@@ -347,20 +337,18 @@
         
         <div class="input-section">
             <label>📋 Paste Outlook/Hotmail Data:</label>
-            <textarea id="emailInput" placeholder="Paste your Outlook/Hotmail data here...
-
-Supports:
-• Pipe-separated format: email|password|token|uuid
-• Plain email text
-• API responses
-• Any format containing FB/IG codes
-
-Will extract Facebook or Instagram verification codes!"></textarea>
+            <textarea id="emailInput" placeholder="Paste your Outlook/Hotmail data here..."></textarea>
         </div>
         
         <div class="btn-group">
             <button class="btn-extract" onclick="extractOTP()">🔍 Extract OTP Code</button>
             <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+        
+        <!-- DEBUG PANEL -->
+        <div class="debug-panel" id="debugPanel">
+            <h4>🐛 Debug Info - All Detected Numbers:</h4>
+            <div class="debug-codes" id="debugCodes">-</div>
         </div>
         
         <div class="result-section">
@@ -385,18 +373,6 @@ Will extract Facebook or Instagram verification codes!"></textarea>
             
             <div class="copy-indicator" id="copyMsg"></div>
         </div>
-        
-        <div class="info-panel">
-            <h3>✨ How It Works</h3>
-            <ul>
-                <li>Select Facebook or Instagram tab</li>
-                <li>Paste Outlook/Hotmail email data (any format)</li>
-                <li>Extracts confirmation/reset/verification codes</li>
-                <li>Works with pipe-separated format</li>
-                <li>Auto-copies code to clipboard</li>
-                <li>Supports 4-8 digit codes</li>
-            </ul>
-        </div>
     </div>
 
     <script>
@@ -415,33 +391,22 @@ Will extract Facebook or Instagram verification codes!"></textarea>
                 fbTab.className = 'tab-button inactive';
                 igTab.className = 'tab-button active ig';
             }
-            
-            var platformDisplay = document.getElementById('platformDisplay');
-            platformDisplay.className = 'platform-detected waiting';
-            
-            if(platform === 'facebook') {
-                platformDisplay.innerText = '📘 Facebook mode - paste Outlook data with FB code';
-            } else {
-                platformDisplay.innerText = '📷 Instagram mode - paste Outlook data with IG code';
-            }
         }
         
         function clearAll() {
             document.getElementById('emailInput').value = '';
             document.getElementById('dataDisplay').style.display = 'none';
+            document.getElementById('debugPanel').style.display = 'none';
             document.getElementById('emailOut').innerText = '-';
             document.getElementById('passOut').innerText = '-';
             document.getElementById('codeDisplay').className = 'code-display waiting';
             document.getElementById('codeDisplay').innerText = '------';
             document.getElementById('copyMsg').innerText = '';
+            document.getElementById('debugCodes').innerText = '-';
             
             var platformDisplay = document.getElementById('platformDisplay');
             platformDisplay.className = 'platform-detected waiting';
-            if(selectedPlatform === 'facebook') {
-                platformDisplay.innerText = '📘 Facebook mode - paste Outlook data with FB code';
-            } else {
-                platformDisplay.innerText = '📷 Instagram mode - paste Outlook data with IG code';
-            }
+            platformDisplay.innerText = '⏳ Select platform and paste data...';
         }
         
         function extractOTP() {
@@ -452,23 +417,21 @@ Will extract Facebook or Instagram verification codes!"></textarea>
                 return;
             }
             
-            // RESET display
+            // COMPLETE RESET
             document.getElementById('codeDisplay').className = 'code-display waiting';
             document.getElementById('codeDisplay').innerText = 'SEARCHING...';
             document.getElementById('copyMsg').innerText = '';
+            document.getElementById('debugCodes').innerText = 'Analyzing...';
+            document.getElementById('debugPanel').style.display = 'block';
             
-            // Parse pipe-separated format
+            // Parse email and password
             var parts = input.split('|');
             var email = '';
             var password = '';
             
-            if(parts.length >= 1) {
-                var firstPart = parts[0].trim();
-                // Check if first part is an email
-                if(firstPart.includes('@')) {
-                    email = firstPart;
-                    document.getElementById('emailOut').innerText = email;
-                }
+            if(parts.length >= 1 && parts[0].includes('@')) {
+                email = parts[0].trim();
+                document.getElementById('emailOut').innerText = email;
             }
             
             if(parts.length >= 2) {
@@ -478,63 +441,50 @@ Will extract Facebook or Instagram verification codes!"></textarea>
             
             if(email || password) {
                 document.getElementById('dataDisplay').style.display = 'block';
-            } else {
-                document.getElementById('dataDisplay').style.display = 'none';
             }
             
-            // Display platform
+            // Platform display
             var platformDisplay = document.getElementById('platformDisplay');
             if(selectedPlatform === 'facebook') {
                 platformDisplay.className = 'platform-detected fb';
-                platformDisplay.innerText = '✅ Extracting Facebook Code from Outlook data';
+                platformDisplay.innerText = '✅ Extracting Facebook Code';
             } else {
                 platformDisplay.className = 'platform-detected ig';
-                platformDisplay.innerText = '✅ Extracting Instagram Code from Outlook data';
+                platformDisplay.innerText = '✅ Extracting Instagram Code';
             }
             
-            // EXTRACT OTP - IMPROVED LOGIC
+            // EXTRACT ALL NUMBERS FOR DEBUG
+            var allNumbers = input.match(/\d+/g);
+            var debugInfo = [];
+            
+            if(allNumbers && allNumbers.length > 0) {
+                for(var i = 0; i < allNumbers.length; i++) {
+                    var num = allNumbers[i];
+                    debugInfo.push(num + ' (' + num.length + ' digits)');
+                }
+                document.getElementById('debugCodes').innerText = debugInfo.join(', ');
+            } else {
+                document.getElementById('debugCodes').innerText = 'No numbers found!';
+            }
+            
+            // EXTRACT OTP - Find 4-8 digit codes
             var otp = null;
             
-            // Method 1: Find standalone 4-8 digit numbers
-            var standalonePattern = /\b(\d{4,8})\b/g;
-            var matches = input.match(standalonePattern);
-            
-            if(matches && matches.length > 0) {
-                // Filter out numbers that are part of longer sequences
+            if(allNumbers && allNumbers.length > 0) {
                 var validCodes = [];
                 
-                for(var i = 0; i < matches.length; i++) {
-                    var code = matches[i];
-                    var len = code.length;
+                for(var j = 0; j < allNumbers.length; j++) {
+                    var num = allNumbers[j];
+                    var len = num.length;
                     
-                    // Prefer 5-6 digit codes (most common for OTP)
-                    if(len === 5 || len === 6) {
-                        validCodes.push({code: code, priority: 2});
-                    } else if(len === 4 || len === 7 || len === 8) {
-                        validCodes.push({code: code, priority: 1});
+                    if(len >= 4 && len <= 8) {
+                        validCodes.push(num);
                     }
                 }
                 
-                // Sort by priority and take the last one
+                // Take LAST valid code
                 if(validCodes.length > 0) {
-                    validCodes.sort(function(a, b) {
-                        return a.priority - b.priority;
-                    });
-                    otp = validCodes[validCodes.length - 1].code;
-                }
-            }
-            
-            // Method 2: If no code found, try finding any digit sequence
-            if(!otp) {
-                var allNumbers = input.match(/\d+/g);
-                if(allNumbers && allNumbers.length > 0) {
-                    for(var j = allNumbers.length - 1; j >= 0; j--) {
-                        var num = allNumbers[j];
-                        if(num.length >= 4 && num.length <= 8) {
-                            otp = num;
-                            break;
-                        }
-                    }
+                    otp = validCodes[validCodes.length - 1];
                 }
             }
             
@@ -548,45 +498,38 @@ Will extract Facebook or Instagram verification codes!"></textarea>
                 
                 navigator.clipboard.writeText(otp).then(function() {
                     copyMsg.className = 'copy-indicator success';
-                    
-                    if(selectedPlatform === 'facebook') {
-                        copyMsg.innerText = '✓ Facebook code copied: ' + otp;
-                    } else {
-                        copyMsg.innerText = '✓ Instagram code copied: ' + otp;
-                    }
+                    copyMsg.innerText = '✓ Code copied: ' + otp;
                     
                     setTimeout(function() {
                         copyMsg.innerText = '';
                     }, 3000);
                 }).catch(function() {
-                    copyMsg.className = 'copy-indicator';
-                    copyMsg.innerText = '💡 Click the code to copy';
+                    copyMsg.innerText = '💡 Click code to copy';
                 });
                 
             } else {
                 codeDisplay.className = 'code-display error';
                 codeDisplay.innerText = 'NO CODE FOUND';
-                copyMsg.className = 'copy-indicator';
-                copyMsg.innerText = '❌ No OTP code detected in the data';
+                copyMsg.innerText = '❌ No 4-8 digit code detected';
             }
         }
         
         // Auto-extract on paste
         document.getElementById('emailInput').addEventListener('paste', function() {
+            // Clear immediately
+            document.getElementById('codeDisplay').className = 'code-display waiting';
+            document.getElementById('codeDisplay').innerText = 'WAITING...';
+            
             setTimeout(extractOTP, 500);
         });
         
         // Click to copy
         document.getElementById('codeDisplay').addEventListener('click', function() {
             var code = this.innerText;
-            if(code !== '------' && code !== 'SEARCHING...' && code !== 'NO CODE FOUND') {
+            if(code !== '------' && code !== 'SEARCHING...' && code !== 'WAITING...' && code !== 'NO CODE FOUND') {
                 navigator.clipboard.writeText(code);
-                var copyMsg = document.getElementById('copyMsg');
-                copyMsg.className = 'copy-indicator success';
-                copyMsg.innerText = '✓ Copied: ' + code;
-                setTimeout(function() {
-                    copyMsg.innerText = '';
-                }, 2000);
+                document.getElementById('copyMsg').className = 'copy-indicator success';
+                document.getElementById('copyMsg').innerText = '✓ Copied: ' + code;
             }
         });
     </script>
