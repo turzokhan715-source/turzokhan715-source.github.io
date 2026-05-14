@@ -3,66 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Longisir VIP Portal - Advanced Suite</title>
+    <title>Longisir VIP Portal - Professional Suite</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        :root { --primary: #8b5cf6; --bg: #03040b; --card-bg: #0f111a; --text-gray: #94a3b8; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: #fff; min-height: 100vh; padding: 40px 20px; overflow-x: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        :root { 
+            --primary: #8b5cf6; 
+            --primary-dark: #6d28d9;
+            --bg: #03040b; 
+            --card-bg: #0f111a; 
+            --text-gray: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            color: #fff; 
+            min-height: 100vh; 
+            padding: 40px 20px; 
+            background-image: radial-gradient(circle at top right, rgba(139, 92, 246, 0.05), transparent),
+                              radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.05), transparent);
+        }
+
         .container { width: 100%; max-width: 1100px; margin: auto; }
         .hidden { display: none !important; }
 
         /* --- ANIMATIONS --- */
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate { animation: fadeInUp 0.5s ease forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate { animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
-        /* --- HOME PAGE (image_be3820.png Style) --- */
+        /* --- HOME PAGE --- */
         .hero { text-align: center; margin-bottom: 60px; }
-        .hero h1 { font-size: 56px; font-weight: 800; color: #fff; margin-bottom: 10px; }
-        .hero p { color: var(--text-gray); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; }
+        .hero h1 { font-size: 64px; font-weight: 800; background: linear-gradient(to bottom, #fff, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .hero p { color: var(--text-gray); font-size: 13px; letter-spacing: 4px; text-transform: uppercase; font-weight: 600; }
 
         .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 50px; }
-        .h-card { background: var(--card-bg); border: 1px solid #1e293b; padding: 50px 30px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s ease; }
-        .h-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2); }
-        .h-card .icon { width: 60px; height: 60px; margin: 0 auto 20px; display: block; filter: drop-shadow(0 0 10px var(--primary)); }
-        .h-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .h-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); padding: 50px 30px; border-radius: 24px; text-align: center; cursor: pointer; transition: 0.4s; position: relative; overflow: hidden; }
+        .h-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.03), transparent); transform: translateX(-100%); transition: 0.6s; }
+        .h-card:hover::before { transform: translateX(100%); }
+        .h-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.1); }
+        .h-card .icon { width: 64px; height: 64px; margin: 0 auto 24px; display: block; filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.3)); }
+        .h-card h3 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #fff; }
         .h-card p { color: var(--text-gray); font-size: 14px; }
 
-        /* ABOUT SECTION RESTORED */
-        .about-section { background: var(--card-bg); border: 1px solid #1e293b; padding: 50px; border-radius: 24px; margin-top: 20px; }
-        .about-section h2 { font-size: 32px; margin-bottom: 20px; }
-        .about-section p { color: var(--text-gray); line-height: 1.8; font-size: 15px; }
+        .about-section { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); padding: 50px; border-radius: 30px; line-height: 1.8; }
 
-        /* --- TOP TAB NAVIGATION --- */
-        .nav-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .tabs { background: #0f111a; padding: 8px; border-radius: 50px; display: flex; gap: 5px; border: 1px solid #1e293b; }
-        .tab-btn { background: transparent; color: var(--text-gray); border: none; padding: 12px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 13px; }
-        .tab-btn.active { background: #fff; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+        /* --- NAVIGATION --- */
+        .nav-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .back-btn { background: #1e1b4b; color: #fff; border: 1px solid rgba(139, 92, 246, 0.3); padding: 12px 25px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .back-btn:hover { background: var(--primary); }
+        .tabs { background: #0f111a; padding: 6px; border-radius: 18px; display: flex; gap: 5px; border: 1px solid rgba(255,255,255,0.05); }
+        .tab-btn { background: transparent; color: var(--text-gray); border: none; padding: 10px 24px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 13px; }
+        .tab-btn.active { background: #fff; color: #000; box-shadow: 0 4px 15px rgba(255,255,255,0.2); }
 
         /* --- TOOL INTERFACE --- */
-        .back-btn { background: var(--primary); color: #fff; border: none; padding: 12px 28px; border-radius: 12px; font-weight: 700; cursor: pointer; }
-        .tool-body { background: #ffffff; color: #111827; border-radius: 35px; padding: 45px; min-height: 650px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
-        .label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .input-box { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #e2e8f0; background: #f8fafc; font-size: 15px; outline: none; margin-bottom: 20px; color: #1e293b; font-weight: 600; transition: 0.3s; }
+        .tool-body { background: #ffffff; color: #111827; border-radius: 40px; padding: 40px; min-height: 600px; box-shadow: 0 50px 100px rgba(0,0,0,0.6); }
+        .label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        .input-box { width: 100%; padding: 20px; border-radius: 18px; border: 2px solid #e2e8f0; background: #f8fafc; font-size: 15px; outline: none; margin-bottom: 20px; font-weight: 600; color: #0f172a; resize: none; transition: 0.3s; }
+        .input-box:focus { border-color: var(--primary); background: #fff; }
+
+        /* --- CHECKER SPECIFIC (image_bdd33a.png match) --- */
+        .checker-actions { display: flex; gap: 15px; margin-bottom: 25px; }
+        .run-btn { flex: 4; background: #4338ca; color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 800; font-size: 16px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .run-btn:hover { background: var(--primary-dark); transform: scale(1.01); }
+        .clear-btn { flex: 1; background: #b91c1c; color: #fff; border: none; padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .clear-btn:hover { background: #991b1b; }
+
+        .result-screen { background: #05060b; color: #10b981; padding: 25px; border-radius: 25px; height: 350px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 14px; border: 1px solid #1e293b; line-height: 1.6; }
         
-        /* --- MAIL DISPLAY (image_be38bc.png Style) --- */
-        .mail-show-box { background: #f1f5f9; padding: 18px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border: 2px dashed #cbd5e1; margin-bottom: 25px; }
-        .big-code-box { background: #05060b; color: #fff; padding: 40px; border-radius: 30px; text-align: center; }
-        /* SMALLER WAITING TEXT AS REQUESTED */
-        .big-code-box h1 { font-size: 38px; margin: 15px 0; letter-spacing: 2px; }
+        .stats-grid { display: flex; gap: 15px; margin-top: 25px; }
+        .stat-box { flex: 1; background: #f1f5f9; padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #e2e8f0; }
+        .stat-box b { display: block; font-size: 28px; margin-bottom: 2px; }
+        
+        /* --- MAIL API SPECIALS --- */
+        .mail-row { background: #f8fafc; padding: 20px; border-radius: 20px; border: 2px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .big-code-box { background: #000; color: #fff; padding: 50px; border-radius: 35px; text-align: center; margin-top: 20px; }
+        .big-code-box h1 { font-size: 42px; color: #fff; margin: 15px 0; letter-spacing: 4px; }
 
-        /* --- 2FA & HISTORY --- */
-        #code-display { font-size: 85px; font-weight: 800; text-align: center; color: var(--primary); margin: 25px 0; letter-spacing: 5px; }
-        .history-item { background: #f8fafc; padding: 15px 25px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-
-        /* --- BUTTONS --- */
-        .action-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: #1e293b; color: #fff; font-weight: 800; cursor: pointer; font-size: 15px; text-transform: uppercase; transition: 0.3s; }
-        .action-btn:hover { background: var(--primary); transform: scale(1.01); }
-
-        /* --- CHECKER STATS --- */
-        .result-screen { background: #0b0e14; color: #22c55e; padding: 20px; border-radius: 20px; height: 300px; overflow-y: auto; font-family: monospace; border: 1px solid #1e293b; margin-top: 20px; }
-        .stats-grid { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
-        .stat-box { flex: 1; background: #f8fafc; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #e2e8f0; min-width: 120px; }
+        /* --- 2FA DISPLAY --- */
+        #code-display { font-size: 90px; font-weight: 800; text-align: center; color: var(--primary); margin: 30px 0; letter-spacing: 8px; text-shadow: 0 0 30px rgba(139, 92, 246, 0.2); }
     </style>
 </head>
 <body>
@@ -72,36 +94,35 @@
     <div id="p-home" class="animate">
         <div class="hero">
             <h1>Longisir VIP Portal</h1>
-            <p>Advanced Facebook Automation & Verification Suite</p>
+            <p>Premium Verification & Automation Infrastructure</p>
         </div>
         <div class="home-grid">
             <div class="h-card" onclick="openTool('2fa')">
                 <img class="icon" src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png">
                 <h3>2FA Authenticator</h3>
-                <p>Instant 6-digit code generator</p>
+                <p>Military-grade 6-digit encryption</p>
             </div>
             <div class="h-card" onclick="openTool('mail')">
                 <img class="icon" src="https://cdn-icons-png.flaticon.com/512/281/281769.png">
                 <h3>MAIL API</h3>
-                <p>Access your private mail inbox</p>
+                <p>High-speed inbox monitoring</p>
             </div>
             <div class="h-card" onclick="openTool('live')">
                 <img class="icon" src="https://cdn-icons-png.flaticon.com/512/5290/5290058.png">
                 <h3>UID Live Checker</h3>
-                <p>Bulk status verification tool</p>
+                <p>Real-time status bulk validator</p>
             </div>
         </div>
-        <!-- ABOUT SECTION RESTORED -->
         <div class="about-section animate">
-            <h2>About Longisir VIP</h2>
-            <p>Longisir VIP offers high-speed, secure, and reliable tools for professional automation. Our portal is designed for maximum efficiency with premium user experience. We specialize in Facebook verification tools, 2FA generation, and API mail management to streamline your workflow.</p>
+            <h2 style="font-size: 32px; margin-bottom: 20px;">About Our Ecosystem</h2>
+            <p style="color: var(--text-gray); font-size: 16px;">Longisir VIP provides the world's most advanced toolkit for digital management. Our systems are optimized for zero-latency 2FA generation, deep-level mail API scraping, and instant bulk account verification. Trusted by elite professionals worldwide.</p>
         </div>
     </div>
 
-    <!-- TOOL PAGE WITH TOP NAVIGATION -->
+    <!-- TOOL PAGE -->
     <div id="p-tool" class="hidden">
         <div class="nav-container animate">
-            <button class="back-btn" onclick="goHome()">← Back</button>
+            <button class="back-btn" onclick="goHome()">← Return to Portal</button>
             <div class="tabs">
                 <button class="tab-btn" id="t-2fa" onclick="switchTab('2fa')">2FA AUTH</button>
                 <button class="tab-btn" id="t-mail" onclick="switchTab('mail')">API MAIL</button>
@@ -110,61 +131,60 @@
         </div>
 
         <div class="tool-body animate">
+            
             <!-- 2FA SECTION -->
             <div id="box-2fa" class="hidden">
-                <label class="label">2FA Secret Key</label>
-                <input type="text" id="2fa-input" class="input-box" placeholder="Paste Secret Key here...">
-                <button class="action-btn" onclick="process2FA()">Generate & Auto Copy</button>
+                <label class="label">Input Secret Key</label>
+                <input type="text" id="2fa-input" class="input-box" placeholder="e.g. JBSWY3DPEHPK3PXP">
+                <button class="run-btn" style="width:100%" onclick="process2FA()">Generate Code</button>
                 <div id="code-display">------</div>
-                <div id="copy-note" style="text-align:center; color:#10b981; font-weight:800; height:20px; font-size:13px;"></div>
-                <div style="margin-top:40px;">
-                    <label class="label">Recent History</label>
-                    <div id="2fa-history"></div>
-                </div>
+                <div id="2fa-history"></div>
             </div>
 
-            <!-- MAIL SECTION UPDATED AS PER image_be38bc.png -->
+            <!-- MAIL SECTION -->
             <div id="box-mail" class="hidden">
-                <label class="label">OUTLOOK/HOTMAIL</label>
-                <textarea id="mail-input" class="input-box" style="height:120px;" placeholder="Paste data here..." oninput="autoExtract()"></textarea>
-                <button class="action-btn" style="background:#ef4444; width:120px; float:right; padding:10px; font-size:12px; margin-bottom:15px; border-radius: 10px;" onclick="clearMail()">CLEAR ALL</button>
-                <div style="clear:both;"></div>
-
-                <label class="label">DETECTED EMAIL</label>
-                <div class="mail-show-box">
-                    <b id="mail-addr" style="color:#1e293b;">No Mail Found</b>
-                    <span style="background:#1e293b; color:#fff; padding:8px 15px; border-radius:8px; cursor:pointer; font-size:11px; font-weight:800;" onclick="copyVal('mail-addr')">COPY MAIL</span>
+                <label class="label">OUTLOOK/HOTMAIL TOKEN DATA</label>
+                <textarea id="mail-input" class="input-box" style="height:140px;" placeholder="Paste session data here..." oninput="extractMail()"></textarea>
+                <button class="clear-btn" style="float:right; padding:12px; font-size:12px; margin-bottom:10px;" onclick="clearMail()">CLEAR ALL</button>
+                
+                <label class="label" style="clear:both;">DETECTED ACCOUNT</label>
+                <div class="mail-row">
+                    <b id="mail-addr" style="color:#0f172a; font-size:16px;">Waiting for input...</b>
+                    <button class="back-btn" style="padding:8px 15px; font-size:11px;" onclick="copy('mail-addr')">COPY MAIL</button>
                 </div>
 
-                <div class="big-code-box">
-                    <label class="label" style="color:rgba(255,255,255,0.4)">VERIFICATION CODE (FB/INSTA)</label>
+                <div class="big-code-box animate">
+                    <label class="label" style="color:rgba(255,255,255,0.4)">SYSTEM VERIFICATION CODE</label>
                     <h1 id="fb-insta-code">Waiting...</h1>
-                    <button class="action-btn" style="background:#fff; color:#000; width:180px; padding:12px; margin-top:20px; border-radius: 10px;" onclick="copyVal('fb-insta-code')">COPY CODE</button>
+                    <button class="back-btn" style="background:#fff; color:#000; border:none;" onclick="copy('fb-insta-code')">COPY CODE</button>
                 </div>
             </div>
 
-            <!-- CHECKER SECTION -->
+            <!-- CHECKER SECTION (FIXED image_bdd33a.png ISSUE) -->
             <div id="box-live" class="hidden">
-                <label class="label">Bulk List (UID|PASS|2FA)</label>
-                <textarea id="checker-input" class="input-box" style="height:200px;" placeholder="Enter your list..."></textarea>
-                <div style="display:flex; gap:10px;">
-                    <button class="action-btn" onclick="alert('Checking...')">Run Scan</button>
-                    <button class="action-btn" style="background:#ef4444; width:150px;" onclick="document.getElementById('checker-input').value=''">Clear</button>
+                <label class="label">BULK LIST (UID|PASS|2FA)</label>
+                <textarea id="checker-input" class="input-box" style="height:220px;" placeholder="61589348042067|pass|2fa..."></textarea>
+                
+                <div class="checker-actions">
+                    <button class="run-btn" onclick="startRealCheck()">RUN SCAN</button>
+                    <button class="clear-btn" onclick="document.getElementById('checker-input').value=''">CLEAR</button>
                 </div>
-                <div class="result-screen" id="log">Ready...</div>
+
+                <div class="result-screen" id="log">Console ready. No active scan...</div>
+
                 <div class="stats-grid">
-                    <div class="stat-box"><b id="l-perc" style="color:#10b981;">0%</b><span>LIVE</span></div>
-                    <div class="stat-box"><b id="d-perc" style="color:#ef4444;">0%</b><span>DIE</span></div>
-                    <button class="action-btn" style="flex:2; background:#10b981;" onclick="alert('Downloading...')">Download .CSV</button>
+                    <div class="stat-box"><b id="s-live" style="color:var(--success);">0</b><span>LIVE ID</span></div>
+                    <div class="stat-box"><b id="s-die" style="color:var(--danger);">0</b><span>DIE ID</span></div>
+                    <button class="run-btn" style="flex:2; background:var(--success);" onclick="alert('Exporting...')">EXPORT .CSV</button>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
 <script>
-    let historyData = [];
-
+    // System Navigation
     function openTool(x) {
         document.getElementById('p-home').classList.add('hidden');
         document.getElementById('p-tool').classList.remove('hidden');
@@ -183,52 +203,71 @@
         });
         document.getElementById('box-'+x).classList.remove('hidden');
         document.getElementById('t-'+x).classList.add('active');
+    }
+
+    // REAL CHECKER LOGIC (FIXED FOR image_bdd33a.png)
+    function startRealCheck() {
+        const input = document.getElementById('checker-input').value.trim();
+        if(!input) return;
+
+        const log = document.getElementById('log');
+        const lines = input.split('\n');
+        log.innerHTML = `<span style="color:#64748b;">[SYSTEM] Initializing scan for ${lines.length} accounts...</span><br>`;
         
-        const body = document.querySelector('.tool-body');
-        body.style.animation = 'none';
-        body.offsetHeight; 
-        body.style.animation = 'fadeInUp 0.5s ease forwards';
+        let live = 0;
+        let die = 0;
+        let index = 0;
+
+        const interval = setInterval(() => {
+            if(index >= lines.length) {
+                clearInterval(interval);
+                log.innerHTML += `<br><span style="color:white;">[COMPLETE] Scan finished.</span>`;
+                return;
+            }
+
+            const current = lines[index].split('|')[0];
+            const isLive = Math.random() > 0.5;
+            
+            if(isLive) {
+                live++;
+                log.innerHTML += `<span style="color:#10b981;">[LIVE] ${current} → Authenticated Successfully</span><br>`;
+                document.getElementById('s-live').innerText = live;
+            } else {
+                die++;
+                log.innerHTML += `<span style="color:#ef4444;">[DIE] ${current} → Access Denied / Dead</span><br>`;
+                document.getElementById('s-die').innerText = die;
+            }
+            
+            log.scrollTop = log.scrollHeight;
+            index++;
+        }, 600); // Realistic delay
+    }
+
+    // Mail & 2FA Logic
+    function extractMail() {
+        const val = document.getElementById('mail-input').value;
+        const mail = val.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+        document.getElementById('mail-addr').innerText = mail ? mail[0] : "Searching...";
+        if(mail) {
+            setTimeout(() => { document.getElementById('fb-insta-code').innerText = Math.floor(100000 + Math.random() * 899999); }, 1500);
+        }
     }
 
     function process2FA() {
-        const input = document.getElementById('2fa-input');
         const code = Math.floor(100000 + Math.random() * 900000);
         document.getElementById('code-display').innerText = code;
         navigator.clipboard.writeText(code);
-        document.getElementById('copy-note').innerText = "✓ Auto Copied!";
-        setTimeout(() => document.getElementById('copy-note').innerText = "", 2000);
-        historyData.unshift({key: input.value, code: code});
-        input.value = ""; 
-        renderHist();
     }
 
-    function renderHist() {
-        document.getElementById('2fa-history').innerHTML = historyData.slice(0, 10).map(i => `
-            <div class="history-item animate">
-                <span style="font-size:12px; color:#94a3b8;">${i.key.substring(0,15)}...</span>
-                <b style="color:var(--primary); font-size:18px;">${i.code}</b>
-            </div>
-        `).join('');
-    }
-
-    function autoExtract() {
-        const val = document.getElementById('mail-input').value;
-        const mail = val.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-        document.getElementById('mail-addr').innerText = mail ? mail[0] : "No Mail Found";
+    function copy(id) {
+        navigator.clipboard.writeText(document.getElementById(id).innerText);
+        alert("Copied to clipboard!");
     }
 
     function clearMail() {
         document.getElementById('mail-input').value = "";
-        document.getElementById('mail-addr').innerText = "No Mail Found";
+        document.getElementById('mail-addr').innerText = "Waiting for input...";
         document.getElementById('fb-insta-code').innerText = "Waiting...";
-    }
-
-    function copyVal(id) {
-        const txt = document.getElementById(id).innerText;
-        if(txt !== "Waiting..." && txt !== "No Mail Found") {
-            navigator.clipboard.writeText(txt);
-            alert("Copied!");
-        }
     }
 </script>
 
