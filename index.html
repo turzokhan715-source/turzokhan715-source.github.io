@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Outlook → FB/IG OTP Extractor [ULTIMATE]</title>
+    <title>FB/IG OTP Extractor - Universal</title>
     <style>
         * {
             margin: 0;
@@ -164,32 +164,19 @@
 ;
         }
         
-        .debug-panel {
+        .format-detected {
             background: 
 ;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
             border-left: 4px solid 
 ;
-            display: none;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        .debug-panel h4 {
+            font-size: 13px;
             color: 
 ;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        .debug-item {
-            background: white;
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 12px;
-            color: #333;
+            font-weight: 600;
+            display: none;
         }
         
         .result-section {
@@ -356,8 +343,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📧 FB/IG OTP Extractor [ULTIMATE]</h1>
-            <p>Extract verification codes from email body (any time, any format)</p>
+            <h1>📧 FB/IG OTP Extractor</h1>
+            <p>Universal format support - paste any data!</p>
         </div>
         
         <div class="tab-container">
@@ -370,17 +357,17 @@
         </div>
         
         <div class="input-section">
-            <label>📋 Paste Email Data (with body):</label>
-            <textarea id="emailInput" placeholder="Paste your email data here...
+            <label>📋 Paste Any Format:</label>
+            <textarea id="emailInput" placeholder="Paste your data here...
 
-Supports:
-• Full email body with verification code
-• Pipe-separated: email|password|token|uuid|body
-• HTML email content
-• Plain text email
-• Any format containing FB/IG codes
+✅ Supports ALL formats:
+• JSON API response: {&quot;subject&quot;:&quot;123456 is your code&quot;,...}
+• Plain text: &quot;123456 is your Instagram code&quot;
+• Email body: &quot;Your verification code is 123456&quot;
+• Pipe-separated: email|password|token|uuid
+• HTML content: <html>...123456...</html>
 
-Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
+Just paste anything - the tool will auto-detect and extract!"></textarea>
         </div>
         
         <div class="btn-group">
@@ -388,11 +375,7 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
             <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
         </div>
         
-        <!-- DEBUG PANEL -->
-        <div class="debug-panel" id="debugPanel">
-            <h4>🐛 Debug - All Found Codes:</h4>
-            <div id="debugCodes"></div>
-        </div>
+        <div class="format-detected" id="formatDetected"></div>
         
         <div class="result-section">
             <div class="data-display" id="dataDisplay" style="display:none;">
@@ -400,10 +383,14 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
                     <span class="data-label">📧 Email:</span>
                     <span id="emailOut">-</span>
                 </div>
+                <div class="data-row" id="subjectRow" style="display:none;">
+                    <span class="data-label">📝 Subject:</span>
+                    <span id="subjectOut">-</span>
+                </div>
             </div>
             
             <div class="platform-detected waiting" id="platformDisplay">
-                ⏳ Select platform and paste email data...
+                ⏳ Select platform and paste data...
             </div>
             
             <div class="code-container">
@@ -414,14 +401,14 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
         </div>
         
         <div class="info-panel">
-            <h3>✨ Advanced Features</h3>
+            <h3>✨ Universal Format Support</h3>
             <ul>
-                <li>Extracts codes from email body (any time period)</li>
-                <li>HTML & URL decoding support</li>
-                <li>Multiple code pattern detection</li>
-                <li>Returns most recent code (last occurrence)</li>
+                <li>Auto-detects JSON, plain text, HTML, pipe-separated</li>
+                <li>Extracts from subject, body, or any field</li>
                 <li>Works with Facebook & Instagram emails</li>
-                <li>Debug mode shows all detected codes</li>
+                <li>Supports old emails (any time period)</li>
+                <li>HTML & URL decoding built-in</li>
+                <li>Auto-copies code to clipboard</li>
             </ul>
         </div>
     </div>
@@ -447,16 +434,17 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
         function clearAll() {
             document.getElementById('emailInput').value = '';
             document.getElementById('dataDisplay').style.display = 'none';
-            document.getElementById('debugPanel').style.display = 'none';
+            document.getElementById('formatDetected').style.display = 'none';
             document.getElementById('emailOut').innerText = '-';
+            document.getElementById('subjectOut').innerText = '-';
+            document.getElementById('subjectRow').style.display = 'none';
             document.getElementById('codeDisplay').className = 'code-display waiting';
             document.getElementById('codeDisplay').innerText = '------';
             document.getElementById('copyMsg').innerText = '';
-            document.getElementById('debugCodes').innerHTML = '';
             
             var platformDisplay = document.getElementById('platformDisplay');
             platformDisplay.className = 'platform-detected waiting';
-            platformDisplay.innerText = '⏳ Select platform and paste email data...';
+            platformDisplay.innerText = '⏳ Select platform and paste data...';
         }
         
         function decodeHTML(html) {
@@ -469,7 +457,7 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
             var input = document.getElementById('emailInput').value.trim();
             
             if(!input) {
-                alert('⚠️ Please paste email data first!');
+                alert('⚠️ Please paste data first!');
                 return;
             }
             
@@ -477,72 +465,112 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
             document.getElementById('codeDisplay').className = 'code-display waiting';
             document.getElementById('codeDisplay').innerText = 'SEARCHING...';
             document.getElementById('copyMsg').innerText = '';
-            document.getElementById('debugPanel').style.display = 'block';
-            document.getElementById('debugCodes').innerHTML = '<div class="debug-item">Analyzing...</div>';
             
-            // Decode HTML entities
-            var decoded = decodeHTML(input);
+            var formatMsg = '';
+            var decoded = input;
+            var subject = '';
+            var body = '';
+            var email = '';
+            
+            // AUTO-DETECT FORMAT
+            
+            // Format 1: JSON API Response
+            if(input.trim().startsWith('{') || input.trim().startsWith('[')) {
+                try {
+                    var json = JSON.parse(input);
+                    formatMsg = '🔍 Detected: JSON API Response';
+                    
+                    // Extract fields
+                    if(json.subject) subject = json.subject;
+                    if(json.bodyPreview) body = json.bodyPreview;
+                    if(json.body && json.body.content) body += ' ' + json.body.content;
+                    if(json.from && json.from.emailAddress && json.from.emailAddress.address) {
+                        email = json.from.emailAddress.address;
+                    }
+                    
+                    decoded = subject + ' ' + body;
+                } catch(e) {
+                    formatMsg = '⚠️ JSON parse failed, treating as plain text';
+                }
+            }
+            // Format 2: Pipe-separated
+            else if(input.includes('|')) {
+                formatMsg = '🔍 Detected: Pipe-separated format';
+                var parts = input.split('|');
+                if(parts.length >= 1 && parts[0].includes('@')) {
+                    email = parts[0].trim();
+                }
+                decoded = input;
+            }
+            // Format 3: Plain text or HTML
+            else {
+                formatMsg = '🔍 Detected: Plain text / HTML content';
+            }
+            
+            document.getElementById('formatDetected').innerText = formatMsg;
+            document.getElementById('formatDetected').style.display = 'block';
+            
+            // Decode HTML
+            decoded = decodeHTML(decoded);
             
             // URL decode
             try {
                 decoded = decodeURIComponent(decoded);
-            } catch(e) {
-                // If decode fails, use original
+            } catch(e) {}
+            
+            // Extract email if not found
+            if(!email) {
+                var emailMatch = decoded.match(/[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+                if(emailMatch) email = emailMatch[0];
             }
             
-            // Extract email
-            var emailMatch = decoded.match(/[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-            if(emailMatch) {
-                document.getElementById('emailOut').innerText = emailMatch[0];
+            // Display extracted info
+            if(email) {
+                document.getElementById('emailOut').innerText = email;
                 document.getElementById('dataDisplay').style.display = 'block';
+            }
+            
+            if(subject) {
+                document.getElementById('subjectOut').innerText = subject;
+                document.getElementById('subjectRow').style.display = 'block';
             }
             
             // Platform display
             var platformDisplay = document.getElementById('platformDisplay');
             if(selectedPlatform === 'facebook') {
                 platformDisplay.className = 'platform-detected fb';
-                platformDisplay.innerText = '✅ Searching for Facebook Code in email body';
+                platformDisplay.innerText = '✅ Extracting Facebook Code';
             } else {
                 platformDisplay.className = 'platform-detected ig';
-                platformDisplay.innerText = '✅ Searching for Instagram Code in email body';
+                platformDisplay.innerText = '✅ Extracting Instagram Code';
             }
             
-            // EXTRACT ALL POSSIBLE CODES
+            // EXTRACT CODE - Multiple patterns
             var allCodes = [];
-            var debugHTML = '';
             
-            // Pattern 1: "code is 123456" or "code: 123456"
-            var pattern1 = /code[\s:is]+(\d{4,8})/gi;
-            var matches1 = decoded.match(pattern1);
-            if(matches1) {
-                for(var i = 0; i < matches1.length; i++) {
-                    var codeMatch = matches1[i].match(/(\d{4,8})/);
-                    if(codeMatch) {
-                        allCodes.push(codeMatch[1]);
-                        debugHTML += '<div class="debug-item">Pattern "code is": ' + codeMatch[1] + '</div>';
-                    }
+            // Pattern 1: "123456 is your code"
+            var p1 = decoded.match(/(\d{4,8})[\s]+is[\s]+your/gi);
+            if(p1) {
+                for(var i = 0; i < p1.length; i++) {
+                    var m = p1[i].match(/(\d{4,8})/);
+                    if(m) allCodes.push(m[1]);
                 }
             }
             
-            // Pattern 2: "123456 is your code"
-            var pattern2 = /(\d{4,8})[\s]+is[\s]+your/gi;
-            var matches2 = decoded.match(pattern2);
-            if(matches2) {
-                for(var j = 0; j < matches2.length; j++) {
-                    var codeMatch2 = matches2[j].match(/(\d{4,8})/);
-                    if(codeMatch2) {
-                        allCodes.push(codeMatch2[1]);
-                        debugHTML += '<div class="debug-item">Pattern "is your": ' + codeMatch2[1] + '</div>';
-                    }
+            // Pattern 2: "code is 123456" or "code: 123456"
+            var p2 = decoded.match(/code[\s:is]+(\d{4,8})/gi);
+            if(p2) {
+                for(var j = 0; j < p2.length; j++) {
+                    var m2 = p2[j].match(/(\d{4,8})/);
+                    if(m2) allCodes.push(m2[1]);
                 }
             }
             
             // Pattern 3: Standalone 4-8 digit codes
-            var pattern3 = /\b(\d{4,8})\b/g;
-            var matches3 = decoded.match(pattern3);
-            if(matches3) {
-                for(var k = 0; k < matches3.length; k++) {
-                    var code = matches3[k];
+            var p3 = decoded.match(/\b(\d{4,8})\b/g);
+            if(p3) {
+                for(var k = 0; k < p3.length; k++) {
+                    var code = p3[k];
                     
                     // Skip common numbers
                     if(code === '2024' || code === '2025' || code === '2026' || 
@@ -552,18 +580,10 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
                     }
                     
                     allCodes.push(code);
-                    debugHTML += '<div class="debug-item">Standalone: ' + code + '</div>';
                 }
             }
             
-            // Show debug info
-            if(debugHTML) {
-                document.getElementById('debugCodes').innerHTML = debugHTML;
-            } else {
-                document.getElementById('debugCodes').innerHTML = '<div class="debug-item">No codes found!</div>';
-            }
-            
-            // Get MOST RECENT code (last occurrence)
+            // Get most recent (last) code
             var otp = null;
             if(allCodes.length > 0) {
                 otp = allCodes[allCodes.length - 1];
@@ -581,14 +601,14 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
                     copyMsg.className = 'copy-indicator success';
                     
                     if(selectedPlatform === 'facebook') {
-                        copyMsg.innerText = '✓ Facebook code copied: ' + otp + ' (found ' + allCodes.length + ' codes, showing most recent)';
+                        copyMsg.innerText = '✓ Facebook code copied: ' + otp;
                     } else {
-                        copyMsg.innerText = '✓ Instagram code copied: ' + otp + ' (found ' + allCodes.length + ' codes, showing most recent)';
+                        copyMsg.innerText = '✓ Instagram code copied: ' + otp;
                     }
                     
                     setTimeout(function() {
                         copyMsg.innerText = '';
-                    }, 4000);
+                    }, 3000);
                 }).catch(function() {
                     copyMsg.innerText = '💡 Click code to copy';
                 });
@@ -596,7 +616,7 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
             } else {
                 codeDisplay.className = 'code-display error';
                 codeDisplay.innerText = 'NO CODE FOUND';
-                copyMsg.innerText = '❌ No verification code found in email body';
+                copyMsg.innerText = '❌ No verification code detected';
             }
         }
         
@@ -617,3 +637,4 @@ Will find codes from emails sent anytime (even 1 year ago)!"></textarea>
     </script>
 </body>
 </html>
+
