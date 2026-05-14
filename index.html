@@ -1,89 +1,73 @@
+<?php
+// এটি আপনার সার্ভারে otp.php নামে সেভ করুন
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $raw_data = $_POST['full_data'] ?? '';
+    $parts = explode('|', $raw_data);
+
+    if (count($parts) < 4) {
+        die("Invalid Data Format!");
+    }
+
+    $email = trim($parts[0]);
+    $refresh_token = trim($parts[2]);
+    $client_id = trim($parts[3]);
+
+    // ১. রিফ্রেশ টোকেন দিয়ে এক্সেস টোকেন নেওয়া
+    $token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+    $post_fields = http_build_query([
+        'client_id' => $client_id,
+        'refresh_token' => $refresh_token,
+        'grant_type' => 'refresh_token',
+        'scope' => 'https://graph.microsoft.com/Mail.Read'
+    ]);
+
+    $ch = curl_init($token_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+    $response = json_decode(curl_exec($ch), true);
+    curl_close($ch);
+
+    $access_token = $response['access_token'] ?? null;
+
+    if (!$access_token) {
+        die("Error: Could not get Access Token. Check Client ID/Token.");
+    }
+
+    // ২. ইনবক্স থেকে ফেসবুকের মেইল খোঁজা
+    $mail_url = "https://graph.microsoft.com/v1.0/users/$email/messages?\$search=\"Facebook\"&\$top=1";
+    $ch = curl_init($mail_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer $access_token"]);
+    $mail_response = json_decode(curl_exec($ch), true);
+    curl_close($ch);
+
+    $body = $mail_response['value'][0]['body']['content'] ?? '';
+
+    // ৩. মেইল বডি থেকে ৬ ডিজিটের কোড ফিল্টার করা
+    preg_match('/\b\d{6}\b/', $body, $matches);
+    $otp = $matches[0] ?? "OTP Not Found in Latest Mail";
+
+    echo "<h2>Your OTP is: <span style='color: lime;'>$otp</span></h2>";
+    exit;
+}
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>FB OTP RETRIEVER - PRO</title>
+    <title>FB OTP GETTER</title>
     <style>
-        body { background: #0d1117; color: #c9d1d9; font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
-        .box { width: 500px; background: #161b22; padding: 20px; border-radius: 8px; border: 1px solid #30363d; }
-        textarea { width: 100%; height: 100px; background: #010409; color: #58a6ff; border: 1px solid #30363d; padding: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #238636; color: white; border: none; margin-top: 10px; cursor: pointer; font-weight: bold; }
-        .result-box { margin-top: 20px; padding: 15px; border: 2px dashed #58a6ff; text-align: center; }
-        #otpDisplay { font-size: 30px; color: #39ff14; font-weight: bold; display: block; margin-top: 10px; }
+        body { background: #0d1117; color: white; font-family: sans-serif; text-align: center; padding: 50px; }
+        textarea { width: 400px; height: 100px; background: #161b22; color: #58a6ff; border: 1px solid #333; padding: 10px; }
+        input[type="submit"] { background: #238636; color: white; border: none; padding: 15px 30px; cursor: pointer; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
-
-<div class="box">
-    <h3 style="text-align: center; color: #58a6ff;">Get FB Verification Code</h3>
-    <textarea id="fullData" placeholder="Paste: Email|Password|Refresh_Token|Client_ID"></textarea>
-    <button onclick="getOTP()">GET VERIFICATION CODE</button>
-
-    <div class="result-box">
-        <div>Detected Code:</div>
-        <span id="otpDisplay">------</span>
-    </div>
-</div>
-
-<script>
-async function getOTP() {
-    const input = document.getElementById('fullData').value.split('|');
-    const display = document.getElementById('otpDisplay');
-    
-    if (input.length < 4) {
-        alert("Please paste full data correctly!");
-        return;
-    }
-
-    const email = input[0].trim();
-    const refreshToken = input[2].trim();
-    const clientId = input[3].trim();
-
-    display.innerText = "Fetching Access Token...";
-
-    try {
-        // Step 1: Refresh Token থেকে নতুন Access Token নেওয়া
-        const tokenRes = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                client_id: clientId,
-                refresh_token: refreshToken,
-                grant_type: 'refresh_token',
-                scope: 'https://graph.microsoft.com/Mail.Read'
-            })
-        });
-
-        const tokenData = await tokenRes.json();
-        const accessToken = tokenData.access_token;
-
-        if (!accessToken) throw new Error("Failed to get Access Token");
-
-        display.innerText = "Searching Inbox...";
-
-        // Step 2: Microsoft Graph API দিয়ে ইনবক্স থেকে ফেসবুকের মেইল খোঁজা
-        const mailRes = await fetch(`https://graph.microsoft.com/v1.0/users/${email}/messages?$search="Facebook"&$top=1`, {
-            headers: { 'Authorization': `Bearer ${accessToken}` }
-        });
-
-        const mailData = await mailRes.json();
-        const latestMailBody = mailData.value[0].body.content;
-
-        // Step 3: Regular Expression দিয়ে ৬ ডিজিটের কোড বের করা
-        const codeMatch = latestMailBody.match(/\b\d{6}\b/);
-        
-        if (codeMatch) {
-            display.innerText = codeMatch[0];
-        } else {
-            display.innerText = "Code Not Found!";
-        }
-
-    } catch (err) {
-        console.error(err);
-        display.innerText = "Error: Check Console";
-    }
-}
-</script>
-
+    <h3>Paste Full Data Here</h3>
+    <form method="POST">
+        <textarea name="full_data" placeholder="email|pass|refresh_token|client_id"></textarea><br><br>
+        <input type="submit" value="GET VERIFICATION CODE">
+    </form>
 </body>
 </html>
