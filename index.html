@@ -1,73 +1,405 @@
-<?php
-// এটি আপনার সার্ভারে otp.php নামে সেভ করুন
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $raw_data = $_POST['full_data'] ?? '';
-    $parts = explode('|', $raw_data);
-
-    if (count($parts) < 4) {
-        die("Invalid Data Format!");
-    }
-
-    $email = trim($parts[0]);
-    $refresh_token = trim($parts[2]);
-    $client_id = trim($parts[3]);
-
-    // ১. রিফ্রেশ টোকেন দিয়ে এক্সেস টোকেন নেওয়া
-    $token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
-    $post_fields = http_build_query([
-        'client_id' => $client_id,
-        'refresh_token' => $refresh_token,
-        'grant_type' => 'refresh_token',
-        'scope' => 'https://graph.microsoft.com/Mail.Read'
-    ]);
-
-    $ch = curl_init($token_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
-    $response = json_decode(curl_exec($ch), true);
-    curl_close($ch);
-
-    $access_token = $response['access_token'] ?? null;
-
-    if (!$access_token) {
-        die("Error: Could not get Access Token. Check Client ID/Token.");
-    }
-
-    // ২. ইনবক্স থেকে ফেসবুকের মেইল খোঁজা
-    $mail_url = "https://graph.microsoft.com/v1.0/users/$email/messages?\$search=\"Facebook\"&\$top=1";
-    $ch = curl_init($mail_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer $access_token"]);
-    $mail_response = json_decode(curl_exec($ch), true);
-    curl_close($ch);
-
-    $body = $mail_response['value'][0]['body']['content'] ?? '';
-
-    // ৩. মেইল বডি থেকে ৬ ডিজিটের কোড ফিল্টার করা
-    preg_match('/\b\d{6}\b/', $body, $matches);
-    $otp = $matches[0] ?? "OTP Not Found in Latest Mail";
-
-    echo "<h2>Your OTP is: <span style='color: lime;'>$otp</span></h2>";
-    exit;
-}
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>FB OTP GETTER</title>
+    <meta charset="UTF-8">
+    <title>Universal OTP Extractor</title>
     <style>
-        body { background: #0d1117; color: white; font-family: sans-serif; text-align: center; padding: 50px; }
-        textarea { width: 400px; height: 100px; background: #161b22; color: #58a6ff; border: 1px solid #333; padding: 10px; }
-        input[type="submit"] { background: #238636; color: white; border: none; padding: 15px 30px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, 
+, 
+);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 650px;
+            max-width: 95%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .input-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 15px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            transition: border 0.3s;
+        }
+        textarea:focus {
+            border-color: 
+;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-extract {
+            background: linear-gradient(135deg, 
+, 
+);
+            color: white;
+        }
+        .btn-extract:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .btn-extract:active {
+            transform: translateY(0);
+        }
+        .btn-clear {
+            background: 
+;
+            color: white;
+        }
+        .btn-clear:hover {
+            background: 
+;
+        }
+        .result-section {
+            margin-top: 25px;
+        }
+        .email-box {
+            background: 
+;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: 
+;
+            border-left: 4px solid 
+;
+        }
+        .code-container {
+            background: linear-gradient(135deg, 
+, 
+);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .code-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,255,0,0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .code-display {
+            position: relative;
+            z-index: 1;
+            color: #0f0;
+            font-size: 56px;
+            font-weight: bold;
+            letter-spacing: 15px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 20px rgba(0,255,0,0.5);
+            cursor: pointer;
+            user-select: all;
+        }
+        .code-display.waiting {
+            color: #666;
+            font-size: 28px;
+            letter-spacing: 3px;
+            text-shadow: none;
+        }
+        .code-display.error {
+            color: 
+;
+            font-size: 22px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255,68,68,0.3);
+        }
+        .copy-indicator {
+            text-align: center;
+            margin-top: 15px;
+            min-height: 25px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .copy-indicator.success {
+            color: 
+;
+        }
+        .copy-indicator.info {
+            color: 
+;
+        }
+        .info-panel {
+            background: linear-gradient(135deg, #e7f3ff, 
+);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border-left: 5px solid 
+;
+        }
+        .info-panel h3 {
+            color: 
+;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .info-panel ul {
+            list-style: none;
+            padding: 0;
+        }
+        .info-panel li {
+            padding: 6px 0;
+            color: 
+;
+            font-size: 14px;
+        }
+        .info-panel li::before {
+            content: '✓ ';
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
-    <h3>Paste Full Data Here</h3>
-    <form method="POST">
-        <textarea name="full_data" placeholder="email|pass|refresh_token|client_id"></textarea><br><br>
-        <input type="submit" value="GET VERIFICATION CODE">
-    </form>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Universal OTP Extractor</h1>
+            <p>Extract OTP codes from any email format</p>
+        </div>
+        
+        <div class="input-section">
+            <label>📋 Paste Your Email Data Here:</label>
+            <textarea id="emailInput" placeholder="Paste any email content here...
+
+Supports:
+• Plain text emails
+• API responses
+• Pipe-separated data (email|pass|token|uuid)
+• JSON format
+• Any format containing OTP codes
+
+The tool will automatically find and extract the OTP code!"></textarea>
+        </div>
+        
+        <div class="btn-group">
+            <button class="btn-extract" onclick="extractOTP()">🔍 Extract OTP Code</button>
+            <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+        
+        <div class="result-section">
+            <div class="email-box" id="emailDisplay">
+                📧 No email detected yet
+            </div>
+            
+            <div class="code-container">
+                <div class="code-display waiting" id="codeDisplay">------</div>
+            </div>
+            
+            <div class="copy-indicator" id="copyMsg"></div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>✨ Features</h3>
+            <ul>
+                <li>Extracts OTP from any email format</li>
+                <li>Supports 4, 5, 6, and 8 digit codes</li>
+                <li>Auto-detects email addresses</li>
+                <li>Works with pipe-separated data</li>
+                <li>Auto-copy to clipboard</li>
+                <li>Click code to copy manually</li>
+                <li>Supports Facebook & Instagram codes</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function clearAll() {
+            document.getElementById('emailInput').value = '';
+            document.getElementById('emailDisplay').innerText = '📧 No email detected yet';
+            document.getElementById('codeDisplay').className = 'code-display waiting';
+            document.getElementById('codeDisplay').innerText = '------';
+            document.getElementById('copyMsg').innerText = '';
+        }
+        
+        function extractOTP() {
+            // Get input
+            var input = document.getElementById('emailInput').value.trim();
+            
+            if(!input) {
+                alert('⚠️ Please paste email data first!');
+                return;
+            }
+            
+            // Reset display
+            document.getElementById('codeDisplay').className = 'code-display waiting';
+            document.getElementById('codeDisplay').innerText = 'SEARCHING...';
+            document.getElementById('copyMsg').innerText = '';
+            
+            // Extract email address
+            var emailRegex = /[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+            var emails = input.match(emailRegex);
+            
+            if(emails && emails.length > 0) {
+                document.getElementById('emailDisplay').innerText = '📧 Email: ' + emails[0];
+            } else {
+                document.getElementById('emailDisplay').innerText = '📧 No email found';
+            }
+            
+            // UNIVERSAL OTP EXTRACTION
+            var otp = null;
+            
+            // Step 1: Find ALL number sequences in the input
+            var allNumbers = input.match(/\d+/g);
+            
+            if(allNumbers && allNumbers.length > 0) {
+                // Filter for valid OTP lengths (4, 5, 6, 8 digits)
+                var validOTPs = [];
+                
+                for(var i = 0; i < allNumbers.length; i++) {
+                    var num = allNumbers[i];
+                    var len = num.length;
+                    
+                    // Accept 4, 5, 6, or 8 digit codes
+                    if(len === 4 || len === 5 || len === 6 || len === 8) {
+                        validOTPs.push(num);
+                    }
+                }
+                
+                // Take the LAST valid OTP (usually the actual code)
+                if(validOTPs.length > 0) {
+                    otp = validOTPs[validOTPs.length - 1];
+                }
+            }
+            
+            // Step 2: If no code found, try pattern matching
+            if(!otp) {
+                var patterns = [
+                    /(?:code|otp|verification|confirmation|pin)[\s:is]+(\d{4,8})/gi,
+                    /(?:your|the)\s+(?:code|otp)\s+(?:is|:)\s*(\d{4,8})/gi,
+                    /\b(\d{6})\b/g,
+                    /\b(\d{5})\b/g,
+                    /\b(\d{4})\b/g
+                ];
+                
+                for(var j = 0; j < patterns.length; j++) {
+                    var matches = input.match(patterns[j]);
+                    if(matches && matches.length > 0) {
+                        var lastMatch = matches[matches.length - 1];
+                        var digits = lastMatch.match(/\d{4,8}/);
+                        if(digits) {
+                            otp = digits[0];
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Display result
+            var codeDisplay = document.getElementById('codeDisplay');
+            var copyMsg = document.getElementById('copyMsg');
+            
+            if(otp) {
+                codeDisplay.className = 'code-display';
+                codeDisplay.innerText = otp;
+                
+                // Auto-copy to clipboard
+                navigator.clipboard.writeText(otp).then(function() {
+                    copyMsg.className = 'copy-indicator success';
+                    copyMsg.innerText = '✓ Code copied to clipboard: ' + otp;
+                    
+                    setTimeout(function() {
+                        copyMsg.innerText = '';
+                    }, 3000);
+                }).catch(function(err) {
+                    copyMsg.className = 'copy-indicator info';
+                    copyMsg.innerText = '💡 Click the code to copy';
+                });
+                
+            } else {
+                codeDisplay.className = 'code-display error';
+                codeDisplay.innerText = 'NO CODE FOUND';
+                copyMsg.className = 'copy-indicator';
+                copyMsg.innerText = '❌ No OTP code detected in the input';
+            }
+        }
+        
+        // Auto-extract on paste
+        document.getElementById('emailInput').addEventListener('paste', function() {
+            setTimeout(extractOTP, 500);
+        });
+        
+        // Click to copy
+        document.getElementById('codeDisplay').addEventListener('click', function() {
+            var code = this.innerText;
+            if(code !== '------' && code !== 'SEARCHING...' && code !== 'NO CODE FOUND') {
+                navigator.clipboard.writeText(code);
+                var copyMsg = document.getElementById('copyMsg');
+                copyMsg.className = 'copy-indicator success';
+                copyMsg.innerText = '✓ Copied: ' + code;
+                setTimeout(function() {
+                    copyMsg.innerText = '';
+                }, 2000);
+            }
+        });
+    </script>
 </body>
 </html>
