@@ -1,172 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Mail OTP Extractor</title>
+    <title>OTP Extractor</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, 
- 0%, 
- 100%);
+, 
+);
+            font-family: Arial;
             padding: 20px;
-            min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
-        .container {
-            max-width: 600px;
-            width: 100%;
+        .box {
             background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            border-radius: 15px;
+            width: 500px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
-        h1 {
+        h2 {
             color: 
 ;
             text-align: center;
-            margin-bottom: 30px;
         }
         textarea {
             width: 100%;
-            padding: 15px;
+            height: 150px;
+            padding: 10px;
             border: 2px solid #ddd;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 14px;
-            margin-bottom: 15px;
-            resize: vertical;
+            box-sizing: border-box;
         }
         button {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, 
- 0%, 
- 100%);
+            padding: 12px;
+            background: 
+;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-top: 10px;
         }
         button:hover {
-            opacity: 0.9;
-        }
-        .result {
             background: 
 ;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+        }
+        .email-box {
+            background: 
+;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
             text-align: center;
             font-weight: bold;
         }
         .code-box {
-            background: #000;
-            color: #0f0;
-            padding: 30px;
-            border-radius: 15px;
+            background: black;
+            color: lime;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 15px;
             text-align: center;
-            font-size: 48px;
+            font-size: 40px;
             font-weight: bold;
-            letter-spacing: 5px;
+            letter-spacing: 8px;
         }
-        .status {
+        .msg {
             text-align: center;
-            color: #0f0;
+            color: green;
             font-weight: bold;
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📧 API Mail OTP Extractor</h1>
-        
-        <textarea id="input" rows="8" placeholder="Paste your email data here..."></textarea>
-        
-        <button onclick="extract()">🔍 Extract Data</button>
-        
-        <div class="result" id="email">Waiting for email...</div>
-        
-        <div class="code-box" id="code">------</div>
-        
-        <div class="status" id="status"></div>
+    <div class="box">
+        <h2>📧 OTP Extractor</h2>
+        <textarea id="data" placeholder="Paste your data here..."></textarea>
+        <button onclick="find()">Extract OTP</button>
+        <div class="email-box" id="email">No email yet</div>
+        <div class="code-box" id="otp">------</div>
+        <div class="msg" id="msg"></div>
     </div>
 
     <script>
-        function extract() {
-            var text = document.getElementById('input').value;
+        function find() {
+            var data = document.getElementById('data').value;
             
-            if(!text) {
-                alert('Please paste email data first!');
+            if(!data) {
+                alert('Please paste data first!');
                 return;
             }
             
-            // Find email - multiple patterns
-            var emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-            if(emailMatch) {
-                document.getElementById('email').innerText = '✅ ' + emailMatch[0];
+            // Find email
+            var email = data.match(/[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+            if(email) {
+                document.getElementById('email').innerText = '✅ ' + email[0];
             } else {
-                document.getElementById('email').innerText = '❌ No email found';
+                document.getElementById('email').innerText = '❌ No email';
             }
             
-            // Find OTP code - IMPROVED PATTERNS
-            var code = null;
+            // Find ALL numbers (4-8 digits)
+            var numbers = data.match(/\d{4,8}/g);
             
-            // Pattern 1: "Verification Code: 090841" format
-            var p1 = text.match(/Verification\s+Code[:\s]+(\d{4,8})/i);
-            if(p1) code = p1[1];
+            var otp = null;
             
-            // Pattern 2: "code: 123456" or "OTP: 123456"
-            if(!code) {
-                var p2 = text.match(/(?:code|otp|verification|pin|token)[:\s]+(\d{4,8})/i);
-                if(p2) code = p2[1];
+            if(numbers && numbers.length > 0) {
+                // Take the LAST number found (usually the OTP)
+                otp = numbers[numbers.length - 1];
             }
             
-            // Pattern 3: Any 6 digit number
-            if(!code) {
-                var p3 = text.match(/\b(\d{6})\b/);
-                if(p3) code = p3[1];
-            }
-            
-            // Pattern 4: Any 4-8 digit number (last resort)
-            if(!code) {
-                var p4 = text.match(/\b(\d{4,8})\b/);
-                if(p4) code = p4[1];
-            }
-            
-            // Show code
-            if(code) {
-                document.getElementById('code').innerText = code;
+            if(otp) {
+                document.getElementById('otp').innerText = otp;
                 
-                // Copy to clipboard
-                navigator.clipboard.writeText(code);
-                document.getElementById('status').innerText = '✓ Code copied: ' + code;
+                // Copy
+                navigator.clipboard.writeText(otp);
+                document.getElementById('msg').innerText = '✓ Copied: ' + otp;
                 
                 setTimeout(function() {
-                    document.getElementById('status').innerText = '';
+                    document.getElementById('msg').innerText = '';
                 }, 3000);
             } else {
-                document.getElementById('code').innerText = 'NOT FOUND';
-                document.getElementById('status').innerText = '❌ No code detected';
+                document.getElementById('otp').innerText = 'NOT FOUND';
+                document.getElementById('msg').innerText = '❌ No code found';
             }
         }
         
-        // Auto extract on paste
-        document.getElementById('input').addEventListener('paste', function() {
-            setTimeout(extract, 100);
-        });
-        
-        // Auto extract on input
-        document.getElementById('input').addEventListener('input', function() {
-            if(this.value.length > 50) {
-                extract();
-            }
+        // Auto run on paste
+        document.getElementById('data').addEventListener('paste', function() {
+            setTimeout(find, 200);
         });
     </script>
 </body>
