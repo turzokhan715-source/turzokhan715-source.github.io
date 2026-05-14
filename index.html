@@ -1,94 +1,102 @@
-<?php
-// PHP Backend to bypass CORS
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input = $_POST['token_data'] ?? '';
-    $parts = explode('|', $input);
-
-    if (count($parts) < 4) {
-        echo json_encode(['error' => 'Invalid Format! Use: Email|Pass|Refresh|Client_ID']);
-        exit;
-    }
-
-    $email = trim($parts[0]);
-    $refresh_token = trim($parts[2]);
-    $client_id = trim($parts[3]);
-
-    // 1. Refresh Access Token
-    $token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
-    $post_fields = http_build_query([
-        'client_id' => $client_id,
-        'refresh_token' => $refresh_token,
-        'grant_type' => 'refresh_token',
-        'scope' => 'https://graph.microsoft.com/Mail.Read'
-    ]);
-
-    $ch = curl_init($token_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
-    $res = json_decode(curl_exec($ch), true);
-    curl_close($ch);
-
-    $access_token = $res['access_token'] ?? null;
-
-    if (!$access_token) {
-        echo json_encode(['error' => 'Token Expired or Invalid!']);
-        exit;
-    }
-
-    // 2. Search Mail
-    $mail_url = "https://graph.microsoft.com/v1.0/users/$email/messages?\$search=\"Facebook\"&\$top=1";
-    $ch = curl_init($mail_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer $access_token"]);
-    $mail_res = json_decode(curl_exec($ch), true);
-    curl_close($ch);
-
-    $body = $mail_res['value'][0]['body']['content'] ?? '';
-    preg_match('/\b\d{5,6}\b/', $body, $matches);
-    $otp = $matches[0] ?? 'No Code Found';
-
-    echo json_encode(['otp' => $otp]);
-    exit;
-}
-?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>FB OTP RETRIEVER</title>
+    <meta charset="UTF-8">
+    <title>FB OTP DETECTOR</title>
     <style>
-        body { background: #0d1117; color: white; font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
-        .box { width: 450px; background: #161b22; padding: 30px; border-radius: 15px; border: 1px solid #30363d; text-align: center; }
-        textarea { width: 100%; height: 100px; background: #010409; color: #39ff14; border: 1px solid #333; padding: 10px; margin-bottom: 15px; border-radius: 5px; }
-        button { background: #238636; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; border-radius: 5px; font-weight: bold; }
-        #result { margin-top: 25px; font-size: 40px; color: #58a6ff; font-weight: bold; border: 2px dashed #30363d; padding: 15px; }
+        body { background: #0d1117; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding-top: 50px; }
+        .card { width: 450px; background: #161b22; padding: 30px; border-radius: 12px; border: 1px solid #30363d; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { color: #58a6ff; margin-bottom: 20px; }
+        textarea { width: 100%; height: 100px; background: #010409; color: #39ff14; border: 1px solid #30363d; border-radius: 6px; padding: 10px; font-family: monospace; resize: none; outline: none; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #238636; color: white; border: none; border-radius: 6px; margin-top: 15px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        button:hover { background: #2ea043; }
+        .result-box { margin-top: 25px; padding: 20px; border: 2px dashed #30363d; border-radius: 8px; }
+        #otpDisplay { font-size: 40px; color: #58a6ff; font-weight: bold; margin-top: 10px; display: block; }
+        #status { font-size: 12px; color: #8b949e; }
     </style>
 </head>
 <body>
 
-<div class="box">
+<div class="card">
     <h2>Get FB Verification Code</h2>
-    <textarea id="tokenData" placeholder="Email|Pass|Refresh_Token|Client_ID"></textarea>
+    <textarea id="tokenInput" placeholder="Email|Pass|Refresh_Token|Client_ID"></textarea>
     <button onclick="getOTP()">GET VERIFICATION CODE</button>
-    <div id="result">------</div>
+
+    <div class="result-area">
+        <div class="result-box">
+            <span id="status">Waiting for input...</span>
+            <span id="otpDisplay">------</span>
+        </div>
+    </div>
 </div>
 
 <script>
 async function getOTP() {
-    const input = document.getElementById('tokenData').value;
-    const resDiv = document.getElementById('result');
-    resDiv.innerText = "Checking...";
+    const input = document.getElementById('tokenInput').value.trim();
+    const status = document.getElementById('status');
+    const display = document.getElementById('otpDisplay');
 
-    const formData = new FormData();
-    formData.append('token_data', input);
+    if (!input.includes('|')) {
+        alert("Invalid Format!");
+        return;
+    }
 
-    const response = await fetch('', { method: 'POST', body: formData });
-    const data = await response.json();
+    const parts = input.split('|');
+    const email = parts[0].trim();
+    const refreshToken = parts[2].trim();
+    const clientId = parts[3].trim();
 
-    if (data.otp) {
-        resDiv.innerText = data.otp;
-    } else {
-        resDiv.innerText = data.error;
+    // CORS সমস্যা এড়াতে প্রক্সি ব্যবহার
+    const proxy = "https://api.allorigins.win/raw?url=";
+
+    try {
+        status.innerText = "Connecting to Microsoft...";
+        
+        // ১. এক্সেস টোকেন রিফ্রেশ করা
+        const tokenUrl = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+        const tokenParams = new URLSearchParams({
+            client_id: clientId,
+            refresh_token: refreshToken,
+            grant_type: 'refresh_token',
+            scope: 'https://graph.microsoft.com/Mail.Read'
+        });
+
+        const tokenRes = await fetch(proxy + encodeURIComponent(tokenUrl), {
+            method: 'POST',
+            body: tokenParams
+        });
+        const tokenData = await tokenRes.json();
+        const accessToken = tokenData.access_token;
+
+        if (!accessToken) throw new Error("Invalid Token");
+
+        status.innerText = "Searching Latest Facebook Mail...";
+
+        // ২. ইনবক্স থেকে মেইল রিড করা
+        const mailUrl = `https://graph.microsoft.com/v1.0/users/${email}/messages?$search="Facebook"&$top=1`;
+        const mailRes = await fetch(proxy + encodeURIComponent(mailUrl), {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        const mailData = await mailRes.json();
+
+        if (mailData.value && mailData.value.length > 0) {
+            const bodyContent = mailData.value[0].body.content;
+            const codeMatch = bodyContent.match(/\b\d{5,6}\b/);
+            
+            if (codeMatch) {
+                status.innerText = "Code Detected Successfully!";
+                display.innerText = codeMatch[0];
+            } else {
+                status.innerText = "No numeric code found in mail.";
+                display.innerText = "NOT FOUND";
+            }
+        } else {
+            status.innerText = "No Facebook mail found.";
+            display.innerText = "EMPTY";
+        }
+    } catch (err) {
+        status.innerText = "Error: Check your Token/Client ID";
+        display.innerText = "ERROR";
     }
 }
 </script>
