@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>FB/IG OTP Extractor - Fixed 401</title>
+    <title>FB/IG OTP Extractor - Fixed</title>
     <style>
         * {
             margin: 0;
@@ -89,7 +89,8 @@
 , 
 , 
 , 
-, #bc1888);
+, 
+);
             color: white;
             border-color: 
 ;
@@ -97,7 +98,8 @@
         }
         .tab-button.inactive {
             color: #999;
-            background: #f8f9fa;
+            background: 
+;
         }
         
         .input-section {
@@ -112,11 +114,11 @@
         }
         textarea {
             width: 100%;
-            height: 150px;
+            height: 180px;
             padding: 15px;
             border: 2px solid #ddd;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-family: 'Courier New', monospace;
             resize: vertical;
             transition: all 0.3s;
@@ -148,13 +150,9 @@
 );
             color: white;
         }
-        .btn-extract:hover:not(:disabled) {
+        .btn-extract:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 120, 212, 0.4);
-        }
-        .btn-extract:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
         }
         .btn-clear {
             background: 
@@ -166,29 +164,30 @@
 ;
         }
         
-        .error-box {
+        .warning-box {
             background: 
 ;
             border: 2px solid 
 ;
-            color: 
-;
-            padding: 15px;
             border-radius: 10px;
+            padding: 15px;
             margin-bottom: 20px;
             display: none;
         }
-        .error-box h4 {
+        .warning-box h4 {
+            color: 
+;
             margin-bottom: 10px;
             font-size: 15px;
         }
-        .error-box ul {
-            margin-left: 20px;
+        .warning-box p {
+            color: 
+;
             font-size: 13px;
-            line-height: 1.8;
+            line-height: 1.6;
         }
         
-        .status-box {
+        .format-detected {
             background: 
 ;
             padding: 12px;
@@ -255,7 +254,8 @@
 ;
         }
         .platform-detected.ig {
-            background: linear-gradient(135deg, #fce4ec, 
+            background: linear-gradient(135deg, 
+, 
 );
             color: 
 ;
@@ -350,7 +350,8 @@
         }
         .info-panel li {
             padding: 6px 0;
-            color: #495057;
+            color: 
+;
             font-size: 14px;
         }
         .info-panel li::before {
@@ -360,17 +361,18 @@
             font-weight: bold;
             margin-right: 8px;
         }
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .example-box {
+            background: 
+;
+            border: 2px solid 
+;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            color: 
+;
         }
     </style>
 </head>
@@ -378,7 +380,7 @@
     <div class="container">
         <div class="header">
             <h1>📧 FB/IG OTP Extractor</h1>
-            <p>Automatic code extraction from Outlook</p>
+            <p>Paste email data WITH subject/body containing code</p>
         </div>
         
         <div class="tab-container">
@@ -390,52 +392,44 @@
             </div>
         </div>
         
+        <div class="warning-box" id="warningBox">
+            <h4>⚠️ Important: Email Body Required!</h4>
+            <p>Your data must include the email SUBJECT or BODY where the verification code is located. Just email|password|token|uuid is NOT enough!</p>
+            <div class="example-box">
+✅ Good: email|password|token|uuid|123456 is your Facebook code<br>
+✅ Good: 123456 is your Instagram code<br>
+❌ Bad: email|password|token|uuid (no code!)
+            </div>
+        </div>
+        
         <div class="input-section">
-            <label>📋 Paste Pipe-Separated Data:</label>
+            <label>📋 Paste Data (MUST include email subject/body with code):</label>
             <textarea id="emailInput" placeholder="Paste your data here...
 
-Format: email|password|token|uuid
+✅ REQUIRED: Data must contain email subject or body with verification code!
+
+Supported formats:
+• email|password|token|uuid|SUBJECT_WITH_CODE
+• email|password|token|uuid|SUBJECT|BODY_WITH_CODE
+• Just the subject/body text: &quot;123456 is your Facebook code&quot;
+• JSON: {&quot;subject&quot;:&quot;123456 is your code&quot;,...}
 
 Example:
-user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|uuid-here
-
-⚠️ IMPORTANT: Make sure your token:
-• Is a valid Microsoft Graph API access token
-• Has Mail.Read permission
-• Is not expired (tokens expire after 1 hour)
-• Has no extra spaces before/after"></textarea>
+user@outlook.com|pass123|token|uuid|123456 is your Facebook code"></textarea>
         </div>
         
         <div class="btn-group">
-            <button class="btn-extract" id="extractBtn" onclick="extractOTP()">🔍 Extract OTP Code</button>
+            <button class="btn-extract" onclick="extractOTP()">🔍 Extract OTP Code</button>
             <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
         </div>
         
-        <div class="error-box" id="errorBox">
-            <h4>❌ 401 Unauthorized Error - Token Issue</h4>
-            <ul>
-                <li><strong>Token expired:</strong> Access tokens expire after 1 hour. Get a fresh token.</li>
-                <li><strong>Invalid token:</strong> Make sure you copied the complete token without spaces.</li>
-                <li><strong>Missing permissions:</strong> Token needs Mail.Read permission.</li>
-                <li><strong>Wrong token type:</strong> Must be a Microsoft Graph API access token.</li>
-            </ul>
-        </div>
-        
-        <div class="status-box" id="statusBox"></div>
+        <div class="format-detected" id="formatDetected"></div>
         
         <div class="result-section">
             <div class="data-display" id="dataDisplay" style="display:none;">
                 <div class="data-row">
                     <span class="data-label">📧 Email:</span>
                     <span id="emailOut">-</span>
-                </div>
-                <div class="data-row" id="fromRow" style="display:none;">
-                    <span class="data-label">📨 From:</span>
-                    <span id="fromOut">-</span>
-                </div>
-                <div class="data-row" id="subjectRow" style="display:none;">
-                    <span class="data-label">📝 Subject:</span>
-                    <span id="subjectOut">-</span>
                 </div>
             </div>
             
@@ -451,28 +445,19 @@ user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|uuid-here
         </div>
         
         <div class="info-panel">
-            <h3>🔧 Troubleshooting 401 Error</h3>
+            <h3>✨ How To Use</h3>
             <ul>
-                <li>Get a fresh access token (they expire hourly)</li>
-                <li>Ensure token has Mail.Read permission</li>
-                <li>Remove any spaces before/after the token</li>
-                <li>Use Microsoft Graph API token, not other types</li>
-                <li>Check token format: starts with "eyJ..."</li>
+                <li>Your data MUST include email subject or body with code</li>
+                <li>Format: email|password|token|uuid|SUBJECT_OR_BODY</li>
+                <li>Or just paste: "123456 is your Facebook code"</li>
+                <li>Works with Facebook & Instagram verification emails</li>
+                <li>Auto-copies code to clipboard</li>
             </ul>
         </div>
     </div>
 
     <script>
         var selectedPlatform = 'facebook';
-        
-        // Try multiple CORS proxies
-        const CORS_PROXIES = [
-            'https://api.allorigins.win/raw?url=',
-            'https://corsproxy.io/?',
-            'https://cors-anywhere.herokuapp.com/'
-        ];
-        
-        const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
         
         function selectPlatform(platform) {
             selectedPlatform = platform;
@@ -492,13 +477,9 @@ user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|uuid-here
         function clearAll() {
             document.getElementById('emailInput').value = '';
             document.getElementById('dataDisplay').style.display = 'none';
-            document.getElementById('statusBox').style.display = 'none';
-            document.getElementById('errorBox').style.display = 'none';
-            document.getElementById('fromRow').style.display = 'none';
-            document.getElementById('subjectRow').style.display = 'none';
+            document.getElementById('formatDetected').style.display = 'none';
+            document.getElementById('warningBox').style.display = 'none';
             document.getElementById('emailOut').innerText = '-';
-            document.getElementById('fromOut').innerText = '-';
-            document.getElementById('subjectOut').innerText = '-';
             document.getElementById('codeDisplay').className = 'code-display waiting';
             document.getElementById('codeDisplay').innerText = '------';
             document.getElementById('copyMsg').innerText = '';
@@ -514,83 +495,7 @@ user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|uuid-here
             return txt.value;
         }
         
-        function extractCodeFromText(text) {
-            if (!text) return null;
-            
-            text = decodeHTML(text);
-            
-            const allCodes = [];
-            
-            // Pattern 1: "123456 is your code"
-            const p1 = text.match(/(\d{4,8})\s+is\s+your/gi);
-            if (p1) {
-                p1.forEach(match => {
-                    const code = match.match(/(\d{4,8})/);
-                    if (code) allCodes.push(code[1]);
-                });
-            }
-            
-            // Pattern 2: "code is 123456"
-            const p2 = text.match(/code[\s:is]+(\d{4,8})/gi);
-            if (p2) {
-                p2.forEach(match => {
-                    const code = match.match(/(\d{4,8})/);
-                    if (code) allCodes.push(code[1]);
-                });
-            }
-            
-            // Pattern 3: Standalone codes
-            const p3 = text.match(/\b(\d{4,8})\b/g);
-            if (p3) {
-                p3.forEach(code => {
-                    if (!['2024', '2025', '2026', '8080', '443', '80', '1234', '0000'].includes(code)) {
-                        allCodes.push(code);
-                    }
-                });
-            }
-            
-            return allCodes.length > 0 ? allCodes[allCodes.length - 1] : null;
-        }
-        
-        async function tryFetchWithProxy(token, proxyIndex = 0) {
-            if (proxyIndex >= CORS_PROXIES.length) {
-                throw new Error('All CORS proxies failed');
-            }
-            
-            const proxy = CORS_PROXIES[proxyIndex];
-            const apiUrl = OUTLOOK_API + '?$top=10&$orderby=receivedDateTime DESC&$select=subject,bodyPreview,body,from,receivedDateTime';
-            
-            try {
-                const response = await fetch(proxy + encodeURIComponent(apiUrl), {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + token.trim(),
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (response.status === 401) {
-                    throw new Error('401_UNAUTHORIZED');
-                }
-                
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status);
-                }
-                
-                return await response.json();
-                
-            } catch (error) {
-                if (error.message === '401_UNAUTHORIZED') {
-                    throw error;
-                }
-                
-                // Try next proxy
-                console.log('Proxy ' + proxyIndex + ' failed, trying next...');
-                return await tryFetchWithProxy(token, proxyIndex + 1);
-            }
-        }
-        
-        async function extractOTP() {
+        function extractOTP() {
             var input = document.getElementById('emailInput').value.trim();
             
             if(!input) {
@@ -598,154 +503,164 @@ user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|uuid-here
                 return;
             }
             
-            // Parse input
-            var parts = input.split('|');
-            if(parts.length < 3) {
-                alert('⚠️ Invalid format! Use: email|password|token|uuid');
-                return;
-            }
-            
-            var email = parts[0].trim();
-            var password = parts[1].trim();
-            var token = parts[2].trim();
-            var uuid = parts.length >= 4 ? parts[3].trim() : '';
-            
-            if(!token) {
-                alert('⚠️ Token is required!');
-                return;
-            }
-            
-            // Validate token format
-            if(!token.startsWith('eyJ')) {
-                alert('⚠️ Invalid token format! Microsoft Graph tokens start with "eyJ"');
-                return;
-            }
-            
-            // UI updates
-            document.getElementById('extractBtn').disabled = true;
-            document.getElementById('extractBtn').innerHTML = '<span class="loader"></span> Fetching...';
+            // RESET
             document.getElementById('codeDisplay').className = 'code-display waiting';
-            document.getElementById('codeDisplay').innerText = 'FETCHING...';
+            document.getElementById('codeDisplay').innerText = 'SEARCHING...';
             document.getElementById('copyMsg').innerText = '';
-            document.getElementById('errorBox').style.display = 'none';
+            document.getElementById('warningBox').style.display = 'none';
             
-            var statusBox = document.getElementById('statusBox');
-            statusBox.style.display = 'block';
-            statusBox.innerText = '🔄 Validating token...';
+            var formatMsg = '';
+            var decoded = input;
+            var email = '';
+            var hasEmailBody = false;
             
+            // Check if pipe-separated
+            if(input.includes('|')) {
+                var parts = input.split('|');
+                formatMsg = '🔍 Detected: Pipe-separated format (' + parts.length + ' fields)';
+                
+                if(parts.length >= 1 && parts[0].includes('@')) {
+                    email = parts[0].trim();
+                }
+                
+                // Check if has 5+ fields (includes subject/body)
+                if(parts.length >= 5) {
+                    hasEmailBody = true;
+                    // Combine all fields after uuid as email content
+                    decoded = parts.slice(4).join(' ');
+                } else {
+                    // Only 4 fields - no email body!
+                    hasEmailBody = false;
+                }
+            } else if(input.trim().startsWith('{')) {
+                // JSON format
+                try {
+                    var json = JSON.parse(input);
+                    formatMsg = '🔍 Detected: JSON format';
+                    hasEmailBody = true;
+                    
+                    if(json.subject) decoded = json.subject + ' ';
+                    if(json.bodyPreview) decoded += json.bodyPreview + ' ';
+                    if(json.body && json.body.content) decoded += json.body.content;
+                } catch(e) {
+                    formatMsg = '⚠️ JSON parse failed';
+                }
+            } else {
+                // Plain text
+                formatMsg = '🔍 Detected: Plain text';
+                hasEmailBody = true;
+            }
+            
+            document.getElementById('formatDetected').innerText = formatMsg;
+            document.getElementById('formatDetected').style.display = 'block';
+            
+            // Show warning if no email body
+            if(!hasEmailBody) {
+                document.getElementById('warningBox').style.display = 'block';
+            }
+            
+            // Decode HTML
+            decoded = decodeHTML(decoded);
+            
+            // URL decode
+            try {
+                decoded = decodeURIComponent(decoded);
+            } catch(e) {}
+            
+            // Display email
+            if(email) {
+                document.getElementById('emailOut').innerText = email;
+                document.getElementById('dataDisplay').style.display = 'block';
+            }
+            
+            // Platform display
             var platformDisplay = document.getElementById('platformDisplay');
             if(selectedPlatform === 'facebook') {
                 platformDisplay.className = 'platform-detected fb';
-                platformDisplay.innerText = '✅ Fetching Facebook Email';
+                platformDisplay.innerText = '✅ Extracting Facebook Code';
             } else {
                 platformDisplay.className = 'platform-detected ig';
-                platformDisplay.innerText = '✅ Fetching Instagram Email';
+                platformDisplay.innerText = '✅ Extracting Instagram Code';
             }
             
-            try {
-                statusBox.innerText = '🔄 Calling Outlook API...';
-                
-                // Try fetching with multiple proxies
-                const data = await tryFetchWithProxy(token);
-                
-                const messages = data.value || [];
-                
-                if (messages.length === 0) {
-                    throw new Error('No emails found in inbox');
+            // EXTRACT CODE
+            var allCodes = [];
+            
+            // Pattern 1: "123456 is your code"
+            var p1 = decoded.match(/(\d{4,8})[\s]+is[\s]+your/gi);
+            if(p1) {
+                for(var i = 0; i < p1.length; i++) {
+                    var m = p1[i].match(/(\d{4,8})/);
+                    if(m) allCodes.push(m[1]);
                 }
-                
-                statusBox.innerText = '🔍 Searching for ' + selectedPlatform + ' email...';
-                
-                // Filter by platform
-                const platformKeywords = selectedPlatform === 'instagram' 
-                    ? ['instagram', 'ig'] 
-                    : ['facebook', 'fb'];
-                
-                // Find relevant email
-                let targetEmail = null;
-                for (const msg of messages) {
-                    const from = (msg.from?.emailAddress?.address || '').toLowerCase();
-                    const subject = (msg.subject || '').toLowerCase();
+            }
+            
+            // Pattern 2: "code is 123456"
+            var p2 = decoded.match(/code[\s:is]+(\d{4,8})/gi);
+            if(p2) {
+                for(var j = 0; j < p2.length; j++) {
+                    var m2 = p2[j].match(/(\d{4,8})/);
+                    if(m2) allCodes.push(m2[1]);
+                }
+            }
+            
+            // Pattern 3: Standalone codes
+            var p3 = decoded.match(/\b(\d{4,8})\b/g);
+            if(p3) {
+                for(var k = 0; k < p3.length; k++) {
+                    var code = p3[k];
                     
-                    const isRelevant = platformKeywords.some(keyword => 
-                        from.includes(keyword) || subject.includes(keyword)
-                    );
-                    
-                    if (isRelevant) {
-                        targetEmail = msg;
-                        break;
+                    // Skip common numbers
+                    if(code === '2024' || code === '2025' || code === '2026' || 
+                       code === '8080' || code === '443' || code === '80' ||
+                       code === '1234' || code === '0000' || code === '9999') {
+                        continue;
                     }
+                    
+                    allCodes.push(code);
                 }
-                
-                if (!targetEmail) {
-                    throw new Error('No ' + selectedPlatform + ' verification email found');
-                }
-                
-                statusBox.innerText = '✅ Email found! Extracting code...';
-                
-                // Extract code
-                const subject = targetEmail.subject || '';
-                const bodyPreview = targetEmail.bodyPreview || '';
-                const bodyContent = targetEmail.body?.content || '';
-                
-                const fullText = subject + ' ' + bodyPreview + ' ' + bodyContent;
-                const code = extractCodeFromText(fullText);
-                
-                if (!code) {
-                    throw new Error('No verification code found in email');
-                }
-                
-                // Success!
-                statusBox.innerText = '✅ Code extracted successfully!';
-                
-                // Display info
-                document.getElementById('emailOut').innerText = email;
-                document.getElementById('dataDisplay').style.display = 'block';
-                
-                if (targetEmail.from?.emailAddress?.address) {
-                    document.getElementById('fromOut').innerText = targetEmail.from.emailAddress.address;
-                    document.getElementById('fromRow').style.display = 'block';
-                }
-                
-                if (subject) {
-                    document.getElementById('subjectOut').innerText = subject;
-                    document.getElementById('subjectRow').style.display = 'block';
-                }
-                
-                // Display code
-                var codeDisplay = document.getElementById('codeDisplay');
-                codeDisplay.className = 'code-display';
-                codeDisplay.innerText = code;
-                
-                // Copy to clipboard
-                try {
-                    await navigator.clipboard.writeText(code);
-                    document.getElementById('copyMsg').className = 'copy-indicator success';
-                    document.getElementById('copyMsg').innerText = '✓ Code copied: ' + code;
-                } catch(e) {
-                    document.getElementById('copyMsg').innerText = '💡 Click code to copy';
-                }
-                
-            } catch(error) {
-                console.error('Error:', error);
-                
-                if (error.message === '401_UNAUTHORIZED') {
-                    // Show 401 error box
-                    document.getElementById('errorBox').style.display = 'block';
-                    statusBox.innerText = '❌ 401 Unauthorized - Token issue!';
-                    document.getElementById('copyMsg').innerText = '❌ Token expired or invalid. Get a fresh token!';
-                } else {
-                    statusBox.innerText = '❌ Error: ' + error.message;
-                    document.getElementById('copyMsg').innerText = '❌ ' + error.message;
-                }
-                
-                document.getElementById('codeDisplay').className = 'code-display error';
-                document.getElementById('codeDisplay').innerText = 'ERROR';
             }
             
-            // Re-enable button
-            document.getElementById('extractBtn').disabled = false;
-            document.getElementById('extractBtn').innerHTML = '🔍 Extract OTP Code';
+            // Get last code
+            var otp = null;
+            if(allCodes.length > 0) {
+                otp = allCodes[allCodes.length - 1];
+            }
+            
+            // Display result
+            var codeDisplay = document.getElementById('codeDisplay');
+            var copyMsg = document.getElementById('copyMsg');
+            
+            if(otp) {
+                codeDisplay.className = 'code-display';
+                codeDisplay.innerText = otp;
+                
+                navigator.clipboard.writeText(otp).then(function() {
+                    copyMsg.className = 'copy-indicator success';
+                    
+                    if(selectedPlatform === 'facebook') {
+                        copyMsg.innerText = '✓ Facebook code copied: ' + otp;
+                    } else {
+                        copyMsg.innerText = '✓ Instagram code copied: ' + otp;
+                    }
+                    
+                    setTimeout(function() {
+                        copyMsg.innerText = '';
+                    }, 3000);
+                }).catch(function() {
+                    copyMsg.innerText = '💡 Click code to copy';
+                });
+                
+            } else {
+                codeDisplay.className = 'code-display error';
+                codeDisplay.innerText = 'NO CODE FOUND';
+                
+                if(!hasEmailBody) {
+                    copyMsg.innerText = '❌ No email body found! Add subject/body with code.';
+                } else {
+                    copyMsg.innerText = '❌ No verification code detected in data';
+                }
+            }
         }
         
         // Auto-extract on paste
@@ -756,7 +671,7 @@ user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|uuid-here
         // Click to copy
         document.getElementById('codeDisplay').addEventListener('click', function() {
             var code = this.innerText;
-            if(code !== '------' && code !== 'FETCHING...' && code !== 'ERROR') {
+            if(code !== '------' && code !== 'SEARCHING...' && code !== 'NO CODE FOUND') {
                 navigator.clipboard.writeText(code);
                 document.getElementById('copyMsg').className = 'copy-indicator success';
                 document.getElementById('copyMsg').innerText = '✓ Copied: ' + code;
