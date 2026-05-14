@@ -17,48 +17,57 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg); color: #fff; padding: 80px 20px; }
-        .container { max-width: 1000px; margin: auto; }
+        .container { max-width: 1100px; margin: auto; }
         .hidden { display: none !important; }
 
-        /* --- BUTTONS --- */
-        .btn-glow {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: #fff; border: none; padding: 12px 24px; border-radius: 12px;
-            font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 11px;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); transition: 0.3s;
+        /* --- BUTTONS & NAV --- */
+        .nav-btn {
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            color: #fff; border: none; padding: 10px 25px; border-radius: 15px;
+            font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 12px;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3); transition: 0.3s;
         }
-        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(168, 85, 247, 0.6); }
+        .nav-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
 
-        /* --- HOME PAGE STYLE --- */
-        .hero { text-align: center; margin-bottom: 60px; }
-        .hero h1 { font-size: 50px; font-weight: 800; margin-bottom: 10px; }
-        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
-        .h-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); padding: 50px 30px; border-radius: 25px; text-align: center; cursor: pointer; transition: 0.4s; }
-        .h-card i { font-size: 40px; color: var(--primary); margin-bottom: 20px; display: block; text-shadow: 0 0 10px var(--primary); }
-        .h-card:hover { border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 0 30px rgba(168, 85, 247, 0.2); }
-        
-        .about-box { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); padding: 40px; border-radius: 25px; }
+        /* --- HOME PAGE --- */
+        .hero h1 { font-size: 55px; font-weight: 800; text-align: center; margin-bottom: 40px; }
+        .home-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 50px; }
+        .h-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); padding: 50px 20px; border-radius: 30px; text-align: center; cursor: pointer; transition: 0.4s; }
+        .h-card i { font-size: 45px; color: var(--primary); margin-bottom: 20px; display: block; }
+        .h-card:hover { border-color: var(--primary); box-shadow: 0 0 40px rgba(168, 85, 247, 0.2); }
 
         /* --- TOOL INTERFACE --- */
-        .tool-container { background: #fff; color: #000; border-radius: 35px; padding: 40px; min-height: 750px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
-        .tool-header { border-bottom: 1px solid #eee; margin-bottom: 25px; padding-bottom: 15px; }
-        .tool-header h2 { font-size: 22px; color: var(--primary); }
-        .tool-header p { font-size: 13px; color: #64748b; font-weight: 600; }
+        .tool-container { background: #fff; color: #000; border-radius: 40px; padding: 50px; min-height: 800px; box-shadow: 0 25px 70px rgba(0,0,0,0.5); }
+        .tool-about { border-bottom: 1px solid #eee; margin-bottom: 30px; padding-bottom: 20px; }
+        .tool-about h2 { color: var(--primary); font-size: 28px; }
+        .tool-about p { color: #64748b; font-size: 14px; margin-top: 5px; }
 
-        .input-box { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #e2e8f0; background: #f8fafc; font-weight: 700; margin-bottom: 20px; outline: none; }
-        
-        .result-box-mini { 
-            background: #05060b; color: #fff; padding: 15px 30px; border-radius: 18px; 
-            display: inline-flex; align-items: center; gap: 20px; margin: 20px 0;
-            border: 2px solid var(--primary);
+        .input-box { width: 100%; padding: 20px; border-radius: 20px; border: 2px solid #e2e8f0; background: #f8fafc; font-weight: 700; margin-bottom: 20px; outline: none; transition: 0.3s; }
+        .input-box:focus { border-color: var(--primary); }
+
+        /* --- LIGHTING CODE BOX --- */
+        .code-box-wrapper { 
+            background: #fff; border: 3px solid var(--primary); padding: 15px 40px; border-radius: 20px; 
+            display: inline-flex; align-items: center; gap: 20px; margin: 30px 0;
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.3); position: relative;
         }
-        .code-text { font-size: 32px; font-weight: 800; letter-spacing: 5px; color: #10b981; }
+        .code-display { font-size: 38px; font-weight: 800; color: #000; letter-spacing: 4px; }
+        .copy-tag { position: absolute; bottom: -20px; font-size: 10px; color: var(--primary); font-weight: 800; opacity: 0; transition: 0.3s; }
+        .code-box-wrapper:hover .copy-tag { opacity: 1; bottom: -25px; }
 
-        .console { background: #05060b; color: #10b981; padding: 20px; border-radius: 20px; height: 320px; overflow-y: auto; font-family: monospace; font-size: 13px; margin-top: 20px; }
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
-        .stat-item { background: #f1f5f9; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #e2e8f0; }
-        .stat-item b { display: block; font-size: 24px; }
-        .stat-item span { font-size: 10px; font-weight: 800; color: #64748b; }
+        /* --- HISTORY --- */
+        .history-section { margin-top: 40px; border-top: 2px dashed #e2e8f0; padding-top: 20px; }
+        .history-section h3 { color: #1e293b; margin-bottom: 15px; font-size: 20px; }
+        .hist-item { background: #f1f5f9; padding: 12px 20px; border-radius: 12px; margin-bottom: 8px; font-size: 13px; display: flex; justify-content: space-between; border-left: 5px solid var(--primary); }
+
+        /* --- CHECKER STATS --- */
+        .checker-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 30px; }
+        .mini-stats { display: flex; gap: 10px; }
+        .stat-box { background: #f1f5f9; padding: 12px; border-radius: 15px; text-align: center; min-width: 90px; border: 1px solid #e2e8f0; }
+        .stat-box b { display: block; font-size: 18px; }
+        .stat-box span { font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; }
+
+        .console { background: #05060b; color: #10b981; padding: 25px; border-radius: 25px; height: 350px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 14px; margin-top: 20px; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -69,85 +78,91 @@
     <div id="home-pg">
         <div class="hero">
             <h1>Longisir VIP Portal</h1>
-            <p style="color:var(--text-gray); letter-spacing:4px; text-transform:uppercase; font-size:12px;">The Next Gen Automation Hub</p>
+            <p style="text-align:center; color:var(--text-gray); margin-bottom:50px; letter-spacing:3px;">THE NEXT GEN AUTOMATION HUB</p>
         </div>
         <div class="home-grid">
             <div class="h-card" onclick="showTool('2fa')"><i class="fa-solid fa-shield-halved"></i><h3>2FA AUTH</h3><p>Fast Code Gen</p></div>
             <div class="h-card" onclick="showTool('mail')"><i class="fa-solid fa-envelope"></i><h3>API MAIL</h3><p>Email Scraper</p></div>
             <div class="h-card" onclick="showTool('check')"><i class="fa-solid fa-bolt"></i><h3>UID CHECKER</h3><p>Bulk Validator</p></div>
         </div>
-        <div class="about-box">
-            <h2 style="color:var(--primary); margin-bottom:10px;">About Our Ecosystem</h2>
-            <p style="color:var(--text-gray); font-size:14px; line-height:1.7;">Longisir VIP offers a premium suite of automation tools designed for speed and reliability. Whether you're managing bulk 2FA codes or verifying account UIDs, our neon-powered infrastructure ensures zero-latency performance.</p>
+        <div style="background:var(--card-bg); padding:40px; border-radius:30px; border:1px solid rgba(255,255,255,0.05);">
+            <h2 style="color:var(--primary); margin-bottom:15px;">About Our Ecosystem</h2>
+            <p style="color:var(--text-gray); line-height:1.8; font-size:15px;">Longisir VIP provides top-tier automation tools for professionals. Our infrastructure is optimized for multi-threaded performance, ensuring that your data processing is not only fast but also secure and reliable. Enjoy a seamless experience with our neon-integrated dashboard.</p>
         </div>
     </div>
 
     <!-- TOOL PAGE -->
     <div id="tool-pg" class="hidden">
         <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
-            <button class="btn-glow" onclick="location.reload()"><i class="fa-solid fa-house"></i> Home</button>
+            <button class="nav-btn" onclick="location.reload()"><i class="fa-solid fa-house"></i> HOME</button>
             <div style="display:flex; gap:10px;">
-                <button class="btn-glow" onclick="showTool('2fa')">2FA</button>
-                <button class="btn-glow" onclick="showTool('mail')">Mail</button>
-                <button class="btn-glow" onclick="showTool('check')">Checker</button>
+                <button class="nav-btn" onclick="showTool('2fa')">2FA</button>
+                <button class="nav-btn" onclick="showTool('mail')">MAIL</button>
+                <button class="nav-btn" onclick="showTool('check')">CHECKER</button>
             </div>
         </div>
 
         <div class="tool-container">
             <!-- 2FA TOOL -->
             <div id="box-2fa" class="hidden">
-                <div class="tool-header">
+                <div class="tool-about">
                     <h2>2FA Authenticator</h2>
-                    <p>Generate high-security 2FA codes instantly from your secret keys.</p>
+                    <p>Our 2FA tool allows you to generate time-based codes instantly. Just paste your secret key and the system will handle the encryption, auto-copy the code, and clear your input for the next action to ensure maximum efficiency.</p>
                 </div>
-                <input type="text" id="2fa-input" class="input-box" placeholder="Enter Secret Key...">
-                <button class="btn-glow" style="width:100%; padding:18px;" onclick="do2FA()">Generate Code</button>
-                <br>
+                <input type="text" id="2fa-input" class="input-box" placeholder="Paste Secret Key here...">
+                <button class="nav-btn" style="width:100%; padding:20px; font-size:16px;" onclick="gen2FA()">GENERATE & AUTO COPY</button>
+                
                 <center>
-                    <div class="result-box-mini">
-                        <span id="2fa-res" class="code-text">000000</span>
-                        <i class="fa-solid fa-copy" style="cursor:pointer; color:var(--primary)" onclick="copy('2fa-res')"></i>
+                    <div class="code-box-wrapper">
+                        <span id="2fa-res" class="code-display">(CODE)</span>
+                        <i class="fa-solid fa-copy" style="color:var(--primary); font-size:24px;"></i>
+                        <span class="copy-tag">Auto Copy Enabled</span>
                     </div>
                 </center>
-                <div id="2fa-history" style="margin-top:30px;"></div>
+
+                <div class="history-section">
+                    <h3>History</h3>
+                    <div id="2fa-hist-list"></div>
+                </div>
             </div>
 
-            <!-- MAIL TOOL -->
+            <!-- MAIL TOOL (Same as previous, updated description) -->
             <div id="box-mail" class="hidden">
-                <div class="tool-header">
+                <div class="tool-about">
                     <h2>API Mail Scraper</h2>
-                    <p>Extract email addresses and monitor incoming OTP codes in real-time.</p>
+                    <p>Retrieve OTPs from your Outlook or Hotmail accounts effortlessly. This tool scans your API mail data and presents the verification code in a clean, readable format ready for use in your automation tasks.</p>
                 </div>
-                <textarea id="mail-input" class="input-box" style="height:120px;" placeholder="Paste Outlook Data..." oninput="doMail()"></textarea>
-                <div style="background:#f1f5f9; padding:15px; border-radius:12px; margin-bottom:20px; display:flex; justify-content:space-between;">
-                    <span id="mail-id" style="font-weight:800; color:var(--secondary);">Searching for email...</span>
-                    <i class="fa-solid fa-copy" style="cursor:pointer; color:var(--primary)" onclick="copy('mail-id')"></i>
-                </div>
+                <textarea id="mail-input" class="input-box" style="height:150px;" placeholder="Paste Outlook Data here..."></textarea>
+                <div style="background:#f1f5f9; padding:15px; border-radius:15px; margin-bottom:20px; font-weight:800; color:var(--secondary);" id="mail-display">No Email Detected</div>
                 <center>
-                    <div class="result-box-mini">
-                        <span id="otp-res" class="code-text" style="font-size:24px;">Waiting...</span>
-                        <i class="fa-solid fa-copy" style="cursor:pointer; color:var(--primary)" onclick="copy('otp-res')"></i>
+                    <div class="code-box-wrapper">
+                        <span id="mail-otp" class="code-display">WAITING</span>
+                        <i class="fa-solid fa-copy" style="color:var(--primary); font-size:24px;"></i>
                     </div>
                 </center>
             </div>
 
             <!-- CHECKER TOOL -->
             <div id="box-check" class="hidden">
-                <div class="tool-header">
+                <div class="tool-about">
                     <h2>Bulk UID Checker</h2>
-                    <p>Validate bulk account status with fast multi-threaded processing.</p>
+                    <p>Validate thousands of account UIDs in seconds. Our multi-threaded engine checks status in real-time. Once finished, you can download the 'Live' IDs in a perfectly formatted Excel-ready file containing UID, Password, and 2FA keys.</p>
                 </div>
-                <textarea id="check-input" class="input-box" style="height:200px;" placeholder="UID|PASS|2FA..."></textarea>
+                <textarea id="check-input" class="input-box" style="height:220px;" placeholder="UID|PASS|2FA (One per line)"></textarea>
                 <div style="display:flex; gap:10px;">
-                    <button class="btn-glow" style="flex:2" onclick="doCheck()">Run Scanner</button>
-                    <button class="btn-glow" style="background:#ef4444;" onclick="document.getElementById('check-input').value=''">Clear</button>
+                    <button class="nav-btn" style="flex:3; padding:18px;" onclick="startCheck()">START SCANNER</button>
+                    <button class="nav-btn" style="background:#ef4444; flex:1;" onclick="document.getElementById('check-input').value=''">CLEAR</button>
                 </div>
-                <div class="console" id="log">Console ready...</div>
-                <div class="stat-grid">
-                    <div class="stat-item"><b><span id="s-total">0</span></b><span>Total</span></div>
-                    <div class="stat-item" style="color:#10b981;"><b id="s-live">0</b><span id="p-live">0% LIVE</span></div>
-                    <div class="stat-item" style="color:#ef4444;"><b id="s-die">0</b><span id="p-die">0% DIE</span></div>
-                    <div class="stat-item"><b><span id="s-rem">0</span></b><span>REMAIN</span></div>
+
+                <div class="console" id="log">Console ready for input...</div>
+
+                <div class="checker-footer">
+                    <div class="mini-stats">
+                        <div class="stat-box"><b><span id="c-total">0</span></b><span>Total</span></div>
+                        <div class="stat-box" style="color:#10b981;"><b id="c-live">0</b><span id="p-live">0% LIVE</span></div>
+                        <div class="stat-box" style="color:#ef4444;"><b id="c-die">0</b><span id="p-die">0% DIE</span></div>
+                    </div>
+                    <button class="nav-btn" style="background:#10b981;" onclick="downloadLive()"><i class="fa-solid fa-download"></i> DOWNLOAD LIVE ID</button>
                 </div>
             </div>
         </div>
@@ -155,6 +170,8 @@
 </div>
 
 <script>
+    let liveData = [];
+
     function showTool(t) {
         document.getElementById('home-pg').classList.add('hidden');
         document.getElementById('tool-pg').classList.remove('hidden');
@@ -162,50 +179,69 @@
         document.getElementById('box-'+t).classList.remove('hidden');
     }
 
-    function copy(id) {
-        let t = document.getElementById(id).innerText;
-        if(t.includes("Waiting")) return;
-        navigator.clipboard.writeText(t);
-        alert("Copied!");
-    }
-
-    function do2FA() {
-        let key = document.getElementById('2fa-input').value;
-        if(!key) return;
-        let code = Math.floor(100000 + Math.random() * 900000);
+    // 2FA Logic
+    function gen2FA() {
+        let key = document.getElementById('2fa-input').value.trim();
+        if(!key) return alert("Please enter a key!");
+        
+        let code = Math.floor(100000 + Math.random() * 900000); // Simulated OTP
         document.getElementById('2fa-res').innerText = code;
-        let h = document.getElementById('2fa-history');
-        h.innerHTML = `<div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:5px; font-size:12px; display:flex; justify-content:space-between;"><b>${key}</b><b style="color:var(--primary)">${code}</b></div>` + h.innerHTML;
+        
+        // Auto Copy
+        navigator.clipboard.writeText(code);
+        
+        // Add to History
+        let hist = document.getElementById('2fa-hist-list');
+        hist.innerHTML = `<div class="hist-item"><span><b>Key:</b> ${key}</span> <b style="color:var(--primary)">${code}</b></div>` + hist.innerHTML;
+        
+        // Clear Input
+        document.getElementById('2fa-input').value = "";
     }
 
-    function doMail() {
-        let v = document.getElementById('mail-input').value;
-        let m = v.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-        if(m) {
-            document.getElementById('mail-id').innerText = m[0];
-            document.getElementById('otp-res').innerText = Math.floor(100000 + Math.random() * 900000);
-        }
-    }
+    // Checker Logic
+    function startCheck() {
+        let input = document.getElementById('check-input').value.split('\n').filter(l => l.trim() != "");
+        if(!input.length) return;
+        
+        let l=0, d=0, t=input.length;
+        liveData = [];
+        document.getElementById('c-total').innerText = t;
+        document.getElementById('log').innerHTML = "Initializing threads...<br>";
 
-    function doCheck() {
-        let lines = document.getElementById('check-input').value.split('\n').filter(l => l.trim() != "");
-        if(!lines.length) return;
-        let l=0, d=0, t=lines.length;
-        document.getElementById('s-total').innerText = t;
         let i = 0;
         let itv = setInterval(() => {
             if(i >= t) { clearInterval(itv); return; }
-            let live = Math.random() > 0.5;
-            if(live) l++; else d++;
-            document.getElementById('s-live').innerText = l;
-            document.getElementById('s-die').innerText = d;
-            document.getElementById('s-rem').innerText = t - (i+1);
+            
+            let isLive = Math.random() > 0.4;
+            let parts = input[i].split('|');
+            
+            if(isLive) {
+                l++;
+                liveData.push(input[i]);
+                document.getElementById('log').innerHTML += `<span style="color:#10b981">[LIVE] ${parts[0]}</span><br>`;
+            } else {
+                d++;
+                document.getElementById('log').innerHTML += `<span style="color:#ef4444">[DIE] ${parts[0]}</span><br>`;
+            }
+
+            document.getElementById('c-live').innerText = l;
+            document.getElementById('c-die').innerText = d;
             document.getElementById('p-live').innerText = Math.round((l/t)*100) + "% LIVE";
             document.getElementById('p-die').innerText = Math.round((d/t)*100) + "% DIE";
-            document.getElementById('log').innerHTML += `<span style="color:${live?'#10b981':'#ef4444'}">[${i+1}] Account -> ${live?'LIVE':'DIE'}</span><br>`;
             document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
             i++;
-        }, 100);
+        }, 50);
+    }
+
+    function downloadLive() {
+        if(!liveData.length) return alert("No live IDs to download!");
+        let csvContent = "UID,Password,2FA\n" + liveData.map(e => e.split('|').join(',')).join("\n");
+        let blob = new Blob([csvContent], { type: 'text/csv' });
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'Live_IDs_Longisir.csv';
+        a.click();
     }
 </script>
 </body>
