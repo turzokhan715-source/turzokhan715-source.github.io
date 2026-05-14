@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>FB/IG OTP Extractor - Universal</title>
+    <title>FB/IG OTP Extractor - Single File</title>
     <style>
         * {
             margin: 0;
@@ -114,11 +114,11 @@
         }
         textarea {
             width: 100%;
-            height: 180px;
+            height: 150px;
             padding: 15px;
             border: 2px solid #ddd;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 12px;
             font-family: 'Courier New', monospace;
             resize: vertical;
             transition: all 0.3s;
@@ -150,9 +150,13 @@
 );
             color: white;
         }
-        .btn-extract:hover {
+        .btn-extract:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 120, 212, 0.4);
+        }
+        .btn-extract:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         .btn-clear {
             background: 
@@ -164,7 +168,7 @@
 ;
         }
         
-        .format-detected {
+        .status-box {
             background: 
 ;
             padding: 12px;
@@ -338,13 +342,25 @@
             font-weight: bold;
             margin-right: 8px;
         }
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>📧 FB/IG OTP Extractor</h1>
-            <p>Universal format support - paste any data!</p>
+            <p>Automatic code extraction from Outlook</p>
         </div>
         
         <div class="tab-container">
@@ -357,31 +373,37 @@
         </div>
         
         <div class="input-section">
-            <label>📋 Paste Any Format:</label>
+            <label>📋 Paste Pipe-Separated Data:</label>
             <textarea id="emailInput" placeholder="Paste your data here...
 
-✅ Supports ALL formats:
-• JSON API response: {&quot;subject&quot;:&quot;123456 is your code&quot;,...}
-• Plain text: &quot;123456 is your Instagram code&quot;
-• Email body: &quot;Your verification code is 123456&quot;
-• Pipe-separated: email|password|token|uuid
-• HTML content: <html>...123456...</html>
+Format: email|password|token|uuid
 
-Just paste anything - the tool will auto-detect and extract!"></textarea>
+Example:
+user@outlook.com|pass123|eyJ0eXAiOiJKV1QiLCJub25jZSI6...|uuid-here
+
+The tool will automatically:
+✅ Use token to fetch Outlook emails
+✅ Find latest Facebook/Instagram email
+✅ Extract verification code
+✅ Auto-copy to clipboard"></textarea>
         </div>
         
         <div class="btn-group">
-            <button class="btn-extract" onclick="extractOTP()">🔍 Extract OTP Code</button>
+            <button class="btn-extract" id="extractBtn" onclick="extractOTP()">🔍 Extract OTP Code</button>
             <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
         </div>
         
-        <div class="format-detected" id="formatDetected"></div>
+        <div class="status-box" id="statusBox"></div>
         
         <div class="result-section">
             <div class="data-display" id="dataDisplay" style="display:none;">
                 <div class="data-row">
                     <span class="data-label">📧 Email:</span>
                     <span id="emailOut">-</span>
+                </div>
+                <div class="data-row" id="fromRow" style="display:none;">
+                    <span class="data-label">📨 From:</span>
+                    <span id="fromOut">-</span>
                 </div>
                 <div class="data-row" id="subjectRow" style="display:none;">
                     <span class="data-label">📝 Subject:</span>
@@ -401,13 +423,12 @@ Just paste anything - the tool will auto-detect and extract!"></textarea>
         </div>
         
         <div class="info-panel">
-            <h3>✨ Universal Format Support</h3>
+            <h3>✨ Automatic Features</h3>
             <ul>
-                <li>Auto-detects JSON, plain text, HTML, pipe-separated</li>
-                <li>Extracts from subject, body, or any field</li>
-                <li>Works with Facebook & Instagram emails</li>
-                <li>Supports old emails (any time period)</li>
-                <li>HTML & URL decoding built-in</li>
+                <li>Paste email|password|token|uuid format</li>
+                <li>Automatically fetches Outlook emails</li>
+                <li>Finds latest Facebook/Instagram email</li>
+                <li>Extracts verification code</li>
                 <li>Auto-copies code to clipboard</li>
             </ul>
         </div>
@@ -415,6 +436,10 @@ Just paste anything - the tool will auto-detect and extract!"></textarea>
 
     <script>
         var selectedPlatform = 'facebook';
+        
+        // CORS Proxy (you can use your own or public ones)
+        const CORS_PROXY = 'https://corsproxy.io/?';
+        const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
         
         function selectPlatform(platform) {
             selectedPlatform = platform;
@@ -434,10 +459,12 @@ Just paste anything - the tool will auto-detect and extract!"></textarea>
         function clearAll() {
             document.getElementById('emailInput').value = '';
             document.getElementById('dataDisplay').style.display = 'none';
-            document.getElementById('formatDetected').style.display = 'none';
-            document.getElementById('emailOut').innerText = '-';
-            document.getElementById('subjectOut').innerText = '-';
+            document.getElementById('statusBox').style.display = 'none';
+            document.getElementById('fromRow').style.display = 'none';
             document.getElementById('subjectRow').style.display = 'none';
+            document.getElementById('emailOut').innerText = '-';
+            document.getElementById('fromOut').innerText = '-';
+            document.getElementById('subjectOut').innerText = '-';
             document.getElementById('codeDisplay').className = 'code-display waiting';
             document.getElementById('codeDisplay').innerText = '------';
             document.getElementById('copyMsg').innerText = '';
@@ -453,7 +480,48 @@ Just paste anything - the tool will auto-detect and extract!"></textarea>
             return txt.value;
         }
         
-        function extractOTP() {
+        function extractCodeFromText(text) {
+            if (!text) return null;
+            
+            // Decode HTML entities
+            text = decodeHTML(text);
+            
+            const allCodes = [];
+            
+            // Pattern 1: "123456 is your code"
+            const p1 = text.match(/(\d{4,8})\s+is\s+your/gi);
+            if (p1) {
+                p1.forEach(match => {
+                    const code = match.match(/(\d{4,8})/);
+                    if (code) allCodes.push(code[1]);
+                });
+            }
+            
+            // Pattern 2: "code is 123456"
+            const p2 = text.match(/code[\s:is]+(\d{4,8})/gi);
+            if (p2) {
+                p2.forEach(match => {
+                    const code = match.match(/(\d{4,8})/);
+                    if (code) allCodes.push(code[1]);
+                });
+            }
+            
+            // Pattern 3: Standalone codes
+            const p3 = text.match(/\b(\d{4,8})\b/g);
+            if (p3) {
+                p3.forEach(code => {
+                    // Skip common numbers
+                    if (!['2024', '2025', '2026', '8080', '443', '80', '1234', '0000'].includes(code)) {
+                        allCodes.push(code);
+                    }
+                });
+            }
+            
+            // Return most recent (last) code
+            return allCodes.length > 0 ? allCodes[allCodes.length - 1] : null;
+        }
+        
+        async function extractOTP() {
             var input = document.getElementById('emailInput').value.trim();
             
             if(!input) {
@@ -461,163 +529,150 @@ Just paste anything - the tool will auto-detect and extract!"></textarea>
                 return;
             }
             
-            // RESET
+            // Parse input
+            var parts = input.split('|');
+            if(parts.length < 3) {
+                alert('⚠️ Invalid format! Use: email|password|token|uuid');
+                return;
+            }
+            
+            var email = parts[0].trim();
+            var password = parts[1].trim();
+            var token = parts[2].trim();
+            var uuid = parts.length >= 4 ? parts[3].trim() : '';
+            
+            if(!token) {
+                alert('⚠️ Token is required!');
+                return;
+            }
+            
+            // UI updates
+            document.getElementById('extractBtn').disabled = true;
+            document.getElementById('extractBtn').innerHTML = '<span class="loader"></span> Fetching...';
             document.getElementById('codeDisplay').className = 'code-display waiting';
-            document.getElementById('codeDisplay').innerText = 'SEARCHING...';
+            document.getElementById('codeDisplay').innerText = 'FETCHING...';
             document.getElementById('copyMsg').innerText = '';
             
-            var formatMsg = '';
-            var decoded = input;
-            var subject = '';
-            var body = '';
-            var email = '';
+            var statusBox = document.getElementById('statusBox');
+            statusBox.style.display = 'block';
+            statusBox.innerText = '🔄 Calling Outlook API...';
             
-            // AUTO-DETECT FORMAT
-            
-            // Format 1: JSON API Response
-            if(input.trim().startsWith('{') || input.trim().startsWith('[')) {
-                try {
-                    var json = JSON.parse(input);
-                    formatMsg = '🔍 Detected: JSON API Response';
-                    
-                    // Extract fields
-                    if(json.subject) subject = json.subject;
-                    if(json.bodyPreview) body = json.bodyPreview;
-                    if(json.body && json.body.content) body += ' ' + json.body.content;
-                    if(json.from && json.from.emailAddress && json.from.emailAddress.address) {
-                        email = json.from.emailAddress.address;
-                    }
-                    
-                    decoded = subject + ' ' + body;
-                } catch(e) {
-                    formatMsg = '⚠️ JSON parse failed, treating as plain text';
-                }
-            }
-            // Format 2: Pipe-separated
-            else if(input.includes('|')) {
-                formatMsg = '🔍 Detected: Pipe-separated format';
-                var parts = input.split('|');
-                if(parts.length >= 1 && parts[0].includes('@')) {
-                    email = parts[0].trim();
-                }
-                decoded = input;
-            }
-            // Format 3: Plain text or HTML
-            else {
-                formatMsg = '🔍 Detected: Plain text / HTML content';
-            }
-            
-            document.getElementById('formatDetected').innerText = formatMsg;
-            document.getElementById('formatDetected').style.display = 'block';
-            
-            // Decode HTML
-            decoded = decodeHTML(decoded);
-            
-            // URL decode
-            try {
-                decoded = decodeURIComponent(decoded);
-            } catch(e) {}
-            
-            // Extract email if not found
-            if(!email) {
-                var emailMatch = decoded.match(/[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-                if(emailMatch) email = emailMatch[0];
-            }
-            
-            // Display extracted info
-            if(email) {
-                document.getElementById('emailOut').innerText = email;
-                document.getElementById('dataDisplay').style.display = 'block';
-            }
-            
-            if(subject) {
-                document.getElementById('subjectOut').innerText = subject;
-                document.getElementById('subjectRow').style.display = 'block';
-            }
-            
-            // Platform display
             var platformDisplay = document.getElementById('platformDisplay');
             if(selectedPlatform === 'facebook') {
                 platformDisplay.className = 'platform-detected fb';
-                platformDisplay.innerText = '✅ Extracting Facebook Code';
+                platformDisplay.innerText = '✅ Fetching Facebook Email';
             } else {
                 platformDisplay.className = 'platform-detected ig';
-                platformDisplay.innerText = '✅ Extracting Instagram Code';
+                platformDisplay.innerText = '✅ Fetching Instagram Email';
             }
             
-            // EXTRACT CODE - Multiple patterns
-            var allCodes = [];
-            
-            // Pattern 1: "123456 is your code"
-            var p1 = decoded.match(/(\d{4,8})[\s]+is[\s]+your/gi);
-            if(p1) {
-                for(var i = 0; i < p1.length; i++) {
-                    var m = p1[i].match(/(\d{4,8})/);
-                    if(m) allCodes.push(m[1]);
-                }
-            }
-            
-            // Pattern 2: "code is 123456" or "code: 123456"
-            var p2 = decoded.match(/code[\s:is]+(\d{4,8})/gi);
-            if(p2) {
-                for(var j = 0; j < p2.length; j++) {
-                    var m2 = p2[j].match(/(\d{4,8})/);
-                    if(m2) allCodes.push(m2[1]);
-                }
-            }
-            
-            // Pattern 3: Standalone 4-8 digit codes
-            var p3 = decoded.match(/\b(\d{4,8})\b/g);
-            if(p3) {
-                for(var k = 0; k < p3.length; k++) {
-                    var code = p3[k];
-                    
-                    // Skip common numbers
-                    if(code === '2024' || code === '2025' || code === '2026' || 
-                       code === '8080' || code === '443' || code === '80' ||
-                       code === '1234' || code === '0000' || code === '9999') {
-                        continue;
-                    }
-                    
-                    allCodes.push(code);
-                }
-            }
-            
-            // Get most recent (last) code
-            var otp = null;
-            if(allCodes.length > 0) {
-                otp = allCodes[allCodes.length - 1];
-            }
-            
-            // Display result
-            var codeDisplay = document.getElementById('codeDisplay');
-            var copyMsg = document.getElementById('copyMsg');
-            
-            if(otp) {
-                codeDisplay.className = 'code-display';
-                codeDisplay.innerText = otp;
+            try {
+                // Call Outlook API
+                const apiUrl = OUTLOOK_API + '?$top=10&$orderby=receivedDateTime DESC&$select=subject,bodyPreview,body,from,receivedDateTime';
                 
-                navigator.clipboard.writeText(otp).then(function() {
-                    copyMsg.className = 'copy-indicator success';
-                    
-                    if(selectedPlatform === 'facebook') {
-                        copyMsg.innerText = '✓ Facebook code copied: ' + otp;
-                    } else {
-                        copyMsg.innerText = '✓ Instagram code copied: ' + otp;
+                const response = await fetch(CORS_PROXY + encodeURIComponent(apiUrl), {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
                     }
-                    
-                    setTimeout(function() {
-                        copyMsg.innerText = '';
-                    }, 3000);
-                }).catch(function() {
-                    copyMsg.innerText = '💡 Click code to copy';
                 });
                 
-            } else {
-                codeDisplay.className = 'code-display error';
-                codeDisplay.innerText = 'NO CODE FOUND';
-                copyMsg.innerText = '❌ No verification code detected';
+                if (!response.ok) {
+                    throw new Error('API call failed: ' + response.status);
+                }
+                
+                const data = await response.json();
+                const messages = data.value || [];
+                
+                if (messages.length === 0) {
+                    throw new Error('No emails found');
+                }
+                
+                statusBox.innerText = '🔍 Searching for ' + selectedPlatform + ' email...';
+                
+                // Filter by platform
+                const platformKeywords = selectedPlatform === 'instagram' 
+                    ? ['instagram', 'ig'] 
+                    : ['facebook', 'fb'];
+                
+                // Find relevant email
+                let targetEmail = null;
+                for (const msg of messages) {
+                    const from = (msg.from?.emailAddress?.address || '').toLowerCase();
+                    const subject = (msg.subject || '').toLowerCase();
+                    
+                    const isRelevant = platformKeywords.some(keyword => 
+                        from.includes(keyword) || subject.includes(keyword)
+                    );
+                    
+                    if (isRelevant) {
+                        targetEmail = msg;
+                        break;
+                    }
+                }
+                
+                if (!targetEmail) {
+                    throw new Error('No ' + selectedPlatform + ' verification email found');
+                }
+                
+                statusBox.innerText = '✅ Email found! Extracting code...';
+                
+                // Extract code
+                const subject = targetEmail.subject || '';
+                const bodyPreview = targetEmail.bodyPreview || '';
+                const bodyContent = targetEmail.body?.content || '';
+                
+                const fullText = subject + ' ' + bodyPreview + ' ' + bodyContent;
+                const code = extractCodeFromText(fullText);
+                
+                if (!code) {
+                    throw new Error('No verification code found in email');
+                }
+                
+                // Success!
+                statusBox.innerText = '✅ Code extracted successfully!';
+                
+                // Display info
+                document.getElementById('emailOut').innerText = email;
+                document.getElementById('dataDisplay').style.display = 'block';
+                
+                if (targetEmail.from?.emailAddress?.address) {
+                    document.getElementById('fromOut').innerText = targetEmail.from.emailAddress.address;
+                    document.getElementById('fromRow').style.display = 'block';
+                }
+                
+                if (subject) {
+                    document.getElementById('subjectOut').innerText = subject;
+                    document.getElementById('subjectRow').style.display = 'block';
+                }
+                
+                // Display code
+                var codeDisplay = document.getElementById('codeDisplay');
+                codeDisplay.className = 'code-display';
+                codeDisplay.innerText = code;
+                
+                // Copy to clipboard
+                try {
+                    await navigator.clipboard.writeText(code);
+                    document.getElementById('copyMsg').className = 'copy-indicator success';
+                    document.getElementById('copyMsg').innerText = '✓ Code copied: ' + code;
+                } catch(e) {
+                    document.getElementById('copyMsg').innerText = '💡 Click code to copy';
+                }
+                
+            } catch(error) {
+                console.error('Error:', error);
+                statusBox.innerText = '❌ Error: ' + error.message;
+                
+                document.getElementById('codeDisplay').className = 'code-display error';
+                document.getElementById('codeDisplay').innerText = 'ERROR';
+                document.getElementById('copyMsg').innerText = '❌ ' + error.message;
             }
+            
+            // Re-enable button
+            document.getElementById('extractBtn').disabled = false;
+            document.getElementById('extractBtn').innerHTML = '🔍 Extract OTP Code';
         }
         
         // Auto-extract on paste
@@ -628,7 +683,7 @@ Just paste anything - the tool will auto-detect and extract!"></textarea>
         // Click to copy
         document.getElementById('codeDisplay').addEventListener('click', function() {
             var code = this.innerText;
-            if(code !== '------' && code !== 'SEARCHING...' && code !== 'NO CODE FOUND') {
+            if(code !== '------' && code !== 'FETCHING...' && code !== 'ERROR') {
                 navigator.clipboard.writeText(code);
                 document.getElementById('copyMsg').className = 'copy-indicator success';
                 document.getElementById('copyMsg').innerText = '✓ Copied: ' + code;
@@ -637,4 +692,3 @@ Just paste anything - the tool will auto-detect and extract!"></textarea>
     </script>
 </body>
 </html>
-
