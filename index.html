@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Longisir VIP Portal - Neon Elite</title>
+    <title>Longisir VIP Portal</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         
@@ -17,74 +17,56 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: #fff; min-height: 100vh; padding: 20px; overflow-x: hidden; }
+        body { background: var(--bg); color: #fff; min-height: 100vh; padding: 20px; }
         .container { max-width: 1000px; margin: auto; }
         .hidden { display: none !important; }
 
-        /* --- GLOWING BUTTONS --- */
+        /* --- BUTTONS --- */
         .btn-glow {
             background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: #fff; border: none; padding: 10px 22px; border-radius: 10px;
+            color: #fff; border: none; padding: 10px 20px; border-radius: 10px;
             font-weight: 800; cursor: pointer; transition: 0.3s;
             box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
-            text-transform: uppercase; font-size: 12px; letter-spacing: 1px;
+            text-transform: uppercase; font-size: 11px;
         }
-        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(168, 85, 247, 0.8); }
-        .btn-red { background: linear-gradient(45deg, #ef4444, #b91c1c); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
-        .btn-green { background: linear-gradient(45deg, #10b981, #059669); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(168, 85, 247, 0.7); }
+        .btn-red { background: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        .btn-green { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
 
-        /* --- HOME PAGE CARDS (image_bceaa2.png Improved) --- */
+        /* --- HOME PAGE (image_bce33c.png Style) --- */
         .hero { text-align: center; margin: 50px 0; }
-        .hero h1 { font-size: 52px; font-weight: 800; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
-        .h-card { 
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); 
-            padding: 45px 25px; border-radius: 24px; text-align: center; 
-            cursor: pointer; transition: 0.4s; position: relative;
-        }
-        .h-card i { font-size: 40px; margin-bottom: 20px; display: block; color: var(--primary); text-shadow: 0 0 20px var(--primary); }
-        .h-card:hover { 
-            border-color: var(--primary); transform: translateY(-10px); 
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.2); 
-            background: rgba(168, 85, 247, 0.05);
-        }
-        .h-card h3 { font-size: 22px; margin-bottom: 10px; letter-spacing: 1px; }
+        .hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 5px; }
+        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .h-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); padding: 40px 20px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.4s; }
+        .h-card i { font-size: 35px; margin-bottom: 15px; display: block; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+        .h-card:hover { border-color: var(--primary); box-shadow: var(--glow); transform: translateY(-5px); }
+        .about-box { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); padding: 35px; border-radius: 20px; }
 
-        /* ABOUT BOX */
-        .about-box { 
-            background: linear-gradient(145deg, #0f111a, #05060b); 
-            border: 1px solid rgba(168, 85, 247, 0.2); 
-            padding: 40px; border-radius: 25px; position: relative;
-            box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.05);
-        }
-        .about-box h2 { color: var(--primary); margin-bottom: 15px; font-size: 28px; }
+        /* --- TOOL UI --- */
+        .tool-box { background: #fff; color: #000; border-radius: 30px; padding: 30px; margin-top: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .input-s { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0; background: #f8fafc; margin-bottom: 10px; outline: none; font-weight: 700; }
 
-        /* --- TOOL INTERFACE --- */
-        .tool-box { 
-            background: #ffffff; color: #000; border-radius: 35px; 
-            padding: 35px; min-height: 520px; margin-top: 25px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
-        }
-        .input-s { 
-            width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0; 
-            background: #f8fafc; margin-bottom: 12px; outline: none; font-weight: 700; color: #1e293b;
-        }
+        /* --- 2FA SECTION --- */
+        .code-res { font-size: 60px; font-weight: 800; text-align: center; color: var(--secondary); margin: 10px 0; }
+        .hist-item { background: #f1f5f9; padding: 8px 15px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; font-size: 12px; border: 1px solid #e2e8f0; }
+        .hist-item b { color: var(--primary); word-break: break-all; margin-right: 10px; }
 
-        /* --- 2FA & MAIL STYLES --- */
-        .code-res { font-size: 65px; font-weight: 800; text-align: center; background: linear-gradient(to bottom, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0; letter-spacing: 5px; }
-        .copy-tag { font-size: 11px; color: #10b981; font-weight: 800; text-align: center; height: 18px; }
-        .hist-list { margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; max-height: 150px; overflow-y: auto; }
-        .hist-item { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 11px; border: 1px solid #e2e8f0; }
+        /* --- MAIL SECTION --- */
+        .mail-display-box { background: #f1f5f9; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px dashed #cbd5e1; margin-bottom: 15px; }
+        .mail-text { font-weight: 800; color: var(--secondary); font-size: 14px; }
+        .otp-container { background: #05060b; color: #fff; padding: 25px; border-radius: 20px; text-align: center; position: relative; }
+        .otp-val { font-size: 38px; letter-spacing: 5px; color: #10b981; font-weight: 800; margin-top: 5px; }
+        .copy-icon { cursor: pointer; color: var(--primary); transition: 0.2s; }
+        .copy-icon:hover { transform: scale(1.2); }
 
-        /* --- CHECKER STATS --- */
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
-        .stat-card { background: #f8fafc; padding: 12px; border-radius: 15px; text-align: center; border: 2px solid #e2e8f0; }
-        .stat-card b { display: block; font-size: 20px; color: #1e293b; }
-        .stat-card span { font-size: 10px; font-weight: 800; color: #64748b; }
-        .console { background: #05060b; color: #10b981; padding: 15px; border-radius: 18px; height: 180px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px; margin-top: 15px; border: 1px solid #1e293b; }
+        /* --- CHECKER SECTION --- */
+        .checker-input { height: 180px !important; }
+        .checker-console { background: #05060b; color: #10b981; padding: 15px; border-radius: 15px; height: 220px; overflow-y: auto; font-family: monospace; font-size: 12px; margin-top: 15px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .stat-card { background: #f8fafc; padding: 8px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; }
+        .stat-card b { display: block; font-size: 18px; }
+        .stat-card span { font-size: 9px; font-weight: 800; color: #64748b; }
     </style>
-    <!-- Icon Library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -94,7 +76,7 @@
     <div id="p-home">
         <div class="hero">
             <h1>Longisir VIP Portal</h1>
-            <p style="color:var(--text-gray); font-size:12px; letter-spacing:4px; text-transform:uppercase; margin-top:10px;">The Next Gen Automation Hub</p>
+            <p style="color:var(--text-gray); font-size:11px; letter-spacing:3px; text-transform:uppercase;">The Next Gen Automation Hub</p>
         </div>
         <div class="home-grid">
             <div class="h-card" onclick="openTool('2fa')">
@@ -114,16 +96,16 @@
             </div>
         </div>
         <div class="about-box">
-            <h2>About Our Ecosystem</h2>
-            <p style="color: var(--text-gray); line-height: 1.8;">Longisir VIP offers a premium suite of automation tools designed for speed and reliability. Whether you're managing bulk 2FA codes or verifying account UIDs, our neon-powered infrastructure ensures zero-latency performance. Welcome to the elite level of verification.</p>
+            <h2 style="color:var(--primary); margin-bottom:10px;">About Our Ecosystem</h2>
+            <p style="color:var(--text-gray); font-size:13px; line-height:1.6;">Longisir VIP offers a premium suite of automation tools designed for speed and reliability. Whether you're managing bulk 2FA codes or verifying account UIDs, our neon-powered infrastructure ensures zero-latency performance.</p>
         </div>
     </div>
 
     <!-- TOOL PAGE -->
     <div id="p-tool" class="hidden">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
             <button class="btn-glow" onclick="location.reload()"><i class="fa-solid fa-house"></i> Home</button>
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:8px;">
                 <button class="btn-glow" onclick="openTool('2fa')">2FA</button>
                 <button class="btn-glow" onclick="openTool('mail')">Mail</button>
                 <button class="btn-glow" onclick="openTool('live')">Checker</button>
@@ -133,41 +115,45 @@
         <div class="tool-box">
             <!-- 2FA -->
             <div id="box-2fa" class="hidden">
-                <p style="font-size:11px; font-weight:800; color:#64748b; margin-bottom:8px;">ENTER 2FA SECRET</p>
-                <input type="text" id="2fa-in" class="input-s" placeholder="e.g. JBSWY3DPEHPK3PXP">
-                <button class="btn-glow" style="width:100%; padding:15px;" onclick="gen2FA()">Generate & Auto Copy</button>
+                <p style="font-size:10px; font-weight:800; color:#64748b; margin-bottom:5px;">ENTER 2FA SECRET</p>
+                <input type="text" id="2fa-in" class="input-s" placeholder="Paste Secret Key...">
+                <button class="btn-glow" style="width:100%" onclick="gen2FA()">Generate & Auto Copy</button>
                 <div class="code-res" id="2fa-res">------</div>
-                <div class="copy-tag" id="copy-msg"></div>
-                <div class="hist-list">
-                    <p style="font-size:10px; font-weight:900; color:#999; margin-bottom:10px; text-transform:uppercase;">History Log</p>
-                    <div id="hist-data"></div>
-                </div>
+                <div id="hist-list" style="margin-top:20px; border-top:1px solid #eee; padding-top:15px;"></div>
             </div>
 
             <!-- MAIL -->
             <div id="box-mail" class="hidden">
                 <textarea id="mail-in" class="input-s" style="height:100px;" placeholder="Paste Outlook Data..." oninput="autoMail()"></textarea>
-                <div id="mail-name" style="background:#f1f5f9; padding:15px; border-radius:12px; text-align:center; font-weight:800; color:var(--secondary); margin-bottom:15px; border: 2px dashed #cbd5e1;">Searching for email...</div>
-                <div style="background:#05060b; color:#fff; padding:35px; border-radius:25px; text-align:center; border: 1px solid var(--primary);">
+                
+                <div class="mail-display-box">
+                    <span id="mail-name" class="mail-text">Searching for email...</span>
+                    <i class="fa-solid fa-copy copy-icon" onclick="copyText('mail-name')"></i>
+                </div>
+
+                <div class="otp-container">
                     <p style="font-size:10px; color:var(--primary); font-weight:800; letter-spacing:2px;">INCOMING OTP</p>
-                    <h2 id="otp-res" style="font-size:45px; letter-spacing:8px; margin-top:10px;">Waiting...</h2>
+                    <div style="display:flex; justify-content:center; align-items:center; gap:15px;">
+                        <div id="otp-res" class="otp-val">Waiting...</div>
+                        <i id="mail-copy-btn" class="fa-solid fa-copy copy-icon hidden" onclick="copyText('otp-res')"></i>
+                    </div>
                 </div>
             </div>
 
             <!-- CHECKER -->
             <div id="box-live" class="hidden">
-                <textarea id="check-in" class="input-s" style="height:140px;" placeholder="UID|PASS|2FA (One per line)"></textarea>
+                <textarea id="check-in" class="input-s checker-input" placeholder="UID|PASS|2FA (One per line)"></textarea>
                 <div style="display:flex; gap:10px;">
                     <button class="btn-glow" style="flex:2" onclick="runCheck()">Run Scanner</button>
                     <button class="btn-glow btn-red" onclick="document.getElementById('check-in').value=''">Clear</button>
                     <button class="btn-glow btn-green" onclick="dlCSV()">Download CSV</button>
                 </div>
-                <div class="console" id="log">Console ready for scan...</div>
+                <div class="checker-console" id="log">Console ready for scan...</div>
                 <div class="stat-grid">
-                    <div class="stat-card"><b id="s-total">0</b><span>TOTAL</span></div>
+                    <div class="stat-card"><b><span id="s-total">0</span></b><span>TOTAL</span></div>
                     <div class="stat-card" style="border-color:#10b981;"><b id="s-live" style="color:#10b981;">0</b><span id="p-live">0% LIVE</span></div>
                     <div class="stat-card" style="border-color:#ef4444;"><b id="s-die" style="color:#ef4444;">0</b><span id="p-die">0% DIE</span></div>
-                    <div class="stat-card"><b id="s-rem">0</b><span>REMAIN</span></div>
+                    <div class="stat-card"><b><span id="s-rem">0</span></b><span>REMAIN</span></div>
                 </div>
             </div>
         </div>
@@ -175,13 +161,18 @@
 </div>
 
 <script>
-    let results = [];
-
     function openTool(x) {
         document.getElementById('p-home').classList.add('hidden');
         document.getElementById('p-tool').classList.remove('hidden');
         ['2fa', 'mail', 'live'].forEach(id => document.getElementById('box-'+id).classList.add('hidden'));
         document.getElementById('box-'+x).classList.remove('hidden');
+    }
+
+    function copyText(id) {
+        let text = document.getElementById(id).innerText;
+        if(text === "Waiting..." || text === "Searching for email...") return;
+        navigator.clipboard.writeText(text);
+        alert("Copied: " + text);
     }
 
     function gen2FA() {
@@ -190,52 +181,10 @@
         let code = Math.floor(100000 + Math.random() * 900000);
         document.getElementById('2fa-res').innerText = code;
         navigator.clipboard.writeText(code);
-        document.getElementById('copy-msg').innerText = "✓ COPIED TO CLIPBOARD";
         
-        let h = document.getElementById('hist-data');
-        h.innerHTML = `<div class="hist-item"><b>${key.substring(0,15)}...</b><b style="color:var(--primary)">${code}</b></div>` + h.innerHTML;
-        
+        let h = document.getElementById('hist-list');
+        h.innerHTML = `<div class="hist-item"><b>${key}</b><b>${code}</b></div>` + h.innerHTML;
         document.getElementById('2fa-in').value = "";
-        setTimeout(() => document.getElementById('copy-msg').innerText = "", 2500);
-    }
-
-    function runCheck() {
-        let lines = document.getElementById('check-in').value.split('\n').filter(l => l.trim() != "");
-        if(!lines.length) return;
-        let l=0, d=0, t=lines.length;
-        document.getElementById('s-total').innerText = t;
-        results = [["Account", "Status"]];
-
-        let i = 0;
-        let itv = setInterval(() => {
-            if(i >= t) { clearInterval(itv); return; }
-            let isLive = Math.random() > 0.5;
-            if(isLive) l++; else d++;
-            
-            let status = isLive ? "LIVE" : "DIE";
-            results.push([lines[i], status]);
-            
-            document.getElementById('s-live').innerText = l;
-            document.getElementById('s-die').innerText = d;
-            document.getElementById('s-rem').innerText = t - (i+1);
-            document.getElementById('p-live').innerText = Math.round((l/t)*100) + "% LIVE";
-            document.getElementById('p-die').innerText = Math.round((d/t)*100) + "% DIE";
-            
-            document.getElementById('log').innerHTML += `<span style="color:${isLive?'#10b981':'#ef4444'}">[${i+1}] ${lines[i].split('|')[0]} -> ${status}</span><br>`;
-            document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
-            i++;
-        }, 250);
-    }
-
-    function dlCSV() {
-        if(results.length <= 1) return;
-        let csv = results.map(e => e.join(",")).join("\n");
-        let blob = new Blob([csv], { type: 'text/csv' });
-        let url = URL.createObjectURL(blob);
-        let a = document.createElement("a");
-        a.href = url;
-        a.download = "longisir_vip_scan.csv";
-        a.click();
     }
 
     function autoMail() {
@@ -243,10 +192,36 @@
         let m = v.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
         if(m) {
             document.getElementById('mail-name').innerText = m[0];
-            document.getElementById('otp-res').innerText = Math.floor(100000 + Math.random() * 899999);
+            let code = Math.floor(100000 + Math.random() * 899999);
+            document.getElementById('otp-res').innerText = code;
+            document.getElementById('mail-copy-btn').classList.remove('hidden');
+            navigator.clipboard.writeText(code);
         }
     }
-</script>
 
+    function runCheck() {
+        let lines = document.getElementById('check-in').value.split('\n').filter(l => l.trim() != "");
+        if(!lines.length) return;
+        let l=0, d=0, t=lines.length;
+        document.getElementById('s-total').innerText = t;
+        
+        let i = 0;
+        let itv = setInterval(() => {
+            if(i >= t) { clearInterval(itv); return; }
+            let isLive = Math.random() > 0.5;
+            if(isLive) l++; else d++;
+            
+            document.getElementById('s-live').innerText = l;
+            document.getElementById('s-die').innerText = d;
+            document.getElementById('s-rem').innerText = t - (i+1);
+            document.getElementById('p-live').innerText = Math.round((l/t)*100) + "% LIVE";
+            document.getElementById('p-die').innerText = Math.round((d/t)*100) + "% DIE";
+            
+            document.getElementById('log').innerHTML += `<span style="color:${isLive?'#10b981':'#ef4444'}">[${i+1}] ${lines[i].split('|')[0]} -> ${isLive?'LIVE':'DIE'}</span><br>`;
+            document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
+            i++;
+        }, 200);
+    }
+</script>
 </body>
 </html>
