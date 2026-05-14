@@ -101,6 +101,32 @@
 ;
         }
         
+        .mode-toggle {
+            background: 
+;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-left: 4px solid 
+;
+        }
+        .mode-toggle label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: 
+;
+        }
+        .mode-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
         .input-section {
             margin-bottom: 20px;
         }
@@ -340,12 +366,21 @@
             </div>
         </div>
         
+        <!-- MODE TOGGLE -->
+        <div class="mode-toggle">
+            <label>
+                <input type="checkbox" id="strictMode">
+                <span>🔒 Strict Mode (Verify email domain)</span>
+            </label>
+        </div>
+        
         <div class="input-section">
             <label>📋 Paste Your Email Data Here:</label>
             <textarea id="emailInput" placeholder="Paste your email data here...
 
 Select platform above (Facebook or Instagram) then paste your email data.
-Only codes from the selected platform will be extracted!"></textarea>
+Strict Mode OFF: Extracts code from any email
+Strict Mode ON: Only extracts from confirmed FB/IG emails"></textarea>
         </div>
         
         <div class="btn-group">
@@ -373,9 +408,9 @@ Only codes from the selected platform will be extracted!"></textarea>
             <h3>✨ How to Use</h3>
             <ul>
                 <li>Select platform: Facebook or Instagram</li>
+                <li>Toggle Strict Mode ON/OFF as needed</li>
                 <li>Paste your email data</li>
                 <li>Click "Extract OTP Code"</li>
-                <li>Only selected platform codes will be extracted</li>
                 <li>Code auto-copies to clipboard</li>
                 <li>Supports any digit length (4-8 digits)</li>
             </ul>
@@ -404,9 +439,9 @@ Only codes from the selected platform will be extracted!"></textarea>
             platformDisplay.className = 'platform-detected waiting';
             
             if(platform === 'facebook') {
-                platformDisplay.innerText = '📘 Facebook mode selected - paste FB email data';
+                platformDisplay.innerText = '📘 Facebook mode selected';
             } else {
-                platformDisplay.innerText = '📷 Instagram mode selected - paste IG email data';
+                platformDisplay.innerText = '📷 Instagram mode selected';
             }
         }
         
@@ -421,9 +456,9 @@ Only codes from the selected platform will be extracted!"></textarea>
             var platformDisplay = document.getElementById('platformDisplay');
             platformDisplay.className = 'platform-detected waiting';
             if(selectedPlatform === 'facebook') {
-                platformDisplay.innerText = '📘 Facebook mode selected - paste FB email data';
+                platformDisplay.innerText = '📘 Facebook mode selected';
             } else {
-                platformDisplay.innerText = '📷 Instagram mode selected - paste IG email data';
+                platformDisplay.innerText = '📷 Instagram mode selected';
             }
         }
         
@@ -441,6 +476,7 @@ Only codes from the selected platform will be extracted!"></textarea>
             document.getElementById('copyMsg').innerText = '';
             
             var inputLower = input.toLowerCase();
+            var strictMode = document.getElementById('strictMode').checked;
             
             // Extract email address
             var emailRegex = /[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
@@ -454,55 +490,53 @@ Only codes from the selected platform will be extracted!"></textarea>
                 document.getElementById('emailDisplay').innerText = '📧 No email found';
             }
             
-            // CHECK IF EMAIL MATCHES SELECTED PLATFORM
-            var isCorrectPlatform = false;
-            
-            if(selectedPlatform === 'facebook') {
-                // Check if it's Facebook email
-                if(detectedEmail.includes('facebookmail.com') || 
-                   detectedEmail.includes('facebook.com') ||
-                   detectedEmail.includes('fb.com') ||
-                   inputLower.includes('facebook') || 
-                   inputLower.includes('fb') ||
-                   inputLower.includes('meta')) {
-                    isCorrectPlatform = true;
-                }
-            } else if(selectedPlatform === 'instagram') {
-                // Check if it's Instagram email
-                if(detectedEmail.includes('instagram.com') || 
-                   detectedEmail.includes('ig.com') ||
-                   inputLower.includes('instagram') || 
-                   inputLower.includes('ig')) {
-                    isCorrectPlatform = true;
-                }
-            }
-            
             var platformDisplay = document.getElementById('platformDisplay');
             
-            if(!isCorrectPlatform) {
-                // WRONG PLATFORM
-                platformDisplay.className = 'platform-detected error';
+            // STRICT MODE CHECK
+            if(strictMode) {
+                var isCorrectPlatform = false;
                 
                 if(selectedPlatform === 'facebook') {
-                    platformDisplay.innerText = '❌ This is NOT a Facebook email! Switch to Instagram tab or paste FB email.';
-                } else {
-                    platformDisplay.innerText = '❌ This is NOT an Instagram email! Switch to Facebook tab or paste IG email.';
+                    if(detectedEmail.includes('facebookmail.com') || 
+                       detectedEmail.includes('facebook.com') ||
+                       detectedEmail.includes('fb.com') ||
+                       inputLower.includes('facebook') || 
+                       inputLower.includes(' fb ') ||
+                       inputLower.includes('meta')) {
+                        isCorrectPlatform = true;
+                    }
+                } else if(selectedPlatform === 'instagram') {
+                    if(detectedEmail.includes('instagram.com') || 
+                       detectedEmail.includes('ig.com') ||
+                       inputLower.includes('instagram') || 
+                       inputLower.includes(' ig ')) {
+                        isCorrectPlatform = true;
+                    }
                 }
                 
-                document.getElementById('codeDisplay').className = 'code-display error';
-                document.getElementById('codeDisplay').innerText = 'WRONG PLATFORM';
-                
-                document.getElementById('copyMsg').innerText = '❌ Email does not match selected platform';
-                return;
+                if(!isCorrectPlatform) {
+                    platformDisplay.className = 'platform-detected error';
+                    
+                    if(selectedPlatform === 'facebook') {
+                        platformDisplay.innerText = '❌ NOT a Facebook email! Turn OFF Strict Mode or paste FB email.';
+                    } else {
+                        platformDisplay.innerText = '❌ NOT an Instagram email! Turn OFF Strict Mode or paste IG email.';
+                    }
+                    
+                    document.getElementById('codeDisplay').className = 'code-display error';
+                    document.getElementById('codeDisplay').innerText = 'WRONG PLATFORM';
+                    document.getElementById('copyMsg').innerText = '❌ Email does not match selected platform (Strict Mode ON)';
+                    return;
+                }
             }
             
-            // CORRECT PLATFORM - Display confirmation
+            // Display selected platform
             if(selectedPlatform === 'facebook') {
                 platformDisplay.className = 'platform-detected fb';
-                platformDisplay.innerText = '✅ Facebook Code Detected';
+                platformDisplay.innerText = '✅ Extracting Facebook Code';
             } else {
                 platformDisplay.className = 'platform-detected ig';
-                platformDisplay.innerText = '✅ Instagram Code Detected';
+                platformDisplay.innerText = '✅ Extracting Instagram Code';
             }
             
             // EXTRACT OTP
@@ -575,4 +609,3 @@ Only codes from the selected platform will be extracted!"></textarea>
     </script>
 </body>
 </html>
-
