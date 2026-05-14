@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OTP Extractor</title>
+    <title>API Mail OTP Extractor</title>
     <style>
         body {
             background: linear-gradient(135deg, 
@@ -19,26 +19,39 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            width: 500px;
+            width: 550px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
         h2 {
             color: 
 ;
             text-align: center;
+            margin-bottom: 20px;
         }
-        textarea {
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input, textarea {
             width: 100%;
-            height: 150px;
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
             box-sizing: border-box;
         }
+        textarea {
+            height: 120px;
+            font-family: monospace;
+        }
         button {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: 
 ;
             color: white;
@@ -53,90 +66,217 @@
             background: 
 ;
         }
-        .email-box {
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
             background: 
 ;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
             margin-top: 15px;
             text-align: center;
             font-weight: bold;
+            color: #666;
+        }
+        .status.searching {
+            background: 
+;
+            color: 
+;
+        }
+        .status.found {
+            background: 
+;
+            color: 
+;
+        }
+        .status.error {
+            background: 
+;
+            color: 
+;
+        }
+        .email-display {
+            background: 
+;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: 
+;
         }
         .code-box {
             background: black;
             color: lime;
-            padding: 25px;
+            padding: 30px;
             border-radius: 8px;
             margin-top: 15px;
             text-align: center;
-            font-size: 40px;
+            font-size: 48px;
             font-weight: bold;
-            letter-spacing: 8px;
+            letter-spacing: 10px;
+            font-family: monospace;
         }
-        .msg {
+        .copy-msg {
             text-align: center;
             color: green;
             font-weight: bold;
             margin-top: 10px;
+            min-height: 20px;
+        }
+        .info {
+            background: 
+;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: 
+;
+        }
+        .info strong {
+            display: block;
+            margin-bottom: 8px;
         }
     </style>
 </head>
 <body>
     <div class="box">
-        <h2>📧 OTP Extractor</h2>
-        <textarea id="data" placeholder="Paste your data here..."></textarea>
-        <button onclick="find()">Extract OTP</button>
-        <div class="email-box" id="email">No email yet</div>
-        <div class="code-box" id="otp">------</div>
-        <div class="msg" id="msg"></div>
+        <h2>📧 API Mail OTP Extractor</h2>
+        
+        <div class="input-group">
+            <label>📋 Paste Email Raw Data (Headers + Body):</label>
+            <textarea id="emailData" placeholder="Paste complete email data here including headers...
+
+Example format:
+From: noreply@service.com
+To: user@outlook.com
+Subject: Verification Code
+Date: Thu, 14 May 2026 14:30:00
+
+Your verification code is: 123456
+
+Or paste API response JSON/text"></textarea>
+        </div>
+        
+        <button onclick="extractOTP()">🔍 Extract OTP Code</button>
+        
+        <div class="status" id="status">Waiting for email data...</div>
+        
+        <div class="email-display" id="emailDisplay">No email detected</div>
+        
+        <div class="code-box" id="otpCode">------</div>
+        
+        <div class="copy-msg" id="copyMsg"></div>
+        
+        <div class="info">
+            <strong>📌 Supported Formats:</strong>
+            • Email raw data (headers + body)<br>
+            • API response (JSON or text)<br>
+            • Any text containing email + OTP<br>
+            • Auto-detects: 4, 6, 8 digit codes<br>
+            • Patterns: "Code: XXX", "OTP: XXX", "Verification: XXX"
+        </div>
     </div>
 
     <script>
-        function find() {
-            var data = document.getElementById('data').value;
+        function extractOTP() {
+            var data = document.getElementById('emailData').value.trim();
             
             if(!data) {
-                alert('Please paste data first!');
+                alert('⚠️ Please paste email data first!');
                 return;
             }
             
-            // Find email
-            var email = data.match(/[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-            if(email) {
-                document.getElementById('email').innerText = '✅ ' + email[0];
+            // Update status
+            document.getElementById('status').className = 'status searching';
+            document.getElementById('status').innerText = '🔍 Searching for email and OTP...';
+            
+            // Extract email address
+            var emailRegex = /[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+            var emails = data.match(emailRegex);
+            
+            if(emails && emails.length > 0) {
+                // Take the first email found
+                document.getElementById('emailDisplay').innerText = '✅ Email: ' + emails[0];
             } else {
-                document.getElementById('email').innerText = '❌ No email';
+                document.getElementById('emailDisplay').innerText = '❌ No email found';
             }
             
-            // Find ALL numbers (4-8 digits)
-            var numbers = data.match(/\d{4,8}/g);
-            
+            // Extract OTP code - Multiple strategies
             var otp = null;
             
-            if(numbers && numbers.length > 0) {
-                // Take the LAST number found (usually the OTP)
-                otp = numbers[numbers.length - 1];
+            // Strategy 1: Look for common OTP patterns
+            var patterns = [
+                /(?:verification|otp|code|pin|token)[\s:]*(\d{4,8})/gi,
+                /(?:your|the)\s+(?:code|otp|verification|pin)\s+(?:is|:)\s*(\d{4,8})/gi,
+                /\b(\d{6})\b/g,  // 6 digits
+                /\b(\d{4})\b/g,  // 4 digits
+                /\b(\d{8})\b/g   // 8 digits
+            ];
+            
+            for(var i = 0; i < patterns.length; i++) {
+                var matches = data.match(patterns[i]);
+                if(matches && matches.length > 0) {
+                    // Extract just the digits
+                    var lastMatch = matches[matches.length - 1];
+                    var digits = lastMatch.match(/\d{4,8}/);
+                    if(digits) {
+                        otp = digits[0];
+                        break;
+                    }
+                }
             }
             
+            // Strategy 2: If still not found, get ALL numbers and take the last one
+            if(!otp) {
+                var allNumbers = data.match(/\d{4,8}/g);
+                if(allNumbers && allNumbers.length > 0) {
+                    otp = allNumbers[allNumbers.length - 1];
+                }
+            }
+            
+            // Display result
             if(otp) {
-                document.getElementById('otp').innerText = otp;
+                document.getElementById('otpCode').innerText = otp;
+                document.getElementById('status').className = 'status found';
+                document.getElementById('status').innerText = '✅ OTP Code Found!';
                 
-                // Copy
-                navigator.clipboard.writeText(otp);
-                document.getElementById('msg').innerText = '✓ Copied: ' + otp;
+                // Auto copy to clipboard
+                navigator.clipboard.writeText(otp).then(function() {
+                    document.getElementById('copyMsg').innerText = '✓ Code copied to clipboard: ' + otp;
+                    
+                    setTimeout(function() {
+                        document.getElementById('copyMsg').innerText = '';
+                    }, 3000);
+                }).catch(function() {
+                    document.getElementById('copyMsg').innerText = '⚠️ Click to copy: ' + otp;
+                });
                 
-                setTimeout(function() {
-                    document.getElementById('msg').innerText = '';
-                }, 3000);
             } else {
-                document.getElementById('otp').innerText = 'NOT FOUND';
-                document.getElementById('msg').innerText = '❌ No code found';
+                document.getElementById('otpCode').innerText = 'NOT FOUND';
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').innerText = '❌ No OTP code detected in the data';
+                document.getElementById('copyMsg').innerText = '';
             }
         }
         
-        // Auto run on paste
-        document.getElementById('data').addEventListener('paste', function() {
-            setTimeout(find, 200);
+        // Auto extract on paste
+        document.getElementById('emailData').addEventListener('paste', function() {
+            setTimeout(extractOTP, 300);
+        });
+        
+        // Manual copy on click
+        document.getElementById('otpCode').addEventListener('click', function() {
+            var code = this.innerText;
+            if(code !== '------' && code !== 'NOT FOUND') {
+                navigator.clipboard.writeText(code);
+                document.getElementById('copyMsg').innerText = '✓ Copied: ' + code;
+            }
         });
     </script>
 </body>
