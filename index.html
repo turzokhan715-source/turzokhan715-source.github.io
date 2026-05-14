@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Universal OTP Extractor</title>
+    <title>FB & Instagram OTP Extractor</title>
     <style>
         * {
             margin: 0;
@@ -11,6 +11,10 @@
         }
         body {
             background: linear-gradient(135deg, 
+, 
+, 
+, 
+, 
 , 
 );
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -26,20 +30,57 @@
             border-radius: 20px;
             width: 650px;
             max-width: 95%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
         .header h1 {
-            color: #667eea;
+            background: linear-gradient(135deg, 
+, 
+);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-size: 32px;
             margin-bottom: 8px;
+            font-weight: 800;
         }
         .header p {
             color: #666;
             font-size: 14px;
+        }
+        .platforms {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        .platform-badge {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .fb-badge {
+            background: 
+;
+            color: white;
+            box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3);
+        }
+        .ig-badge {
+            background: linear-gradient(45deg, 
+, 
+, 
+, 
+, 
+);
+            color: white;
+            box-shadow: 0 4px 15px rgba(188, 24, 136, 0.3);
         }
         .input-section {
             margin-bottom: 20px;
@@ -60,13 +101,13 @@
             font-size: 14px;
             font-family: 'Courier New', monospace;
             resize: vertical;
-            transition: border 0.3s;
+            transition: all 0.3s;
         }
         textarea:focus {
             border-color: 
 ;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(64, 93, 230, 0.1);
         }
         .btn-group {
             display: flex;
@@ -91,7 +132,7 @@
         }
         .btn-extract:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(64, 93, 230, 0.4);
         }
         .btn-extract:active {
             transform: translateY(0);
@@ -107,6 +148,46 @@
         }
         .result-section {
             margin-top: 25px;
+        }
+        .platform-detected {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .platform-detected.waiting {
+            background: 
+;
+            color: #666;
+        }
+        .platform-detected.fb {
+            background: linear-gradient(135deg, 
+, 
+);
+            color: 
+;
+            border-left: 5px solid 
+;
+        }
+        .platform-detected.ig {
+            background: linear-gradient(135deg, 
+, 
+);
+            color: 
+;
+            border-left: 5px solid 
+;
+        }
+        .platform-detected.error {
+            background: linear-gradient(135deg, 
+, 
+);
+            color: 
+;
+            border-left: 5px solid #ffc107;
         }
         .email-box {
             background: 
@@ -125,10 +206,10 @@
             background: linear-gradient(135deg, 
 , 
 );
-            padding: 40px;
+            padding: 45px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
             position: relative;
             overflow: hidden;
         }
@@ -139,7 +220,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(0,255,0,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0,255,0,0.15) 0%, transparent 70%);
             animation: pulse 3s ease-in-out infinite;
         }
         @keyframes pulse {
@@ -150,13 +231,18 @@
             position: relative;
             z-index: 1;
             color: #0f0;
-            font-size: 56px;
+            font-size: 58px;
             font-weight: bold;
-            letter-spacing: 15px;
+            letter-spacing: 16px;
             font-family: 'Courier New', monospace;
-            text-shadow: 0 0 20px rgba(0,255,0,0.5);
+            text-shadow: 0 0 25px rgba(0,255,0,0.6);
             cursor: pointer;
             user-select: all;
+            transition: all 0.3s;
+        }
+        .code-display:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 35px rgba(0,255,0,0.8);
         }
         .code-display.waiting {
             color: #666;
@@ -179,10 +265,6 @@
             font-size: 15px;
         }
         .copy-indicator.success {
-            color: 
-;
-        }
-        .copy-indicator.info {
             color: 
 ;
         }
@@ -213,31 +295,53 @@
         }
         .info-panel li::before {
             content: '✓ ';
-            color: #28a745;
+            color: 
+;
             font-weight: bold;
             margin-right: 8px;
+        }
+        .warning {
+            background: 
+;
+            color: 
+;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            border-left: 4px solid 
+;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔐 Universal OTP Extractor</h1>
-            <p>Extract OTP codes from any email format</p>
+            <h1>🔐 FB & IG OTP Extractor</h1>
+            <p>Facebook & Instagram Verification Code Extractor Only</p>
+        </div>
+        
+        <div class="platforms">
+            <div class="platform-badge fb-badge">
+                📘 Facebook
+            </div>
+            <div class="platform-badge ig-badge">
+                📷 Instagram
+            </div>
         </div>
         
         <div class="input-section">
             <label>📋 Paste Your Email Data Here:</label>
-            <textarea id="emailInput" placeholder="Paste any email content here...
+            <textarea id="emailInput" placeholder="Paste Facebook or Instagram email data here...
 
-Supports:
+Supports any format:
 • Plain text emails
 • API responses
 • Pipe-separated data (email|pass|token|uuid)
 • JSON format
-• Any format containing OTP codes
 
-The tool will automatically find and extract the OTP code!"></textarea>
+⚠️ Only FB & Instagram codes will be extracted!"></textarea>
         </div>
         
         <div class="btn-group">
@@ -246,6 +350,10 @@ The tool will automatically find and extract the OTP code!"></textarea>
         </div>
         
         <div class="result-section">
+            <div class="platform-detected waiting" id="platformDisplay">
+                ⏳ Waiting for data...
+            </div>
+            
             <div class="email-box" id="emailDisplay">
                 📧 No email detected yet
             </div>
@@ -260,13 +368,13 @@ The tool will automatically find and extract the OTP code!"></textarea>
         <div class="info-panel">
             <h3>✨ Features</h3>
             <ul>
-                <li>Extracts OTP from any email format</li>
-                <li>Supports 4, 5, 6, and 8 digit codes</li>
-                <li>Auto-detects email addresses</li>
-                <li>Works with pipe-separated data</li>
+                <li>Only extracts Facebook & Instagram OTP codes</li>
+                <li>Supports ANY digit length (4, 5, 6, 8 digits)</li>
+                <li>Auto-detects platform (FB or IG)</li>
+                <li>Works with any email format</li>
                 <li>Auto-copy to clipboard</li>
                 <li>Click code to copy manually</li>
-                <li>Supports Facebook & Instagram codes</li>
+                <li>Rejects non-FB/IG emails</li>
             </ul>
         </div>
     </div>
@@ -274,6 +382,8 @@ The tool will automatically find and extract the OTP code!"></textarea>
     <script>
         function clearAll() {
             document.getElementById('emailInput').value = '';
+            document.getElementById('platformDisplay').className = 'platform-detected waiting';
+            document.getElementById('platformDisplay').innerText = '⏳ Waiting for data...';
             document.getElementById('emailDisplay').innerText = '📧 No email detected yet';
             document.getElementById('codeDisplay').className = 'code-display waiting';
             document.getElementById('codeDisplay').innerText = '------';
@@ -294,6 +404,40 @@ The tool will automatically find and extract the OTP code!"></textarea>
             document.getElementById('codeDisplay').innerText = 'SEARCHING...';
             document.getElementById('copyMsg').innerText = '';
             
+            var inputLower = input.toLowerCase();
+            
+            // CHECK IF IT'S FACEBOOK OR INSTAGRAM
+            var isFacebook = inputLower.includes('facebook') || 
+                            inputLower.includes('facebookmail') || 
+                            inputLower.includes('fb') ||
+                            inputLower.includes('meta');
+            
+            var isInstagram = inputLower.includes('instagram') || 
+                             inputLower.includes('ig');
+            
+            var platformDisplay = document.getElementById('platformDisplay');
+            
+            if(!isFacebook && !isInstagram) {
+                // NOT FB OR IG - REJECT
+                platformDisplay.className = 'platform-detected error';
+                platformDisplay.innerText = '⚠️ NOT Facebook or Instagram email!';
+                
+                document.getElementById('codeDisplay').className = 'code-display error';
+                document.getElementById('codeDisplay').innerText = 'REJECTED';
+                
+                document.getElementById('copyMsg').innerText = '❌ Only FB & Instagram codes are supported';
+                return;
+            }
+            
+            // Display detected platform
+            if(isFacebook) {
+                platformDisplay.className = 'platform-detected fb';
+                platformDisplay.innerText = '📘 Facebook Code Detected';
+            } else if(isInstagram) {
+                platformDisplay.className = 'platform-detected ig';
+                platformDisplay.innerText = '📷 Instagram Code Detected';
+            }
+            
             // Extract email address
             var emailRegex = /[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
             var emails = input.match(emailRegex);
@@ -304,52 +448,29 @@ The tool will automatically find and extract the OTP code!"></textarea>
                 document.getElementById('emailDisplay').innerText = '📧 No email found';
             }
             
-            // UNIVERSAL OTP EXTRACTION
+            // EXTRACT OTP - ANY DIGIT LENGTH
             var otp = null;
             
-            // Step 1: Find ALL number sequences in the input
+            // Find ALL number sequences
             var allNumbers = input.match(/\d+/g);
             
             if(allNumbers && allNumbers.length > 0) {
-                // Filter for valid OTP lengths (4, 5, 6, 8 digits)
+                // Filter for valid OTP lengths (4 to 8 digits)
                 var validOTPs = [];
                 
                 for(var i = 0; i < allNumbers.length; i++) {
                     var num = allNumbers[i];
                     var len = num.length;
                     
-                    // Accept 4, 5, 6, or 8 digit codes
-                    if(len === 4 || len === 5 || len === 6 || len === 8) {
+                    // Accept 4, 5, 6, 7, or 8 digit codes
+                    if(len >= 4 && len <= 8) {
                         validOTPs.push(num);
                     }
                 }
                 
-                // Take the LAST valid OTP (usually the actual code)
+                // Take the LAST valid OTP
                 if(validOTPs.length > 0) {
                     otp = validOTPs[validOTPs.length - 1];
-                }
-            }
-            
-            // Step 2: If no code found, try pattern matching
-            if(!otp) {
-                var patterns = [
-                    /(?:code|otp|verification|confirmation|pin)[\s:is]+(\d{4,8})/gi,
-                    /(?:your|the)\s+(?:code|otp)\s+(?:is|:)\s*(\d{4,8})/gi,
-                    /\b(\d{6})\b/g,
-                    /\b(\d{5})\b/g,
-                    /\b(\d{4})\b/g
-                ];
-                
-                for(var j = 0; j < patterns.length; j++) {
-                    var matches = input.match(patterns[j]);
-                    if(matches && matches.length > 0) {
-                        var lastMatch = matches[matches.length - 1];
-                        var digits = lastMatch.match(/\d{4,8}/);
-                        if(digits) {
-                            otp = digits[0];
-                            break;
-                        }
-                    }
                 }
             }
             
@@ -370,7 +491,7 @@ The tool will automatically find and extract the OTP code!"></textarea>
                         copyMsg.innerText = '';
                     }, 3000);
                 }).catch(function(err) {
-                    copyMsg.className = 'copy-indicator info';
+                    copyMsg.className = 'copy-indicator';
                     copyMsg.innerText = '💡 Click the code to copy';
                 });
                 
@@ -378,7 +499,7 @@ The tool will automatically find and extract the OTP code!"></textarea>
                 codeDisplay.className = 'code-display error';
                 codeDisplay.innerText = 'NO CODE FOUND';
                 copyMsg.className = 'copy-indicator';
-                copyMsg.innerText = '❌ No OTP code detected in the input';
+                copyMsg.innerText = '❌ No OTP code detected in the email';
             }
         }
         
@@ -390,7 +511,7 @@ The tool will automatically find and extract the OTP code!"></textarea>
         // Click to copy
         document.getElementById('codeDisplay').addEventListener('click', function() {
             var code = this.innerText;
-            if(code !== '------' && code !== 'SEARCHING...' && code !== 'NO CODE FOUND') {
+            if(code !== '------' && code !== 'SEARCHING...' && code !== 'NO CODE FOUND' && code !== 'REJECTED') {
                 navigator.clipboard.writeText(code);
                 var copyMsg = document.getElementById('copyMsg');
                 copyMsg.className = 'copy-indicator success';
