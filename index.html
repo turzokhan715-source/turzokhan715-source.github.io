@@ -181,13 +181,23 @@
             border-left: 5px solid 
 ;
         }
+        .platform-detected.unknown {
+            background: linear-gradient(135deg, 
+, 
+);
+            color: 
+;
+            border-left: 5px solid 
+;
+        }
         .platform-detected.error {
             background: linear-gradient(135deg, 
 , 
 );
             color: 
 ;
-            border-left: 5px solid #ffc107;
+            border-left: 5px solid 
+;
         }
         .email-box {
             background: 
@@ -269,7 +279,8 @@
 ;
         }
         .info-panel {
-            background: linear-gradient(135deg, #e7f3ff, 
+            background: linear-gradient(135deg, 
+, 
 );
             padding: 20px;
             border-radius: 12px;
@@ -300,18 +311,26 @@
             font-weight: bold;
             margin-right: 8px;
         }
-        .warning {
+        .toggle-section {
             background: 
 ;
-            color: 
-;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: center;
-            font-weight: 600;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
             border-left: 4px solid 
 ;
+        }
+        .toggle-section label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin: 0;
+        }
+        .toggle-section input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -319,7 +338,7 @@
     <div class="container">
         <div class="header">
             <h1>🔐 FB & IG OTP Extractor</h1>
-            <p>Facebook & Instagram Verification Code Extractor Only</p>
+            <p>Facebook & Instagram Verification Code Extractor</p>
         </div>
         
         <div class="platforms">
@@ -329,6 +348,13 @@
             <div class="platform-badge ig-badge">
                 📷 Instagram
             </div>
+        </div>
+        
+        <div class="toggle-section">
+            <label>
+                <input type="checkbox" id="strictMode" checked>
+                <span><strong>Strict Mode:</strong> Only extract from confirmed FB/IG emails</span>
+            </label>
         </div>
         
         <div class="input-section">
@@ -341,7 +367,7 @@ Supports any format:
 • Pipe-separated data (email|pass|token|uuid)
 • JSON format
 
-⚠️ Only FB & Instagram codes will be extracted!"></textarea>
+Will auto-detect FB/IG from email domain or keywords!"></textarea>
         </div>
         
         <div class="btn-group">
@@ -368,13 +394,13 @@ Supports any format:
         <div class="info-panel">
             <h3>✨ Features</h3>
             <ul>
-                <li>Only extracts Facebook & Instagram OTP codes</li>
-                <li>Supports ANY digit length (4, 5, 6, 8 digits)</li>
-                <li>Auto-detects platform (FB or IG)</li>
-                <li>Works with any email format</li>
+                <li>Smart FB & Instagram detection</li>
+                <li>Checks email domain (facebookmail.com, mail.instagram.com)</li>
+                <li>Keyword detection (facebook, instagram, fb, ig, meta)</li>
+                <li>Supports ANY digit length (4-8 digits)</li>
+                <li>Strict mode: Only confirmed FB/IG emails</li>
                 <li>Auto-copy to clipboard</li>
-                <li>Click code to copy manually</li>
-                <li>Rejects non-FB/IG emails</li>
+                <li>Works with any email format</li>
             </ul>
         </div>
     </div>
@@ -391,7 +417,6 @@ Supports any format:
         }
         
         function extractOTP() {
-            // Get input
             var input = document.getElementById('emailInput').value.trim();
             
             if(!input) {
@@ -405,47 +430,78 @@ Supports any format:
             document.getElementById('copyMsg').innerText = '';
             
             var inputLower = input.toLowerCase();
+            var strictMode = document.getElementById('strictMode').checked;
             
-            // CHECK IF IT'S FACEBOOK OR INSTAGRAM
-            var isFacebook = inputLower.includes('facebook') || 
-                            inputLower.includes('facebookmail') || 
-                            inputLower.includes('fb') ||
-                            inputLower.includes('meta');
-            
-            var isInstagram = inputLower.includes('instagram') || 
-                             inputLower.includes('ig');
-            
-            var platformDisplay = document.getElementById('platformDisplay');
-            
-            if(!isFacebook && !isInstagram) {
-                // NOT FB OR IG - REJECT
-                platformDisplay.className = 'platform-detected error';
-                platformDisplay.innerText = '⚠️ NOT Facebook or Instagram email!';
-                
-                document.getElementById('codeDisplay').className = 'code-display error';
-                document.getElementById('codeDisplay').innerText = 'REJECTED';
-                
-                document.getElementById('copyMsg').innerText = '❌ Only FB & Instagram codes are supported';
-                return;
-            }
-            
-            // Display detected platform
-            if(isFacebook) {
-                platformDisplay.className = 'platform-detected fb';
-                platformDisplay.innerText = '📘 Facebook Code Detected';
-            } else if(isInstagram) {
-                platformDisplay.className = 'platform-detected ig';
-                platformDisplay.innerText = '📷 Instagram Code Detected';
-            }
-            
-            // Extract email address
+            // Extract email address first
             var emailRegex = /[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
             var emails = input.match(emailRegex);
+            var detectedEmail = '';
             
             if(emails && emails.length > 0) {
+                detectedEmail = emails[0].toLowerCase();
                 document.getElementById('emailDisplay').innerText = '📧 Email: ' + emails[0];
             } else {
                 document.getElementById('emailDisplay').innerText = '📧 No email found';
+            }
+            
+            // SMART PLATFORM DETECTION
+            var isFacebook = false;
+            var isInstagram = false;
+            
+            // Method 1: Check email domain
+            if(detectedEmail) {
+                if(detectedEmail.includes('facebookmail.com') || 
+                   detectedEmail.includes('facebook.com') ||
+                   detectedEmail.includes('fb.com')) {
+                    isFacebook = true;
+                }
+                if(detectedEmail.includes('instagram.com') || 
+                   detectedEmail.includes('ig.com')) {
+                    isInstagram = true;
+                }
+            }
+            
+            // Method 2: Check keywords in content
+            if(!isFacebook && !isInstagram) {
+                if(inputLower.includes('facebook') || 
+                   inputLower.includes('fb') ||
+                   inputLower.includes('meta')) {
+                    isFacebook = true;
+                }
+                if(inputLower.includes('instagram') || 
+                   inputLower.includes('ig')) {
+                    isInstagram = true;
+                }
+            }
+            
+            var platformDisplay = document.getElementById('platformDisplay');
+            
+            // Check if platform detected
+            if(!isFacebook && !isInstagram) {
+                if(strictMode) {
+                    // STRICT MODE: Reject
+                    platformDisplay.className = 'platform-detected error';
+                    platformDisplay.innerText = '❌ NOT Facebook or Instagram email!';
+                    
+                    document.getElementById('codeDisplay').className = 'code-display error';
+                    document.getElementById('codeDisplay').innerText = 'REJECTED';
+                    
+                    document.getElementById('copyMsg').innerText = '❌ Only FB & Instagram codes are supported (Strict Mode ON)';
+                    return;
+                } else {
+                    // NON-STRICT MODE: Warn but continue
+                    platformDisplay.className = 'platform-detected unknown';
+                    platformDisplay.innerText = '⚠️ Platform unknown - extracting anyway';
+                }
+            } else {
+                // Display detected platform
+                if(isFacebook) {
+                    platformDisplay.className = 'platform-detected fb';
+                    platformDisplay.innerText = '📘 Facebook Code Detected';
+                } else if(isInstagram) {
+                    platformDisplay.className = 'platform-detected ig';
+                    platformDisplay.innerText = '📷 Instagram Code Detected';
+                }
             }
             
             // EXTRACT OTP - ANY DIGIT LENGTH
@@ -455,14 +511,13 @@ Supports any format:
             var allNumbers = input.match(/\d+/g);
             
             if(allNumbers && allNumbers.length > 0) {
-                // Filter for valid OTP lengths (4 to 8 digits)
                 var validOTPs = [];
                 
                 for(var i = 0; i < allNumbers.length; i++) {
                     var num = allNumbers[i];
                     var len = num.length;
                     
-                    // Accept 4, 5, 6, 7, or 8 digit codes
+                    // Accept 4 to 8 digit codes
                     if(len >= 4 && len <= 8) {
                         validOTPs.push(num);
                     }
@@ -482,7 +537,7 @@ Supports any format:
                 codeDisplay.className = 'code-display';
                 codeDisplay.innerText = otp;
                 
-                // Auto-copy to clipboard
+                // Auto-copy
                 navigator.clipboard.writeText(otp).then(function() {
                     copyMsg.className = 'copy-indicator success';
                     copyMsg.innerText = '✓ Code copied to clipboard: ' + otp;
@@ -490,7 +545,7 @@ Supports any format:
                     setTimeout(function() {
                         copyMsg.innerText = '';
                     }, 3000);
-                }).catch(function(err) {
+                }).catch(function() {
                     copyMsg.className = 'copy-indicator';
                     copyMsg.innerText = '💡 Click the code to copy';
                 });
