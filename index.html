@@ -1,4 +1,4 @@
-// app.js - Complete Solution
+// app.js - Complete with Premium Design
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -9,30 +9,18 @@ app.use(express.json());
 
 const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
 
-// ৫-৮ ডিজিট কোড বের করার শক্তিশালী লজিক
 function extractOTP(text) {
     if (!text) return null;
-    
-    // HTML ট্যাগ ক্লিন করা
     const cleanText = text.replace(/<[^>]*>?/gm, ' ');
-    
-    // ৫-৮ ডিজিটের নম্বর খোঁজা
     const otpRegex = /\b\d{5,8}\b/g;
     const matches = cleanText.match(otpRegex);
-    
-    if (matches) {
-        // সাধারণত লিস্টের শেষ কোডটিই লেটেস্ট হয়
-        return matches[matches.length - 1];
-    }
-    
+    if (matches) return matches[matches.length - 1];
     return null;
 }
 
-// API endpoint
 app.post('/api/get-code', async (req, res) => {
     try {
         const { email, token, service } = req.body;
-        
         if (!token) return res.json({ success: false, error: 'Token is missing!' });
         
         const response = await axios.get(OUTLOOK_API, {
@@ -45,35 +33,32 @@ app.post('/api/get-code', async (req, res) => {
         });
         
         const messages = response.data.value || [];
-        const keywords = service === 'instagram' 
-            ? ['instagram', 'ig'] 
-            : ['facebook', 'fb', 'security', 'microsoft'];
+        const keywords = service === 'instagram' ? ['instagram', 'ig'] : ['facebook', 'fb'];
         
-        // সঠিক ইমেইল খুঁজে বের করা
         let targetMsg = messages.find(m => {
             const subject = (m.subject || '').toLowerCase();
             const from = (m.from?.emailAddress?.address || '').toLowerCase();
             return keywords.some(k => subject.includes(k) || from.includes(k));
         });
         
-        if (!targetMsg) return res.json({ success: false, error: 'Target email not found!' });
+        if (!targetMsg) return res.json({ success: false, error: 'No verification email found!' });
         
         const fullContent = `${targetMsg.subject} ${targetMsg.bodyPreview} ${targetMsg.body?.content || ''}`;
         const code = extractOTP(fullContent);
         
         if (code) {
+            console.log(`✅ Code extracted: ${code}`);
             return res.json({ success: true, code: code });
         } else {
-            return res.json({ success: false, error: 'Code not found in email content' });
+            return res.json({ success: false, error: 'No code found in email' });
         }
         
     } catch (error) {
-        console.error('Error:', error.message);
-        return res.json({ success: false, error: 'Invalid Token or Network Issue' });
+        console.error('❌ Error:', error.message);
+        return res.json({ success: false, error: 'Invalid token or network issue' });
     }
 });
 
-// HTML Frontend
 app.get('/', (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="en">
@@ -82,9 +67,14 @@ app.get('/', (req, res) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTP Extractor Pro</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, 
  0%, 
  100%);
@@ -94,81 +84,115 @@ app.get('/', (req, res) => {
             align-items: center;
             padding: 20px;
         }
+        
         .container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 600px;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+            padding: 45px;
+            max-width: 550px;
             width: 100%;
+            animation: slideUp 0.5s ease-out;
         }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
+        
         .header h1 {
             font-size: 32px;
+            font-weight: 800;
             background: linear-gradient(135deg, 
 , 
 );
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            background-clip: text;
+            margin-bottom: 8px;
         }
+        
         .header p {
-            color: #666;
-            font-size: 14px;
+            color: 
+;
+            font-size: 15px;
         }
+        
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid 
+            gap: 12px;
+            margin-bottom: 28px;
+            background: 
 ;
+            padding: 6px;
+            border-radius: 12px;
         }
+        
         .tab {
             flex: 1;
             padding: 12px;
-            background: none;
+            background: transparent;
             border: none;
-            border-bottom: 3px solid transparent;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 15px;
             font-weight: 600;
-            color: #999;
-            transition: all 0.3s;
-        }
-        .tab:hover { color: 
-; }
-        .tab.active {
             color: 
 ;
-            border-bottom-color: 
-;
+            transition: all 0.3s;
         }
+        
+        .tab.active {
+            background: white;
+            color: 
+;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
         .service-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 28px;
         }
+        
         .service-tab {
             flex: 1;
-            padding: 15px;
+            padding: 16px;
             border: 2px solid 
 ;
-            border-radius: 12px;
+            border-radius: 14px;
             background: white;
             cursor: pointer;
             text-align: center;
             font-weight: 600;
             font-size: 15px;
+            color: 
+;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
+        
         .service-tab:hover {
             border-color: 
 ;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
+        
         .service-tab.active {
             background: linear-gradient(135deg, 
 , 
@@ -176,113 +200,198 @@ app.get('/', (req, res) => {
             color: white;
             border-color: 
 ;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
+        
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
+        
         .input-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 600;
-            color: #333;
+            color: 
+;
             font-size: 14px;
         }
+        
         .input-box {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             border: 2px solid 
 ;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 13px;
             font-family: 'Courier New', monospace;
             transition: all 0.3s;
             resize: vertical;
-            min-height: 100px;
+            min-height: 110px;
+            background: 
+;
         }
+        
         .input-box:focus {
             outline: none;
             border-color: 
 ;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
+        
         .hint {
             font-size: 12px;
-            color: #999;
-            margin-top: 5px;
+            color: 
+;
+            margin-top: 8px;
+            line-height: 1.5;
         }
+        
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             background: linear-gradient(135deg, 
 , 
 );
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
+        
         .btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
+        
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
         .btn:disabled {
-            opacity: 0.6;
+            opacity: 0.7;
             cursor: not-allowed;
         }
+        
         .result {
-            margin-top: 25px;
-            padding: 30px;
+            margin-top: 28px;
+            padding: 35px;
             background: linear-gradient(135deg, 
 , 
 );
-            border-radius: 15px;
+            border-radius: 16px;
             text-align: center;
             display: none;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .result::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
         .code {
-            font-size: 48px;
+            position: relative;
+            z-index: 1;
+            font-size: 52px;
             font-weight: 900;
-            color: #0f0;
-            letter-spacing: 10px;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 20px rgba(0,255,0,0.5);
-            cursor: pointer;
-            user-select: all;
-            margin: 15px 0;
-        }
-        .code.waiting {
-            font-size: 20px;
-            color: #999;
-            letter-spacing: 2px;
-        }
-        .code.error {
-            font-size: 18px;
             color: 
 ;
-            letter-spacing: 2px;
+            letter-spacing: 14px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+            cursor: pointer;
+            user-select: all;
+            margin: 18px 0;
+            transition: all 0.3s;
         }
+        
+        .code:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 40px rgba(16, 185, 129, 0.8);
+        }
+        
+        .code.waiting {
+            font-size: 22px;
+            color: 
+;
+            letter-spacing: 3px;
+            text-shadow: none;
+        }
+        
+        .code.error {
+            font-size: 20px;
+            color: 
+;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+        
         .status {
-            color: #aaa;
-            font-size: 13px;
-            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+            color: 
+;
+            font-size: 14px;
+            margin-top: 12px;
+            font-weight: 500;
         }
-        .status.success { color: #0f0; }
-        .status.error { color: 
-; }
+        
+        .status.success {
+            color: 
+;
+        }
+        
+        .status.error {
+            color: 
+;
+        }
+        
         .loader {
             display: inline-block;
             width: 18px;
             height: 18px;
-            border: 3px solid rgba(255,255,255,.3);
+            border: 3px solid rgba(255,255,255,.2);
             border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
         }
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 25px;
+            }
+            
+            .header h1 {
+                font-size: 26px;
+            }
+            
+            .code {
+                font-size: 40px;
+                letter-spacing: 10px;
+            }
         }
     </style>
 </head>
@@ -299,8 +408,12 @@ app.get('/', (req, res) => {
         </div>
 
         <div class="service-tabs">
-            <button class="service-tab active" id="fbBtn" onclick="selectService('facebook')">📘 Facebook</button>
-            <button class="service-tab" id="igBtn" onclick="selectService('instagram')">📷 Instagram</button>
+            <button class="service-tab active" id="fbBtn" onclick="selectService('facebook')">
+                <span>📘</span> Facebook
+            </button>
+            <button class="service-tab" id="igBtn" onclick="selectService('instagram')">
+                <span>📷</span> Instagram
+            </button>
         </div>
 
         <div class="input-group">
@@ -309,14 +422,14 @@ app.get('/', (req, res) => {
 
 Example:
 user@outlook.com|pass123|eyJ0eXAi...|uuid-here"></textarea>
-            <div class="hint">Paste your data in pipe-separated format</div>
+            <div class="hint">Paste your data in pipe-separated format (email|password|token|uuid)</div>
         </div>
 
-        <button class="btn" id="btn" onclick="extract()">🔍 Extract Code</button>
+        <button class="btn" id="btn" onclick="extract()">🔍 Extract Verification Code</button>
 
         <div class="result" id="result">
             <div class="code waiting" id="code">------</div>
-            <div class="status" id="status">Waiting...</div>
+            <div class="status" id="status">Waiting for request...</div>
         </div>
     </div>
 
@@ -358,13 +471,13 @@ user@outlook.com|pass123|eyJ0eXAi...|uuid-here"></textarea>
             const status = document.getElementById('status');
 
             btn.disabled = true;
-            btn.innerHTML = '<span class="loader"></span> Fetching...';
+            btn.innerHTML = '<span class="loader"></span> Extracting...';
             
             result.style.display = 'block';
             code.className = 'code waiting';
             code.innerText = 'FETCHING...';
             status.className = 'status';
-            status.innerText = '🔄 Connecting to server...';
+            status.innerText = '🔄 Connecting to Outlook API...';
 
             try {
                 const response = await fetch('/api/get-code', {
@@ -383,7 +496,7 @@ user@outlook.com|pass123|eyJ0eXAi...|uuid-here"></textarea>
 
                     try {
                         await navigator.clipboard.writeText(data.code);
-                        status.innerText = '✅ Copied to clipboard: ' + data.code;
+                        status.innerText = '✅ Code copied to clipboard: ' + data.code;
                     } catch(e) {
                         status.innerText = '✅ Click code to copy';
                     }
@@ -402,13 +515,14 @@ user@outlook.com|pass123|eyJ0eXAi...|uuid-here"></textarea>
             }
 
             btn.disabled = false;
-            btn.innerHTML = '🔍 Extract Code';
+            btn.innerHTML = '🔍 Extract Verification Code';
         }
 
         document.getElementById('code').addEventListener('click', function() {
             const c = this.innerText;
             if (c !== '------' && c !== 'FETCHING...' && c !== 'ERROR') {
                 navigator.clipboard.writeText(c);
+                document.getElementById('status').className = 'status success';
                 document.getElementById('status').innerText = '✅ Copied: ' + c;
             }
         });
@@ -423,7 +537,7 @@ app.listen(PORT, () => {
 ╔═══════════════════════════════════════╗
 ║  ✅ Server Running Successfully!     ║
 ║  🌐 http://localhost:${PORT}            ║
-║  📧 OTP Extractor Ready              ║
+║  📧 OTP Extractor Pro Ready          ║
 ╚═══════════════════════════════════════╝
     `);
 });
