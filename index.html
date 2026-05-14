@@ -37,9 +37,7 @@
             margin-bottom: 30px;
         }
         .header h1 {
-            background: linear-gradient(135deg, 
-, 
-);
+            background: linear-gradient(135deg, #1877f2, #e1306c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -50,6 +48,19 @@
         .header p {
             color: #666;
             font-size: 14px;
+        }
+        .priority-badge {
+            background: linear-gradient(135deg, 
+, 
+);
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
         }
         .platforms {
             display: flex;
@@ -65,22 +76,46 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            position: relative;
         }
         .fb-badge {
-            background: 
-;
+            background: #1877f2;
             color: white;
             box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3);
+        }
+        .fb-badge::after {
+            content: '1st';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ffd700;
+            color: #333;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
         }
         .ig-badge {
             background: linear-gradient(45deg, 
 , 
 , 
 , 
-, 
-);
+, #bc1888);
             color: white;
             box-shadow: 0 4px 15px rgba(188, 24, 136, 0.3);
+        }
+        .ig-badge::after {
+            content: '2nd';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: 
+;
+            color: #333;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
         }
         .input-section {
             margin-bottom: 20px;
@@ -107,7 +142,7 @@
             border-color: 
 ;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(64, 93, 230, 0.1);
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
         }
         .btn-group {
             display: flex;
@@ -132,7 +167,7 @@
         }
         .btn-extract:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(64, 93, 230, 0.4);
+            box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
         }
         .btn-extract:active {
             transform: translateY(0);
@@ -164,8 +199,7 @@
             color: #666;
         }
         .platform-detected.fb {
-            background: linear-gradient(135deg, 
-, 
+            background: linear-gradient(135deg, #e7f3ff, 
 );
             color: 
 ;
@@ -187,8 +221,7 @@
 );
             color: 
 ;
-            border-left: 5px solid 
-;
+            border-left: 5px solid #ffc107;
         }
         .platform-detected.error {
             background: linear-gradient(135deg, 
@@ -207,8 +240,7 @@
             margin-bottom: 15px;
             text-align: center;
             font-weight: 600;
-            color: 
-;
+            color: #495057;
             border-left: 4px solid 
 ;
         }
@@ -339,6 +371,7 @@
         <div class="header">
             <h1>🔐 FB & IG OTP Extractor</h1>
             <p>Facebook & Instagram Verification Code Extractor</p>
+            <div class="priority-badge">⭐ Facebook Priority Mode</div>
         </div>
         
         <div class="platforms">
@@ -361,13 +394,11 @@
             <label>📋 Paste Your Email Data Here:</label>
             <textarea id="emailInput" placeholder="Paste Facebook or Instagram email data here...
 
-Supports any format:
-• Plain text emails
-• API responses
-• Pipe-separated data (email|pass|token|uuid)
-• JSON format
+Priority Order:
+1️⃣ Facebook codes (checked first)
+2️⃣ Instagram codes (checked second)
 
-Will auto-detect FB/IG from email domain or keywords!"></textarea>
+Supports any format!"></textarea>
         </div>
         
         <div class="btn-group">
@@ -394,11 +425,11 @@ Will auto-detect FB/IG from email domain or keywords!"></textarea>
         <div class="info-panel">
             <h3>✨ Features</h3>
             <ul>
-                <li>Smart FB & Instagram detection</li>
-                <li>Checks email domain (facebookmail.com, mail.instagram.com)</li>
-                <li>Keyword detection (facebook, instagram, fb, ig, meta)</li>
+                <li>Facebook codes get PRIORITY (checked first)</li>
+                <li>Instagram codes checked second</li>
+                <li>Smart detection from email domain & keywords</li>
                 <li>Supports ANY digit length (4-8 digits)</li>
-                <li>Strict mode: Only confirmed FB/IG emails</li>
+                <li>Strict mode for confirmed FB/IG only</li>
                 <li>Auto-copy to clipboard</li>
                 <li>Works with any email format</li>
             </ul>
@@ -432,7 +463,7 @@ Will auto-detect FB/IG from email domain or keywords!"></textarea>
             var inputLower = input.toLowerCase();
             var strictMode = document.getElementById('strictMode').checked;
             
-            // Extract email address first
+            // Extract email address
             var emailRegex = /[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
             var emails = input.match(emailRegex);
             var detectedEmail = '';
@@ -444,31 +475,25 @@ Will auto-detect FB/IG from email domain or keywords!"></textarea>
                 document.getElementById('emailDisplay').innerText = '📧 No email found';
             }
             
-            // SMART PLATFORM DETECTION
+            // PRIORITY DETECTION: Facebook FIRST, then Instagram
             var isFacebook = false;
             var isInstagram = false;
             
-            // Method 1: Check email domain
-            if(detectedEmail) {
-                if(detectedEmail.includes('facebookmail.com') || 
-                   detectedEmail.includes('facebook.com') ||
-                   detectedEmail.includes('fb.com')) {
-                    isFacebook = true;
-                }
-                if(detectedEmail.includes('instagram.com') || 
-                   detectedEmail.includes('ig.com')) {
-                    isInstagram = true;
-                }
+            // Check Facebook FIRST (Priority 1)
+            if(detectedEmail.includes('facebookmail.com') || 
+               detectedEmail.includes('facebook.com') ||
+               detectedEmail.includes('fb.com') ||
+               inputLower.includes('facebook') || 
+               inputLower.includes('fb') ||
+               inputLower.includes('meta')) {
+                isFacebook = true;
             }
             
-            // Method 2: Check keywords in content
-            if(!isFacebook && !isInstagram) {
-                if(inputLower.includes('facebook') || 
-                   inputLower.includes('fb') ||
-                   inputLower.includes('meta')) {
-                    isFacebook = true;
-                }
-                if(inputLower.includes('instagram') || 
+            // Check Instagram ONLY if NOT Facebook (Priority 2)
+            if(!isFacebook) {
+                if(detectedEmail.includes('instagram.com') || 
+                   detectedEmail.includes('ig.com') ||
+                   inputLower.includes('instagram') || 
                    inputLower.includes('ig')) {
                     isInstagram = true;
                 }
@@ -479,7 +504,6 @@ Will auto-detect FB/IG from email domain or keywords!"></textarea>
             // Check if platform detected
             if(!isFacebook && !isInstagram) {
                 if(strictMode) {
-                    // STRICT MODE: Reject
                     platformDisplay.className = 'platform-detected error';
                     platformDisplay.innerText = '❌ NOT Facebook or Instagram email!';
                     
@@ -489,25 +513,22 @@ Will auto-detect FB/IG from email domain or keywords!"></textarea>
                     document.getElementById('copyMsg').innerText = '❌ Only FB & Instagram codes are supported (Strict Mode ON)';
                     return;
                 } else {
-                    // NON-STRICT MODE: Warn but continue
                     platformDisplay.className = 'platform-detected unknown';
                     platformDisplay.innerText = '⚠️ Platform unknown - extracting anyway';
                 }
             } else {
-                // Display detected platform
+                // Display detected platform with priority
                 if(isFacebook) {
                     platformDisplay.className = 'platform-detected fb';
-                    platformDisplay.innerText = '📘 Facebook Code Detected';
+                    platformDisplay.innerText = '📘 Facebook Code Detected (Priority 1st)';
                 } else if(isInstagram) {
                     platformDisplay.className = 'platform-detected ig';
-                    platformDisplay.innerText = '📷 Instagram Code Detected';
+                    platformDisplay.innerText = '📷 Instagram Code Detected (Priority 2nd)';
                 }
             }
             
-            // EXTRACT OTP - ANY DIGIT LENGTH
+            // EXTRACT OTP
             var otp = null;
-            
-            // Find ALL number sequences
             var allNumbers = input.match(/\d+/g);
             
             if(allNumbers && allNumbers.length > 0) {
@@ -517,13 +538,11 @@ Will auto-detect FB/IG from email domain or keywords!"></textarea>
                     var num = allNumbers[i];
                     var len = num.length;
                     
-                    // Accept 4 to 8 digit codes
                     if(len >= 4 && len <= 8) {
                         validOTPs.push(num);
                     }
                 }
                 
-                // Take the LAST valid OTP
                 if(validOTPs.length > 0) {
                     otp = validOTPs[validOTPs.length - 1];
                 }
@@ -537,7 +556,6 @@ Will auto-detect FB/IG from email domain or keywords!"></textarea>
                 codeDisplay.className = 'code-display';
                 codeDisplay.innerText = otp;
                 
-                // Auto-copy
                 navigator.clipboard.writeText(otp).then(function() {
                     copyMsg.className = 'copy-indicator success';
                     copyMsg.innerText = '✓ Code copied to clipboard: ' + otp;
@@ -554,7 +572,7 @@ Will auto-detect FB/IG from email domain or keywords!"></textarea>
                 codeDisplay.className = 'code-display error';
                 codeDisplay.innerText = 'NO CODE FOUND';
                 copyMsg.className = 'copy-indicator';
-                copyMsg.innerText = '❌ No OTP code detected in the email';
+                copyMsg.innerText = '❌ No OTP code detected';
             }
         }
         
