@@ -1,4 +1,4 @@
-// app.js - Complete Email Verification Code Extractor
+// app.js - Complete Backend + Frontend (Fixed Colors)
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -9,460 +9,94 @@ app.use(express.json());
 
 const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
 
-// Extract OTP from text
+// ৫-৮ ডিজিট এক্সট্রাকশন লজিক (FB/IG এর জন্য)
 function extractOTP(text) {
     if (!text) return null;
-    
-    text = text.replace(/&quot;/g, '"')
-               .replace(/&amp;/g, '&')
-               .replace(/&lt;/g, '<')
-               .replace(/&gt;/g, '>')
-               .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
-    
-    const allCodes = [];
-    
-    const p1 = text.match(/(\d{4,8})\s+is\s+your/gi);
-    if (p1) p1.forEach(m => { const c = m.match(/(\d{4,8})/); if(c) allCodes.push(c[1]); });
-    
-    const p2 = text.match(/code[\s:is]+(\d{4,8})/gi);
-    if (p2) p2.forEach(m => { const c = m.match(/(\d{4,8})/); if(c) allCodes.push(c[1]); });
-    
-    const p3 = text.match(/\b(\d{4,8})\b/g);
-    if (p3) {
-        p3.forEach(code => {
-            if (!['2024', '2025', '2026', '8080', '443', '80', '1234', '0000'].includes(code)) {
-                allCodes.push(code);
-            }
-        });
-    }
-    
-    return allCodes.length > 0 ? allCodes[allCodes.length - 1] : null;
+    const otpRegex = /\b\d{5,8}\b/; 
+    const match = text.match(otpRegex);
+    return match ? match[0] : null;
 }
 
 // API endpoint
 app.post('/api/get-code', async (req, res) => {
     try {
-        const { email, password, token, uuid, service } = req.body;
-        
-        if (!token) {
-            return res.json({ success: false, error: 'Token required' });
-        }
-        
-        console.log(`📧 Fetching ${service} code for ${email}...`);
-        
+        const { email, token, service } = req.body;
+        if (!token) return res.json({ success: false, error: 'Token required' });
+
         const response = await axios.get(OUTLOOK_API, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            params: {
-                '$top': 10,
-                '$orderby': 'receivedDateTime DESC',
-                '$select': 'subject,bodyPreview,body,from,receivedDateTime'
-            }
+            headers: { 'Authorization': `Bearer ${token}` },
+            params: { '$top': 10, '$orderby': 'receivedDateTime DESC' }
         });
-        
+
         const messages = response.data.value || [];
-        
-        if (messages.length === 0) {
-            return res.json({ success: false, error: 'No emails found' });
-        }
-        
         const keywords = service === 'instagram' ? ['instagram', 'ig'] : ['facebook', 'fb'];
         
-        let targetEmail = null;
-        for (const msg of messages) {
-            const from = (msg.from?.emailAddress?.address || '').toLowerCase();
-            const subject = (msg.subject || '').toLowerCase();
-            
-            if (keywords.some(k => from.includes(k) || subject.includes(k))) {
-                targetEmail = msg;
-                break;
-            }
-        }
-        
-        if (!targetEmail) {
-            return res.json({ success: false, error: `No ${service} email found` });
-        }
-        
-        const subject = targetEmail.subject || '';
-        const bodyPreview = targetEmail.bodyPreview || '';
-        const bodyContent = targetEmail.body?.content || '';
-        
-        const fullText = `${subject} ${bodyPreview} ${bodyContent}`;
-        const code = extractOTP(fullText);
-        
-        if (code) {
-            console.log(`✅ Code found: ${code}`);
-            return res.json({
-                success: true,
-                code: code,
-                email: email,
-                service: service,
-                subject: subject,
-                from: targetEmail.from?.emailAddress?.address
-            });
-        } else {
-            return res.json({ success: false, error: 'No code found in email' });
-        }
-        
-    } catch (error) {
-        console.error('❌ Error:', error.response?.data || error.message);
-        return res.json({
-            success: false,
-            error: error.response?.data?.error?.message || error.message
+        let targetMsg = messages.find(m => {
+            const subject = (m.subject || '').toLowerCase();
+            return keywords.some(k => subject.includes(k));
         });
+
+        if (!targetMsg) return res.json({ success: false, error: 'No email found' });
+
+        const fullText = `${targetMsg.subject} ${targetMsg.bodyPreview}`;
+        const code = extractOTP(fullText);
+
+        return res.json(code ? { success: true, code } : { success: false, error: 'Code not found' });
+    } catch (error) {
+        return res.json({ success: false, error: 'Outlook API Error' });
     }
 });
 
-// Serve HTML
+// HTML Frontend (Fixed Hex Colors)
 app.get('/', (req, res) => {
-    res.send(`<!DOCTYPE html>
+    res.send(`
+<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification Code Extractor</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: linear-gradient(135deg, 
- 0%, 
- 100%);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            width: 600px;
-            max-width: 95%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { color: 
-; font-size: 28px; margin-bottom: 10px; }
-        .header p { color: #666; font-size: 14px; }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid 
-;
-        }
-        .tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-size: 16px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
-        }
-        .tab:hover { color: 
-; }
-        .tab.active { color: 
-; border-bottom-color: 
-; }
-        .service-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
-        .service-tab {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid 
-;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-            text-align: center;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .service-tab:hover { border-color: 
-; transform: translateY(-2px); }
-        .service-tab.active {
-            background: linear-gradient(135deg, 
-, 
-);
-            color: white;
-            border-color: 
-;
-        }
-        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #333; }
-        .input-box {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid 
-;
-            border-radius: 10px;
-            font-size: 13px;
-            font-family: 'Courier New', monospace;
-            resize: vertical;
-            min-height: 120px;
-            transition: all 0.3s;
-        }
-        .input-box:focus {
-            border-color: 
-;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        .format-hint {
-            font-size: 12px;
-            color: #666;
-            margin-top: 8px;
-            padding: 10px;
-            background: 
-;
-            border-radius: 5px;
-        }
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, 
-, 
-);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
-        }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .result-box {
-            margin-top: 25px;
-            padding: 25px;
-            background: linear-gradient(135deg, 
-, 
-);
-            border-radius: 15px;
-            text-align: center;
-            display: none;
-        }
-        .code-display {
-            font-size: 48px;
-            font-weight: 900;
-            color: #0f0;
-            letter-spacing: 12px;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 20px rgba(0,255,0,0.5);
-            cursor: pointer;
-            user-select: all;
-            margin: 20px 0;
-        }
-        .code-display.waiting { font-size: 24px; color: #666; letter-spacing: 3px; }
-        .code-display.error { font-size: 20px; color: 
-; letter-spacing: 2px; }
-        .status-msg { color: #aaa; font-size: 14px; margin-top: 10px; }
-        .status-msg.success { color: #0f0; }
-        .status-msg.error { color: 
-; }
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: 
-;
-            border-radius: 10px;
-            border-left: 4px solid 
-;
-        }
-        .info-section h3 { color: 
-; margin-bottom: 15px; font-size: 16px; }
-        .info-section ul { list-style: none; padding: 0; }
-        .info-section li {
-            padding: 8px 0;
-            color: #555;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .info-section li::before {
-            content: '✓';
-            color: 
-;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        body { background: #0a0a0a; color: #ffffff; font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
+        .card { background: #151515; border: 1px solid #333; padding: 30px; border-radius: 15px; width: 500px; box-shadow: 0 10px 30px #000; }
+        h1 { color: #0088ff; text-align: center; margin-bottom: 20px; }
+        textarea { width: 100%; height: 100px; background: #1e1e1e; color: #00ff00; border: 1px solid #444; border-radius: 8px; padding: 10px; outline: none; }
+        .btn { width: 100%; background: #0088ff; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .result-box { background: #000; padding: 20px; border-radius: 10px; margin-top: 20px; text-align: center; border: 1px solid #0088ff; }
+        #otp { font-size: 40px; color: #00ff00; font-weight: bold; letter-spacing: 5px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📧 Get Verification Code</h1>
-            <p>Extract OTP codes from email automatically</p>
-        </div>
-
-        <div class="tabs">
-            <button class="tab" id="gmailTab" onclick="selectProvider('gmail')">📬 Gmail</button>
-            <button class="tab active" id="outlookTab" onclick="selectProvider('outlook')">📧 Hotmail/Outlook</button>
-        </div>
-
-        <div class="service-tabs">
-            <button class="service-tab active" id="fbTab" onclick="selectService('facebook')">📘 Facebook</button>
-            <button class="service-tab" id="igTab" onclick="selectService('instagram')">📷 Instagram</button>
-        </div>
-
-        <div class="section-title">📋 Account Details</div>
-        
-        <textarea class="input-box" id="accountInput" placeholder="Enter: email|password|token|uuid
-
-Example:
-user@outlook.com|pass123|eyJ0eXAi...|9e5f94bc-e8a4"></textarea>
-
-        <div class="format-hint">
-            <strong>Format:</strong> email|password|token|uuid
-        </div>
-
-        <button class="btn-primary" id="getCodeBtn" onclick="getVerificationCode()">
-            🔍 Get Verification Code
-        </button>
-
-        <div class="result-box" id="resultBox">
-            <div class="code-display waiting" id="codeDisplay">------</div>
-            <div class="status-msg" id="statusMsg">Waiting...</div>
-        </div>
-
-        <div class="info-section">
-            <h3>📖 How to Use</h3>
-            <ul>
-                <li>Enter: email|password|token|uuid</li>
-                <li>Click "Get Verification Code"</li>
-                <li>Code will be extracted automatically</li>
-                <li>Code copied to clipboard</li>
-            </ul>
+    <div class="card">
+        <h1>Outlook OTP Fetcher</h1>
+        <textarea id="data" placeholder="email|pass|token|uuid"></textarea>
+        <button class="btn" onclick="getCode()">GET CODE</button>
+        <div class="result-box">
+            <div id="otp">------</div>
+            <div id="status" style="color:#888; font-size:12px; margin-top:10px;">Ready</div>
         </div>
     </div>
-
     <script>
-        let currentProvider = 'outlook';
-        let currentService = 'facebook';
-
-        function selectProvider(provider) {
-            currentProvider = provider;
-            document.getElementById('gmailTab').classList.toggle('active', provider === 'gmail');
-            document.getElementById('outlookTab').classList.toggle('active', provider === 'outlook');
-        }
-
-        function selectService(service) {
-            currentService = service;
-            document.getElementById('fbTab').classList.toggle('active', service === 'facebook');
-            document.getElementById('igTab').classList.toggle('active', service === 'instagram');
-        }
-
-        async function getVerificationCode() {
-            const input = document.getElementById('accountInput').value.trim();
-            
-            if (!input) {
-                alert('⚠️ Please enter account details!');
-                return;
-            }
-
+        async function getCode() {
+            const input = document.getElementById('data').value;
             const parts = input.split('|');
-            if (parts.length < 4) {
-                alert('⚠️ Invalid format! Use: email|password|token|uuid');
-                return;
-            }
-
-            const [email, password, token, uuid] = parts.map(p => p.trim());
-
-            const btn = document.getElementById('getCodeBtn');
-            const resultBox = document.getElementById('resultBox');
-            const codeDisplay = document.getElementById('codeDisplay');
-            const statusMsg = document.getElementById('statusMsg');
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loader"></span> Fetching...';
-            
-            resultBox.style.display = 'block';
-            codeDisplay.className = 'code-display waiting';
-            codeDisplay.innerText = 'FETCHING...';
-            statusMsg.className = 'status-msg';
-            statusMsg.innerText = '🔄 Connecting...';
-
+            document.getElementById('otp').innerText = 'FETCHING...';
             try {
-                const response = await fetch('/api/get-code', {
+                const res = await fetch('/api/get-code', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, token, uuid, service: currentService })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ email: parts[0], token: parts[2], service: 'facebook' })
                 });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    codeDisplay.className = 'code-display';
-                    codeDisplay.innerText = data.code;
-                    statusMsg.className = 'status-msg success';
-                    statusMsg.innerText = '✅ Code extracted!';
-
-                    try {
-                        await navigator.clipboard.writeText(data.code);
-                        statusMsg.innerText = '✅ Copied: ' + data.code;
-                    } catch(e) {
-                        statusMsg.innerText = '✅ Click to copy: ' + data.code;
-                    }
+                const data = await res.json();
+                if(data.success) {
+                    document.getElementById('otp').innerText = data.code;
+                    navigator.clipboard.writeText(data.code);
                 } else {
-                    codeDisplay.className = 'code-display error';
-                    codeDisplay.innerText = 'ERROR';
-                    statusMsg.className = 'status-msg error';
-                    statusMsg.innerText = '❌ ' + data.error;
+                    document.getElementById('otp').innerText = 'NOT FOUND';
                 }
-
-            } catch (error) {
-                codeDisplay.className = 'code-display error';
-                codeDisplay.innerText = 'ERROR';
-                statusMsg.className = 'status-msg error';
-                statusMsg.innerText = '❌ ' + error.message;
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = '🔍 Get Verification Code';
+            } catch(e) { document.getElementById('otp').innerText = 'ERROR'; }
         }
-
-        document.getElementById('codeDisplay').addEventListener('click', function() {
-            const code = this.innerText;
-            if (code !== '------' && code !== 'FETCHING...' && code !== 'ERROR') {
-                navigator.clipboard.writeText(code);
-                document.getElementById('statusMsg').innerText = '✅ Copied: ' + code;
-            }
-        });
     </script>
 </body>
-</html>`);
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`
-╔════════════════════════════════════════╗
-║  ✅ Server Running!                   ║
-║  🌐 http://localhost:${PORT}             ║
-║  📧 Email OTP Extractor Ready         ║
-╚════════════════════════════════════════╝
+</html>
     `);
 });
+
+app.listen(3000, () => console.log('✅ Server running on http://localhost:3000'));
