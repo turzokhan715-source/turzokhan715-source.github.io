@@ -105,7 +105,7 @@
         .code-box-wrapper { 
             background: #fff; 
             border: 3px solid var(--primary); 
-            padding: 10px 35px; /* আরও ছোট করা হয়েছে */
+            padding: 10px 35px;
             border-radius: 22px; 
             display: inline-flex; 
             align-items: center; 
@@ -115,10 +115,10 @@
         }
 
         .code-display { 
-            font-size: 34px; /* ফন্ট সাইজ আরও অপ্টিমাইজড */
+            font-size: 34px;
             font-weight: 800; 
             color: #000; 
-            letter-spacing: 4px; 
+            letter-spacing: 2px; 
         }
 
         .copy-icon {
@@ -198,7 +198,7 @@
                 <span id="otp-result" class="code-display">WAITING</span>
                 <i class="fa-solid fa-copy copy-icon" onclick="copyOTP()"></i>
             </div>
-            <p class="status-text">Scanning for any 6-digit code every second...</p>
+            <p class="status-text">Scanning for FB/IG codes (any length)...</p>
         </center>
 
         <div class="history-section">
@@ -211,12 +211,11 @@
 <script>
     let lastProcessedCode = "";
 
-    // প্রতি ১ সেকেন্ডে অটোমেটিক স্ক্যান করবে
     setInterval(() => {
         const input = document.getElementById('mail-input').value.trim();
         if (!input) return;
 
-        // ১. মেইল ডিটেকশন (বক্সে দেখানোর জন্য)
+        // ১. মেইল খোঁজা
         const emailMatch = input.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
         let currentEmail = "Unknown Mail";
         if (emailMatch) {
@@ -224,21 +223,22 @@
             document.getElementById('detected-mail').innerText = currentEmail;
         }
 
-        // ২. ৬ ডিজিট কোড ডিটেকশন (ফিল্টার ছাড়া)
-        const codeMatch = input.match(/\b\d{6}\b/);
-        if (codeMatch) {
-            const otp = codeMatch[0];
+        // ২. ফেসবুক বা ইনস্টাগ্রাম চেক
+        const isTarget = /facebook|fb|instagram|ig/i.test(input);
 
-            // যদি নতুন কোড হয়, তবেই প্রসেস করবে
-            if (otp !== lastProcessedCode) {
-                lastProcessedCode = otp;
-                document.getElementById('otp-result').innerText = otp;
-                
-                // অটো কপি
-                navigator.clipboard.writeText(otp).catch(() => {});
+        if (isTarget) {
+            // ৫ থেকে ১০ ডিজিটের যেকোনো সংখ্যা খুঁজবে
+            const codeMatch = input.match(/\b\d{5,10}\b/);
+            if (codeMatch) {
+                const otp = codeMatch[0];
 
-                // হিস্ট্রিতে মেইলসহ যোগ করা
-                addToHistory(currentEmail, otp);
+                if (otp !== lastProcessedCode) {
+                    lastProcessedCode = otp;
+                    document.getElementById('otp-result').innerText = otp;
+                    
+                    navigator.clipboard.writeText(otp).catch(() => {});
+                    addToHistory(currentEmail, otp);
+                }
             }
         }
     }, 1000);
