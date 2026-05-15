@@ -1,543 +1,578 @@
-// app.js - Complete with Premium Design
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
-
-function extractOTP(text) {
-    if (!text) return null;
-    const cleanText = text.replace(/<[^>]*>?/gm, ' ');
-    const otpRegex = /\b\d{5,8}\b/g;
-    const matches = cleanText.match(otpRegex);
-    if (matches) return matches[matches.length - 1];
-    return null;
-}
-
-app.post('/api/get-code', async (req, res) => {
-    try {
-        const { email, token, service } = req.body;
-        if (!token) return res.json({ success: false, error: 'Token is missing!' });
-        
-        const response = await axios.get(OUTLOOK_API, {
-            headers: { 'Authorization': `Bearer ${token}` },
-            params: {
-                '$top': 15,
-                '$orderby': 'receivedDateTime DESC',
-                '$select': 'subject,bodyPreview,body,from'
-            }
-        });
-        
-        const messages = response.data.value || [];
-        const keywords = service === 'instagram' ? ['instagram', 'ig'] : ['facebook', 'fb'];
-        
-        let targetMsg = messages.find(m => {
-            const subject = (m.subject || '').toLowerCase();
-            const from = (m.from?.emailAddress?.address || '').toLowerCase();
-            return keywords.some(k => subject.includes(k) || from.includes(k));
-        });
-        
-        if (!targetMsg) return res.json({ success: false, error: 'No verification email found!' });
-        
-        const fullContent = `${targetMsg.subject} ${targetMsg.bodyPreview} ${targetMsg.body?.content || ''}`;
-        const code = extractOTP(fullContent);
-        
-        if (code) {
-            console.log(`✅ Code extracted: ${code}`);
-            return res.json({ success: true, code: code });
-        } else {
-            return res.json({ success: false, error: 'No code found in email' });
-        }
-        
-    } catch (error) {
-        console.error('❌ Error:', error.message);
-        return res.json({ success: false, error: 'Invalid token or network issue' });
-    }
-});
-
-app.get('/', (req, res) => {
-    res.send(`<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Extractor Pro</title>
+    <title>Outlook OTP Extractor</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, 
  0%, 
  100%);
             min-height: 100vh;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
-        
+
         .container {
             background: white;
-            border-radius: 24px;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
-            padding: 45px;
-            max-width: 550px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
             width: 100%;
-            animation: slideUp 0.5s ease-out;
+            padding: 40px;
         }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .header {
+
+        h1 {
             text-align: center;
-            margin-bottom: 35px;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
         }
-        
-        .header h1 {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(135deg, 
-, 
-);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
         }
-        
-        .header p {
-            color: 
-;
-            font-size: 15px;
-        }
-        
+
         .tabs {
             display: flex;
-            gap: 12px;
-            margin-bottom: 28px;
-            background: 
-;
-            padding: 6px;
-            border-radius: 12px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        
+
         .tab {
             flex: 1;
             padding: 12px;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            color: 
-;
-            transition: all 0.3s;
-        }
-        
-        .tab.active {
-            background: white;
-            color: 
-;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .service-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-        
-        .service-tab {
-            flex: 1;
-            padding: 16px;
             border: 2px solid 
 ;
-            border-radius: 14px;
+            border-radius: 8px;
             background: white;
             cursor: pointer;
             text-align: center;
             font-weight: 600;
-            font-size: 15px;
-            color: 
-;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
-        
-        .service-tab:hover {
+
+        .tab:hover {
             border-color: 
 ;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
-        
-        .service-tab.active {
+
+        .tab.active {
             background: linear-gradient(135deg, 
-, 
-);
+ 0%, 
+ 100%);
             color: white;
             border-color: 
 ;
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
-        
+
         .input-group {
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
-        
-        .input-group label {
+
+        label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            color: #333;
             font-weight: 600;
-            color: 
-;
             font-size: 14px;
         }
-        
-        .input-box {
+
+        textarea {
             width: 100%;
-            padding: 16px;
+            padding: 12px;
             border: 2px solid 
 ;
-            border-radius: 12px;
-            font-size: 13px;
+            border-radius: 8px;
             font-family: 'Courier New', monospace;
-            transition: all 0.3s;
+            font-size: 13px;
             resize: vertical;
-            min-height: 110px;
-            background: 
-;
+            min-height: 100px;
+            transition: border-color 0.3s;
         }
-        
-        .input-box:focus {
+
+        textarea:focus {
             outline: none;
             border-color: 
 ;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
-        
-        .hint {
-            font-size: 12px;
-            color: 
+
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid 
 ;
-            margin-top: 8px;
-            line-height: 1.5;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        
+
+        .mode-btn.active {
+            background: 
+;
+            color: white;
+            border-color: 
+;
+        }
+
         .btn {
             width: 100%;
-            padding: 18px;
+            padding: 14px;
             background: linear-gradient(135deg, 
-, 
-);
+ 0%, 
+ 100%);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        
-        .btn:hover:not(:disabled) {
+
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        
-        .btn:active:not(:disabled) {
+
+        .btn:active {
             transform: translateY(0);
         }
-        
+
         .btn:disabled {
-            opacity: 0.7;
+            opacity: 0.6;
             cursor: not-allowed;
         }
-        
-        .result {
-            margin-top: 28px;
-            padding: 35px;
-            background: linear-gradient(135deg, 
-, 
-);
-            border-radius: 16px;
-            text-align: center;
+
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: 
+;
+            border-radius: 8px;
+            border: 2px solid 
+;
             display: none;
-            position: relative;
-            overflow: hidden;
         }
-        
-        .result::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
-            animation: pulse 3s ease-in-out infinite;
+
+        .result-box.show {
+            display: block;
         }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
-        
-        .code {
-            position: relative;
-            z-index: 1;
-            font-size: 52px;
-            font-weight: 900;
-            color: 
+
+        .result-title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .copy-btn {
+            padding: 8px 16px;
+            background: 
 ;
-            letter-spacing: 14px;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+            color: white;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
-            user-select: all;
-            margin: 18px 0;
-            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
         }
-        
-        .code:hover {
-            transform: scale(1.05);
-            text-shadow: 0 0 40px rgba(16, 185, 129, 0.8);
+
+        .copy-btn:hover {
+            background: 
+;
         }
-        
-        .code.waiting {
-            font-size: 22px;
+
+        .copy-btn.copied {
+            background: 
+;
+        }
+
+        .code-display {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
             color: 
 ;
-            letter-spacing: 3px;
-            text-shadow: none;
+            letter-spacing: 2px;
         }
-        
-        .code.error {
-            font-size: 20px;
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .history-item {
+            background: 
+;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .history-email {
+            color: #666;
+            font-family: 'Courier New', monospace;
+        }
+
+        .history-code {
+            font-weight: 700;
             color: 
 ;
-            letter-spacing: 3px;
-            text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+            font-family: 'Courier New', monospace;
         }
-        
-        .status {
-            position: relative;
-            z-index: 1;
-            color: 
-;
+
+        .error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
             font-size: 14px;
-            margin-top: 12px;
-            font-weight: 500;
         }
-        
-        .status.success {
+
+        .loading {
+            text-align: center;
             color: 
 ;
+            font-weight: 600;
+            margin-top: 15px;
         }
-        
-        .status.error {
+
+        .info-box {
+            background: 
+;
+            border: 2px solid 
+;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
             color: 
 ;
-        }
-        
-        .loader {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255,255,255,.2);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                padding: 30px 25px;
-            }
-            
-            .header h1 {
-                font-size: 26px;
-            }
-            
-            .code {
-                font-size: 40px;
-                letter-spacing: 10px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>📧 OTP Extractor Pro</h1>
-            <p>Extract verification codes automatically</p>
-        </div>
+        <h1>🔐 Outlook OTP Extractor</h1>
+        <p class="subtitle">Extract verification codes from Outlook/Hotmail</p>
 
         <div class="tabs">
-            <button class="tab" onclick="selectProvider('gmail')">Gmail</button>
-            <button class="tab active" onclick="selectProvider('outlook')">Outlook</button>
+            <div class="tab active" data-platform="facebook">📘 Facebook</div>
+            <div class="tab" data-platform="instagram">📷 Instagram</div>
         </div>
 
-        <div class="service-tabs">
-            <button class="service-tab active" id="fbBtn" onclick="selectService('facebook')">
-                <span>📘</span> Facebook
-            </button>
-            <button class="service-tab" id="igBtn" onclick="selectService('instagram')">
-                <span>📷</span> Instagram
-            </button>
+        <div class="info-box">
+            📋 <strong>Format:</strong> email|password|token|uuid<br>
+            💡 Paste your credentials and click "Get OTP"
         </div>
 
         <div class="input-group">
-            <label>📋 Account Details</label>
-            <textarea class="input-box" id="input" placeholder="Format: email|password|token|uuid
-
-Example:
-user@outlook.com|pass123|eyJ0eXAi...|uuid-here"></textarea>
-            <div class="hint">Paste your data in pipe-separated format (email|password|token|uuid)</div>
+            <label>Account Details</label>
+            <textarea id="accountInput" placeholder="example@outlook.com|password123|token_here|uuid_here"></textarea>
         </div>
 
-        <button class="btn" id="btn" onclick="extract()">🔍 Extract Verification Code</button>
+        <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="strict">🎯 Strict Mode</button>
+            <button class="mode-btn" data-mode="relaxed">🔄 Relaxed Mode</button>
+        </div>
 
-        <div class="result" id="result">
-            <div class="code waiting" id="code">------</div>
-            <div class="status" id="status">Waiting for request...</div>
+        <button class="btn" id="extractBtn">Get Verification Code</button>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-header">
+                <span class="result-title">✅ Code Extracted</span>
+                <button class="copy-btn" id="copyBtn">Copy Code</button>
+            </div>
+            <div class="code-display" id="codeDisplay">------</div>
+        </div>
+
+        <div id="errorBox"></div>
+        <div id="loadingBox"></div>
+
+        <div class="history" id="historySection" style="display: none;">
+            <div class="history-title">History</div>
+            <div id="historyList"></div>
         </div>
     </div>
 
     <script>
-        let provider = 'outlook';
-        let service = 'facebook';
+        let currentPlatform = 'facebook';
+        let currentMode = 'strict';
+        let history = [];
 
-        function selectProvider(p) {
-            provider = p;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentPlatform = tab.dataset.platform;
+            });
+        });
+
+        // Mode switching
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentMode = btn.dataset.mode;
+            });
+        });
+
+        // Parse pipe-separated input
+        function parseInput(input) {
+            const parts = input.trim().split('|');
+            if (parts.length !== 4) {
+                throw new Error('Invalid format. Expected: email|password|token|uuid');
+            }
+            return {
+                email: parts[0].trim(),
+                password: parts[1].trim(),
+                token: parts[2].trim(),
+                uuid: parts[3].trim()
+            };
         }
 
-        function selectService(s) {
-            service = s;
-            document.getElementById('fbBtn').classList.toggle('active', s === 'facebook');
-            document.getElementById('igBtn').classList.toggle('active', s === 'instagram');
+        // Extract OTP from email content
+        function extractOTP(emailBody, platform, mode) {
+            const patterns = {
+                facebook: {
+                    strict: [/\b(\d{6})\b.*Facebook/i, /Facebook.*\b(\d{6})\b/i],
+                    relaxed: [/\b(\d{6})\b/g]
+                },
+                instagram: {
+                    strict: [/\b(\d{6})\b.*Instagram/i, /Instagram.*\b(\d{6})\b/i],
+                    relaxed: [/\b(\d{6})\b/g]
+                }
+            };
+
+            const platformPatterns = patterns[platform][mode];
+            
+            for (let pattern of platformPatterns) {
+                const match = emailBody.match(pattern);
+                if (match) {
+                    return match[1] || match[0];
+                }
+            }
+            
+            return null;
         }
 
-        async function extract() {
-            const input = document.getElementById('input').value.trim();
+        // Simulate Microsoft Graph API call (replace with actual backend endpoint)
+        async function fetchOutlookEmails(credentials) {
+            // THIS IS A MOCK FUNCTION
+            // In production, you need to:
+            // 1. Set up a Node.js/Express backend
+            // 2. Use Microsoft Graph API with proper authentication
+            // 3. Fetch emails from the inbox
+            // 4. Return email content
             
-            if (!input) {
-                alert('⚠️ Please enter account details!');
-                return;
-            }
+            // Mock response for demonstration
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    // Simulate API response
+                    const mockEmail = {
+                        subject: 'Facebook verification code',
+                        body: 'Your Facebook verification code is 123456. Do not share this code.'
+                    };
+                    resolve([mockEmail]);
+                }, 1500);
+            });
+        }
 
-            const parts = input.split('|');
-            if (parts.length < 3) {
-                alert('⚠️ Invalid format! Use: email|password|token|uuid');
-                return;
-            }
+        // Main extraction function
+        async function extractCode() {
+            const input = document.getElementById('accountInput').value;
+            const resultBox = document.getElementById('resultBox');
+            const codeDisplay = document.getElementById('codeDisplay');
+            const errorBox = document.getElementById('errorBox');
+            const loadingBox = document.getElementById('loadingBox');
+            const extractBtn = document.getElementById('extractBtn');
 
-            const [email, password, token, uuid] = parts.map(p => p.trim());
-
-            const btn = document.getElementById('btn');
-            const result = document.getElementById('result');
-            const code = document.getElementById('code');
-            const status = document.getElementById('status');
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loader"></span> Extracting...';
-            
-            result.style.display = 'block';
-            code.className = 'code waiting';
-            code.innerText = 'FETCHING...';
-            status.className = 'status';
-            status.innerText = '🔄 Connecting to Outlook API...';
+            // Clear previous results
+            resultBox.classList.remove('show');
+            errorBox.innerHTML = '';
+            loadingBox.innerHTML = '';
 
             try {
-                const response = await fetch('/api/get-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, token, service })
-                });
+                // Parse input
+                const credentials = parseInput(input);
 
-                const data = await response.json();
+                // Show loading
+                loadingBox.innerHTML = '<div class="loading">⏳ Fetching emails...</div>';
+                extractBtn.disabled = true;
 
-                if (data.success) {
-                    code.className = 'code';
-                    code.innerText = data.code;
-                    status.className = 'status success';
-                    status.innerText = '✅ Code extracted successfully!';
+                // Fetch emails (replace with actual API call)
+                const emails = await fetchOutlookEmails(credentials);
 
-                    try {
-                        await navigator.clipboard.writeText(data.code);
-                        status.innerText = '✅ Code copied to clipboard: ' + data.code;
-                    } catch(e) {
-                        status.innerText = '✅ Click code to copy';
-                    }
+                // Extract OTP
+                let code = null;
+                for (let email of emails) {
+                    code = extractOTP(email.body, currentPlatform, currentMode);
+                    if (code) break;
+                }
+
+                loadingBox.innerHTML = '';
+                extractBtn.disabled = false;
+
+                if (code) {
+                    // Display result
+                    codeDisplay.textContent = code;
+                    resultBox.classList.add('show');
+
+                    // Auto-copy
+                    await navigator.clipboard.writeText(code);
+
+                    // Add to history
+                    addToHistory(credentials.email, code);
                 } else {
-                    code.className = 'code error';
-                    code.innerText = 'ERROR';
-                    status.className = 'status error';
-                    status.innerText = '❌ ' + data.error;
+                    throw new Error('No verification code found in recent emails');
                 }
 
             } catch (error) {
-                code.className = 'code error';
-                code.innerText = 'ERROR';
-                status.className = 'status error';
-                status.innerText = '❌ Network error: ' + error.message;
+                loadingBox.innerHTML = '';
+                extractBtn.disabled = false;
+                errorBox.innerHTML = `<div class="error">❌ ${error.message}</div>`;
             }
-
-            btn.disabled = false;
-            btn.innerHTML = '🔍 Extract Verification Code';
         }
 
-        document.getElementById('code').addEventListener('click', function() {
-            const c = this.innerText;
-            if (c !== '------' && c !== 'FETCHING...' && c !== 'ERROR') {
-                navigator.clipboard.writeText(c);
-                document.getElementById('status').className = 'status success';
-                document.getElementById('status').innerText = '✅ Copied: ' + c;
-            }
+        // Copy button
+        document.getElementById('copyBtn').addEventListener('click', async () => {
+            const code = document.getElementById('codeDisplay').textContent;
+            const btn = document.getElementById('copyBtn');
+            
+            await navigator.clipboard.writeText(code);
+            btn.textContent = '✓ Copied!';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.textContent = 'Copy Code';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+
+        // Add to history
+        function addToHistory(email, code) {
+            history.unshift({ email, code, time: new Date() });
+            if (history.length > 5) history.pop();
+            
+            const historySection = document.getElementById('historySection');
+            const historyList = document.getElementById('historyList');
+            
+            historySection.style.display = 'block';
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <span class="history-email">${item.email}</span>
+                    <span class="history-code">${item.code}</span>
+                </div>
+            `).join('');
+        }
+
+        // Extract button
+        document.getElementById('extractBtn').addEventListener('click', extractCode);
+
+        // Paste to extract
+        document.getElementById('accountInput').addEventListener('paste', (e) => {
+            setTimeout(() => {
+                if (e.target.value.includes('|')) {
+                    extractCode();
+                }
+            }, 100);
         });
     </script>
 </body>
-</html>`);
+</html>
+
+🚀 Tool Features:
+✅ Pipe-separated input (email|password|token|uuid)
+✅ Platform tabs (Facebook/Instagram)
+✅ Strict/Relaxed mode toggle
+✅ Auto-copy to clipboard
+✅ Paste-to-extract (automatic extraction on paste)
+✅ History panel (last 5 codes)
+✅ Premium UI (gradient, smooth animations)
+✅ Clean code display with large font
+
+⚠️ Important Notes:
+Backend Setup Required:
+Ei tool ta frontend-only mock diye banano. Production-e use korar jonno tumake:
+
+Node.js/Express backend setup korte hobe
+Microsoft Graph API integration korte hobe
+Proper OAuth authentication implement korte hobe
+Backend Code (Node.js/Express):
+const express = require('express');
+const axios = require('axios');
+const app = express();
+
+app.use(express.json());
+
+app.post('/api/get-otp', async (req, res) => {
+    const { email, token } = req.body;
+    
+    try {
+        // Microsoft Graph API call
+        const response = await axios.get(
+            'https://graph.microsoft.com/v1.0/me/messages',
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params: {
+                    '$top': 10,
+                    '$filter': "contains(subject, 'verification') or contains(subject, 'code')"
+                }
+            }
+        );
+        
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`
-╔═══════════════════════════════════════╗
-║  ✅ Server Running Successfully!     ║
-║  🌐 http://localhost:${PORT}            ║
-║  📧 OTP Extractor Pro Ready          ║
-╚═══════════════════════════════════════╝
-    `);
-});
+app.listen(3000, () => console.log('Server running on port 3000'));
