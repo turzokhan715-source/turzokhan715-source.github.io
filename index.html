@@ -17,60 +17,13 @@
             background-color: #0b0f19; /* রিচ ডার্ক ব্যাকগ্রাউন্ড */
             color: #f1f5f9;
             min-height: 100vh;
-            padding: 20px 15px;
+            padding: 30px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* শীর্ষ নেভিগেশন বার - প্রফেশনাল লুক */
-        .top-navbar {
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-btn-home {
-            background: #4f46e5;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-            font-size: 14px;
-        }
-
-        .nav-right {
-            display: flex;
-            gap: 10px;
-        }
-
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.07);
-            color: #e2e8f0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        /* মূল প্যানেল কন্টেইনার (গ্লসি ডার্ক কার্ড) */
+        /* মূল প্যানেল কন্টেইনার (গ্লসি ডার্কカード) */
         .main-panel {
             width: 100%;
             max-width: 800px;
@@ -91,7 +44,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* ইনপুট বক্স - নোম্যাল সাইজ ও স্ক্রল ফ্রেন্ডলি */
+        /* ইনপুট বক্স - স্ক্রল ফ্রেন্ডলি */
         .input-area-wrapper {
             margin-bottom: 15px;
         }
@@ -106,7 +59,7 @@
             font-size: 14px;
             color: #f3f4f6;
             outline: none;
-            resize: vertical; /* ইউজার চাইলে টেনে বড় করতে পারবে */
+            resize: vertical;
             font-weight: 500;
             line-height: 1.5;
             overflow-y: auto;
@@ -165,7 +118,7 @@
             padding: 15px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 13px;
-            color: #34d399; /* গ্লোয়িং গ্রিন */
+            color: #34d399;
             overflow-y: auto;
             margin-bottom: 20px;
             border: 1px solid #1f2937;
@@ -186,7 +139,6 @@
             align-items: center;
         }
 
-        /* ল্যাপটপ বা বড় স্ক্রিনের জন্য সাইড-বাই-সাইড ভিউ */
         @media (min-width: 600px) {
             .footer-row {
                 flex-direction: row;
@@ -235,7 +187,7 @@
 
         .btn-download {
             width: 100%;
-            background: #059669; /* প্রিমিয়াম গ্রিন */
+            background: #059669;
             color: white;
             border: none;
             padding: 15px 28px;
@@ -257,17 +209,6 @@
     </style>
 </head>
 <body>
-
-    <div class="top-navbar">
-        <div class="nav-left">
-            <button class="nav-btn-home">🏠 HOME</button>
-        </div>
-        <div class="nav-right">
-            <button class="nav-btn">2FA</button>
-            <button class="nav-btn">MAIL</button>
-            <button class="nav-btn">CHECKER</button>
-        </div>
-    </div>
 
     <div class="main-panel">
         <div class="panel-title">Bulk UID Checker Pro</div>
@@ -305,9 +246,8 @@
 
 <script>
     let liveAccounts = []; 
-    const CONCURRENCY_LIMIT = 5; // একসাথে ৫টি আইডি প্যারালাল চেক হবে
+    const CONCURRENCY_LIMIT = 5; 
 
-    // ফেসবুক ইউআইডি লাইভ চেক করার মূল মেথড
     async function checkFacebookUID(uid) {
         try {
             const cleanUID = uid.trim().replace(/[^a-zA-Z0-9.]/g, "");
@@ -324,7 +264,6 @@
         }
     }
 
-    // স্ক্যান ইঞ্জিন ফাংশন
     async function startScanner() {
         const inputStr = document.getElementById('inputData').value.trim();
         const consoleScreen = document.getElementById('consoleScreen');
@@ -361,16 +300,29 @@
                 const currentLine = queue.shift();
                 if (!currentLine) continue;
 
-                let parts = [];
-                if (currentLine.includes('|')) {
-                    parts = currentLine.split('|');
-                } else {
-                    parts = currentLine.split(/\s+/); 
-                }
+                let uid = '';
+                let pass = '';
+                let twoFA = '';
 
-                const uid = parts[0] ? parts[0].trim() : '';
-                const pass = parts[1] ? parts[1].trim() : '';
-                const twoFA = parts[2] ? parts[2].trim() : '';
+                // এডভান্সড ডেটা পার্সিং লজিক (2FA এর ভেতরের স্পেস প্রটেক্ট করবে)
+                if (currentLine.includes('|')) {
+                    const parts = currentLine.split('|');
+                    uid = parts[0] ? parts[0].trim() : '';
+                    pass = parts[1] ? parts[1].trim() : '';
+                    // ২এফএ কী-র বাকি অংশ পুরোটাই নিয়ে নেবে
+                    twoFA = parts.slice(2).join('|').trim();
+                } else {
+                    // স্পেস বা ট্যাবের ক্ষেত্রে প্রথম ২টা অংশ আলাদা করার পর বাকিটা পুরো 2FA কী
+                    const parts = currentLine.split(/\s+/);
+                    uid = parts[0] ? parts[0].trim() : '';
+                    pass = parts[1] ? parts[1].trim() : '';
+                    
+                    if (parts.length > 2) {
+                        // পুনরায় মূল লাইন থেকে UID ও PASS বাদ দিয়ে পুরো শেষ ক্যারেক্টার পর্যন্ত রিড করবে
+                        const rawAfterPass = currentLine.substring(currentLine.indexOf(pass) + pass.length).trim();
+                        twoFA = rawAfterPass;
+                    }
+                }
 
                 if (!uid) continue;
 
@@ -382,7 +334,6 @@
                     logLine.className += ' log-live';
                     logLine.innerText = `[LIVE] ID: ${uid}`;
                     live++;
-                    // সম্পূর্ণ ডেটা অবজেক্টে পুশ করা হচ্ছে
                     liveAccounts.push({ uid, pass, twoFA });
                 } else {
                     logLine.className += ' log-die';
@@ -417,7 +368,6 @@
         startBtn.innerText = "Start Scanner";
     }
 
-    // [FIXED 100% 2FA] স্পেশাল ক্যারেক্টার প্রোটেক্টেড এক্সেল/গুগল শিট ডাউনলোডার
     function downloadLiveCSV() {
         if (liveAccounts.length === 0) {
             alert("No live accounts found to download!");
@@ -431,11 +381,8 @@
         });
 
         const csvString = csvRows.join("\n");
-        
-        // UTF-8 BOM অ্যাড করা হলো যাতে প্লাস (+), ইকুয়াল (=) বা স্ল্যাশ (/) কেটে না যায়
         const contentWithBOM = "\ufeff" + csvString;
         
-        // অবজেক্ট ব্লব মেথড (এটি ফোনের ব্রাউজারেও ১০০% কাজ করে এবং ডাটা মিস হয় না)
         const blob = new Blob([contentWithBOM], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         
@@ -447,11 +394,9 @@
         link.click();
         document.body.removeChild(link);
         
-        // মেমোরি রিলিজ করা
         setTimeout(() => URL.revokeObjectURL(url), 100);
     }
 
-    // রিসেট বাটন ফাংশন
     function clearTool() {
         document.getElementById('inputData').value = '';
         document.getElementById('consoleScreen').innerHTML = 'Console ready...';
