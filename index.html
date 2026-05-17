@@ -41,9 +41,9 @@
             margin-top: 10px;
         }
 
-        /* --- GLOBAL NAVIGATION BAR --- */
+        /* --- GLOBAL NAVIGATION BAR (Hidden on Home, Visible inside Tools) --- */
         .nav-bar {
-            display: flex;
+            display: none; /* Home page e default hidden thakbe */
             justify-content: space-between;
             align-items: center;
             margin-bottom: 40px;
@@ -51,6 +51,7 @@
             padding: 12px 24px;
             border-radius: 16px;
             border: 1px solid var(--border);
+            animation: fadeIn 0.4s ease;
         }
 
         .nav-left .home-btn {
@@ -125,6 +126,7 @@
         .hero {
             text-align: center;
             margin-bottom: 60px; 
+            margin-top: 30px;
         }
 
         .hero h1 {
@@ -436,6 +438,10 @@
             line-height: 1.6;
         }
 
+        .console-log { margin-bottom: 4px; word-break: break-all; }
+        .log-live { color: #34d399; font-weight: 600; }
+        .log-die { color: #f87171; }
+
         .footer-row {
             display: flex;
             flex-direction: column;
@@ -483,14 +489,13 @@
         /* --- RESPONSIVE FIXES --- */
         @media (max-width: 850px) {
             .home-grid { grid-template-columns: 1fr; gap: 15px; }
-            .nav-bar { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <nav class="nav-bar">
+    <nav class="nav-bar" id="globalNavBar">
         <div class="nav-left">
             <button class="home-btn" onclick="switchPage('home')"><i class="fa-solid fa-house"></i> HOME</button>
         </div>
@@ -602,7 +607,7 @@
         <div class="about-box" style="text-align: center; padding: 60px 20px;">
             <i class="fa-solid fa-envelope" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
             <h2>API MAIL Tool</h2>
-            <p style="margin-top: 10px;">This feature is currently under development. Stay tuned!</p>
+            <p style="margin-top: 10px;">This feature is currently under development. Please connect your Python main.py file to unlock backend integrations!</p>
         </div>
     </div>
 </div>
@@ -610,6 +615,15 @@
 <script>
     // --- PAGE NAVIGATION ROUTER ---
     function switchPage(pageId) {
+        const navBar = document.getElementById('globalNavBar');
+        
+        // Dynamic Navigation Bar Visibility
+        if (pageId === 'home') {
+            navBar.style.display = 'none'; // Home page-e header lukiye rakhbe
+        } else {
+            navBar.style.display = 'flex'; // Jekono tool er bhetor header chole ashbe
+        }
+
         // Hide all pages
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active-page');
@@ -625,7 +639,7 @@
         if(activeNavBtn) activeNavBtn.classList.add('active');
     }
 
-    // --- 2FA ENGINE ENGINE LOGIC ---
+    // --- 2FA ENGINE LOGIC ---
     const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
     function base32Decode(base32) {
         base32 = base32.toUpperCase().replace(/=+$/, '');
@@ -764,7 +778,7 @@
         `).join('');
     }
 
-    // --- UID CHECKER ENGINE ENGINE LOGIC ---
+    // --- UID CHECKER ENGINE LOGIC ---
     let liveAccounts = [];
     const CONCURRENCY_LIMIT = 5;
 
@@ -807,14 +821,18 @@
 
                 let result = await checkFacebookUID(uid);
 
+                const logLine = document.createElement('div');
                 if (result === "LIVE ✅") {
+                    logLine.className = 'console-log log-live';
+                    logLine.innerText = `[LIVE] ${uid} | ${pass} | ${twoFA}`;
                     liveCount++;
                     liveAccounts.push({ uid, pass, twoFA });
-                    consoleScreen.innerHTML += `<span class="log-live">[LIVE] ${uid} | ${pass} | ${twoFA}</span><br>`;
                 } else {
+                    logLine.className = 'console-log log-die';
+                    logLine.innerText = `[DEAD] ${uid}`;
                     dieCount++;
-                    consoleScreen.innerHTML += `<span class="log-die">[DEAD] ${uid}</span><br>`;
                 }
+                consoleScreen.appendChild(logLine);
 
                 document.getElementById('livePercent').innerText = `${Math.round((liveCount/total)*100)}% LIVE (${liveCount})`;
                 document.getElementById('diePercent').innerText = `${Math.round((dieCount/total)*100)}% DIE (${dieCount})`;
@@ -825,7 +843,14 @@
         const pool = Array(Math.min(CONCURRENCY_LIMIT, lines.length)).fill(null).map(worker);
         await Promise.all(pool);
 
-        consoleScreen.innerHTML += "<br><b>Scan Completed!</b><br>";
+        const finalLog = document.createElement('div');
+        finalLog.style.color = '#a855f7';
+        finalLog.style.fontWeight = 'bold';
+        finalLog.style.marginTop = '10px';
+        finalLog.innerText = "Scan Completed!";
+        consoleScreen.appendChild(finalLog);
+        consoleScreen.scrollTop = consoleScreen.scrollHeight;
+
         startBtn.disabled = false;
         startBtn.innerText = "Start Scanner";
     }
