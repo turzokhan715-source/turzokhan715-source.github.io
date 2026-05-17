@@ -171,7 +171,7 @@
         .totp-code {
             font-size: 2.25rem;
             font-weight: 800;
-            color: #34d399; /* গ্লোয়িং লাইভ গ্রিন */
+            color: #34d399;
             font-family: 'Courier New', monospace;
             letter-spacing: 6px;
             text-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
@@ -234,7 +234,6 @@
             padding-right: 4px;
         }
 
-        /* সুন্দর কাস্টম স্ক্রলবার */
         .history-list::-webkit-scrollbar {
             width: 6px;
         }
@@ -279,7 +278,7 @@
         .history-code {
             font-size: 1.25rem;
             font-weight: 700;
-            color: #38bdf8; /* স্কাই ব্লু হাইলাইট */
+            color: #38bdf8;
             font-family: 'Courier New', monospace;
             letter-spacing: 1px;
         }
@@ -303,7 +302,7 @@
             font-weight: 600;
         }
 
-        /* --- 📱 রেসপনসিভ মোবাইল সাইজ ফিক্স --- */
+        /* --- 📱 Mobile Responsive --- */
         @media (max-width: 600px) {
             body {
                 padding: 20px 14px;
@@ -551,7 +550,7 @@
     }
 
     // ==========================================
-    // ২. ইন্টারফেস কন্ট্রোল এবং হিস্টোরি ম্যানেজমেন্ট
+    // ২. ইন্টারফেস কন্ট্রোল এবং তাৎক্ষণিক হিস্টোরি (Max 20)
     // ==========================================
     let history = [];
     let autoHideTimeout = null;
@@ -561,6 +560,10 @@
         if (saved) {
             try {
                 history = JSON.parse(saved);
+                // যদি পুরোনো ব্যাকআপে ২০টির বেশি থাকে, তবে তা ফিল্টার করে ২০টি করে নেবে
+                if (history.length > 20) {
+                    history = history.slice(0, 20);
+                }
                 updateHistoryDisplay();
             } catch (e) {
                 console.error('Failed to load history:', e);
@@ -589,18 +592,26 @@
         try {
             const code = generateTOTP(secret);
             
+            // ১. তৎক্ষণাৎ মেইন ডিসপ্লে বক্সে কোড দেখাবে
             document.getElementById('totpCode').textContent = code;
             document.getElementById('codeDisplay').style.display = 'block';
             
+            // ২. সাথে সাথেই ক্লিপবোর্ডে কপি হবে
             copyToClipboard(code);
+            
+            // ৩. ১ সেকেন্ডের মাথায় তৎক্ষণাৎ হিস্টোরিতে যোগ হবে (কোনো ৩০ সেকেন্ডের লেট নাই)
+            addToHistory(secret, code);
+            
+            // ইনপুট বক্স ক্লিয়ার
             secretInput.value = '';
             
+            // আগের যেকোনো হাইড টাইমার থাকলে রিসেট করবে
             if (autoHideTimeout) {
                 clearTimeout(autoHideTimeout);
             }
             
+            // মেইন ডিসপ্লে বক্সটি ৩০ সেকেন্ড পর হাইড হবে যেন সিকিউরিটি বজায় থাকে
             autoHideTimeout = setTimeout(() => {
-                addToHistory(secret, code);
                 document.getElementById('codeDisplay').style.display = 'none';
                 document.getElementById('totpCode').textContent = '------';
             }, 30000);
@@ -658,14 +669,16 @@
             hour12: true
         });
         
+        // একদম শুরুতে নতুন ডেটা পুশ করবে
         history.unshift({
             secret: secret,
             code: code,
             time: timestamp
         });
         
-        if (history.length > 50) {
-            history = history.slice(0, 50);
+        // [শর্তানুযায়ী ফিক্স]: ২০টি হয়ে গেলে অটোমেটিক পুরোনো ১টি ডিলিট করে স্লট ফাঁকা করবে
+        if (history.length > 20) {
+            history = history.slice(0, 20);
         }
         
         saveHistory();
@@ -694,14 +707,12 @@
         `).join('');
     }
 
-    // Input-এ Enter চাপলে অটোমেটিক সাবমিট হবে
     document.getElementById('secretKey').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             generateCode();
         }
     });
 
-    // পেজ লোড হবার পর হিস্টোরি ডেটা নিয়ে আসবে
     document.addEventListener('DOMContentLoaded', function() {
         loadHistory();
     });
