@@ -20,10 +20,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
         }
 
-        /* Top Header Navigation - Mobile First */
+        /* Top Header Navigation - Mobile Friendly */
         .top-navbar {
             width: 100%;
             max-width: 1100px;
@@ -63,7 +64,7 @@
             font-size: 11px;
         }
 
-        /* Main Panel Card - Responsive */
+        /* Main Panel Card */
         .main-panel {
             width: 100%;
             max-width: 1100px;
@@ -71,6 +72,7 @@
             border-radius: 16px;
             padding: 16px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
 
         .panel-title {
@@ -81,9 +83,10 @@
             text-align: center;
         }
 
-        /* Input Box */
+        /* Input Box - [FIXED MOBILE SCROLL] */
         .input-area-wrapper {
             margin-bottom: 12px;
+            position: relative;
         }
 
         textarea {
@@ -98,6 +101,10 @@
             outline: none;
             resize: none;
             font-weight: 500;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+            -webkit-overflow-scrolling: touch; /* আইফোনে স্ক্রল ফিক্স */
         }
 
         /* Action Buttons */
@@ -134,7 +141,7 @@
             text-transform: uppercase;
         }
 
-        /* Black Console Box */
+        /* Black Console Box - [FIXED MOBILE SCROLL] */
         .console-box {
             width: 100%;
             height: 220px;
@@ -148,6 +155,9 @@
             margin-bottom: 15px;
             box-shadow: inset 0 3px 8px rgba(0,0,0,0.8);
             line-height: 1.5;
+            position: relative;
+            z-index: 10;
+            -webkit-overflow-scrolling: touch; /* টাচ স্ক্রল অ্যাক্টিভেট */
         }
 
         .console-log { margin-bottom: 3px; word-break: break-all; }
@@ -214,7 +224,7 @@
             background: #10b981;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 14px 20px;
             border-radius: 10px;
             font-size: 13px;
             font-weight: bold;
@@ -222,6 +232,7 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
             transition: 0.2s;
             text-align: center;
+            -webkit-appearance: none; /* মোবাইল ব্রাউজার ওভাররাইડ রিমুভ */
         }
 
         @media (min-width: 600px) {
@@ -274,7 +285,7 @@
                 </div>
             </div>
             
-            <button class="btn-download" onclick="downloadLiveCSV()">DOWNLOAD FOR GOOGLE SHEETS</button>
+            <button class="btn-download" onclick="downloadLiveCSV()">DOWNLOAD GOOGLE SHEET FILE</button>
         </div>
     </div>
 
@@ -388,7 +399,7 @@
         startBtn.innerText = "Start Scanner";
     }
 
-    // ગૂગલ શીટ્સ માટે સ્પેશિયલ ઓપ્ટિમાઇઝ્ડ ડાઉનલોડર
+    // [FIXED PHONE DOWNLOAD] মোবাইল ব্রাউজার ফ্রেন্ডলি ইউনিভার্সাল ডাউনলোডার
     function downloadLiveCSV() {
         if (liveAccounts.length === 0) {
             alert("No live accounts found to download!");
@@ -403,15 +414,16 @@
 
         const csvString = csvRows.join("\n");
         
-        // UTF-8 BOM સેટિંગ્સ જેથી ડેટા કૉલમ ગૂગલ શીટ્સમાં ઓટોમેટિક અલગ થઈ જાય
-        const blob = new Blob(["\ufeff" + csvString], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
+        // UTF-8 BOM যুক্ত প্রোপার ডাটা ফরম্যাট
+        const contentWithBOM = "\ufeff" + csvString;
         
+        // মোবাইল ডাউনলোডের ইউনিভার্সাল মেথড (Data URI)
         const link = document.createElement("a");
-        link.setAttribute("href", url);
+        link.setAttribute("href", "data:text/csv;charset=utf-8," + encodeURIComponent(contentWithBOM));
         link.setAttribute("download", "live_accounts.csv");
-        document.body.appendChild(link);
         
+        // কিছু মোবাইল ব্রাউজারে ট্রিগার করার জন্য বডিতে অ্যাপেন্ড করে ক্লিক করা হলো
+        document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     }
