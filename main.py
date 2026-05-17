@@ -25,7 +25,7 @@
         body { background: var(--bg); color: #fff; padding: 20px 15px; min-height: 100vh; display: flex; justify-content: center; }
         .container { max-width: 1100px; width: 100%; margin-top: 10px; }
 
-        /* Universal Navigation */
+        /* Navigation Bar Grid setup */
         .nav-bar { display: none; justify-content: space-between; align-items: center; margin-bottom: 40px; background: var(--card-bg); padding: 12px 24px; border-radius: 16px; border: 1px solid var(--border); }
         .nav-left .home-btn { background: var(--btn-grad); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; transition: 0.3s ease; box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
         .nav-left .home-btn:hover { transform: translateY(-2px); }
@@ -37,7 +37,7 @@
         .page { display: none; }
         .page.active-page { display: block; }
 
-        /* Portal Home Dashboard Layout */
+        /* Main Portal Home View style configurations */
         .hero { text-align: center; margin-bottom: 60px; margin-top: 30px; }
         .hero h1 { font-size: clamp(32px, 7vw, 54px); font-weight: 800; margin-bottom: 8px; }
         .hero p { color: var(--text-gray); letter-spacing: 3px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
@@ -53,68 +53,58 @@
         .about-box h2 { color: var(--primary); margin-bottom: 15px; font-size: 24px; font-weight: 800; }
         .about-box p { color: var(--text-gray); font-size: 14px; line-height: 1.6; }
 
-        /* General Panel Layout styles */
+        /* Universal Form Panels Standard definitions */
         .tool-panel { background: var(--card-bg); border-radius: 20px; padding: 30px; border: 1px solid var(--border); }
         .tool-header { text-align: center; margin-bottom: 32px; }
         .tool-header h2 { font-size: 1.85rem; font-weight: 800; margin-bottom: 8px; }
 
-        /* Form Styling Elements */
         .input-group { margin-bottom: 20px; }
         label { display: block; font-weight: 600; margin-bottom: 10px; color: #e2e8f0; font-size: 0.875rem; }
         input[type="text"], input[type="number"], textarea { width: 100%; padding: 16px; border: 2px solid #1e293b; border-radius: 14px; font-size: 1rem; color: #fff; background: var(--input-bg); transition: all 0.25s ease; }
         input[type="text"]:focus, input[type="number"]:focus, textarea:focus { outline: none; border-color: var(--primary); background: #151c2e; }
         textarea { height: 160px; font-family: 'Courier New', monospace; resize: none; }
 
-        /* Controls button mechanics */
+        .config-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+
+        /* Real Platform Checkboxes design setups */
+        .platform-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .platform-box { background: #111726; border: 2px solid #1e293b; border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s ease; }
+        .platform-box i { font-size: 28px; color: var(--text-gray); margin-bottom: 10px; display: block; }
+        .platform-box span { font-weight: 700; font-size: 15px; color: var(--text-gray); }
+        .platform-box.active-box { border-color: var(--primary); background: rgba(168, 85, 247, 0.08); }
+        .platform-box.active-box i, .platform-box.active-box span { color: var(--primary); }
+
         .action-row { display: flex; gap: 12px; margin: 20px 0; }
         .btn-start { flex: 1; background: var(--btn-grad); color: white; border: none; padding: 16px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
         .btn-clear { background: #dc2626; color: white; border: none; padding: 0 30px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
 
-        /* Terminals Output Screens */
-        .console-box { width: 100%; height: 230px; background: #030712; border-radius: 14px; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; color: #34d399; overflow-y: auto; margin-bottom: 25px; border: 1px solid #1f2937; }
+        /* Console styling rules specifications */
+        .console-box { width: 100%; height: 250px; background: #030712; border-radius: 14px; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; color: #34d399; overflow-y: auto; margin-bottom: 25px; border: 1px solid #1f2937; }
         .console-log { margin-bottom: 5px; word-break: break-all; }
 
-        /* UID Checker Counter specific stylings */
+        /* Premium Colorful Stats block elements counter indicators grid mapping */
         .counters-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
         .counter-card { background: #111726; border: 1px solid #1e293b; border-radius: 14px; padding: 15px; text-align: center; }
         .counter-card.c-live { border-bottom: 4px solid var(--success); }
         .counter-card.c-bad { border-bottom: 4px solid var(--danger); }
         .counter-card.c-2fa { border-bottom: 4px solid var(--warning); }
         .counter-num { font-size: 24px; font-weight: 800; display: block; margin-bottom: 2px; }
-        .counter-label { font-size: 11px; color: var(--text-gray); font-weight: 700; text-transform: uppercase; }
+        .counter-label { font-size: 11px; color: var(--text-gray); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Bottom rows standard utility structural */
         .footer-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
         .total-display { font-size: 15px; color: var(--text-gray); font-weight: 600; }
         .btn-download { background: #059669; color: white; border: none; padding: 14px 28px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
 
-        /* 2FA Panel specifics */
+        /* Unique layout contexts rules specifications */
         .twofa-layout { max-width: 600px; margin: 0 auto; }
         .code-display { background: linear-gradient(135deg, #111827 0%, #030712 100%); border: 2px solid #1e293b; border-radius: 14px; padding: 24px; text-align: center; margin-top: 15px; }
         .totp-code { font-size: 2.25rem; font-weight: 800; color: #34d399; font-family: 'Courier New', monospace; letter-spacing: 6px; }
         .history-card { background: var(--card-bg); border-radius: 20px; padding: 20px; border: 1px solid var(--border); margin-top: 20px; max-height: 250px; overflow-y: auto; }
         .history-item { display: flex; justify-content: space-between; padding: 10px; background: #111726; border-radius: 10px; margin-bottom: 8px; font-size: 13px; }
 
-        /* ==================================================== */
-        /* TRUE EXTRACTED API MAIL PREMIUM ORIGINAL DESIGN LOOK */
-        /* ==================================================== */
-        .mail-layout { max-width: 650px; margin: 0 auto; }
-        .mail-platform-container { display: flex; gap: 15px; margin-bottom: 25px; }
-        .mail-plat-option { flex: 1; background: #111726; border: 2px solid #1e293b; border-radius: 14px; padding: 18px; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; transition: 0.25s ease; }
-        .mail-plat-option i { font-size: 22px; color: var(--text-gray); }
-        .mail-plat-option span { font-weight: 700; font-size: 15px; color: var(--text-gray); }
-        /* Active States matching previous accurate configuration rules */
-        .mail-plat-option.mail-selected { border-color: var(--primary); background: rgba(168, 85, 247, 0.08); }
-        .mail-plat-option.mail-selected i, .mail-plat-option.mail-selected span { color: var(--primary); }
-
-        .mail-code-screen { background: #030712; border: 2px dashed #1e293b; border-radius: 14px; padding: 30px; text-align: center; margin-top: 20px; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .mail-otp-title { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-gray); margin-bottom: 8px; font-weight: 700; }
-        .mail-otp-value { font-size: 2.5rem; font-weight: 800; color: #38bdf8; font-family: 'Courier New', monospace; letter-spacing: 4px; }
-
         @media (max-width: 850px) { 
             .home-grid { grid-template-columns: 1fr; gap: 15px; } 
             .counters-grid { grid-template-columns: 1fr; gap: 10px; }
-            .mail-platform-container { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
@@ -164,7 +154,7 @@
         <div class="tool-panel">
             <div class="tool-header"><h2>Bulk UID Checker Panel</h2></div>
             <div class="input-group">
-                <textarea id="inputData" placeholder="Paste data here... (Format: UID|PASS|2FA)"></textarea>
+                <textarea id="inputData" placeholder="Paste data here... (UID|PASS|2FA)"></textarea>
             </div>
             <div class="action-row">
                 <button class="btn-start" id="startBtn" onclick="startScanner()">Start Scanner</button>
@@ -186,44 +176,64 @@
     </div>
 
     <div id="page-mail" class="page">
-        <div class="mail-layout">
-            <div class="tool-panel">
-                <div class="tool-header"><h2>Premium API MAIL Scraper Panel</h2></div>
-                
-                <label>Select Target Mail Server Platform:</label>
-                <div class="mail-platform-container">
-                    <div id="mailHotmailOption" class="mail-plat-option mail-selected" onclick="changeMailService('hotmail')">
-                        <i class="fa-solid fa-envelope-open-text"></i>
-                        <span>Hotmail / Outlook</span>
-                    </div>
-                    <div id="mailGmailOption" class="mail-plat-option" onclick="changeMailService('gmail')">
-                        <i class="fab fa-google"></i>
-                        <span>Gmail API Server</span>
-                    </div>
+        <div class="tool-panel">
+            <div class="tool-header"><h2>Premium Bulk API MAIL Scraper Panel</h2></div>
+            
+            <label>Select Target Platform Server:</label>
+            <div class="platform-grid">
+                <div id="boxHotmail" class="platform-box active-box" onclick="setMailPlatform('hotmail')">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <span>Hotmail / Outlook</span>
                 </div>
-
-                <div class="input-group">
-                    <label>Account Credentials Details Structure:</label>
-                    <input type="text" id="mailSingleInput" placeholder="email|password|refresh_token|client_id">
+                <div id="boxGmail" class="platform-box" onclick="setMailPlatform('gmail')">
+                    <i class="fab fa-google"></i>
+                    <span>Gmail API Server</span>
                 </div>
+            </div>
 
-                <button class="btn-start" id="triggerMailBtn" onclick="extractMailOTP()">⚡ Extract Access Code</button>
-
-                <div class="mail-code-screen">
-                    <div id="mailOtpLabel" class="mail-otp-title" style="display: none;">Extracted Access Token / Code</div>
-                    <div id="mailOtpValue" class="mail-otp-value">READY</div>
-                    <div id="mailErrorLogs" style="font-size: 13px; color: var(--danger); margin-top: 10px; font-weight: 600;"></div>
+            <div class="config-row">
+                <div>
+                    <label>Threads count:</label>
+                    <input type="number" id="mailThreads" value="10" min="1" max="100">
                 </div>
+                <div>
+                    <label>Delay (Seconds):</label>
+                    <input type="number" id="mailDelay" value="1" min="0" max="60">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Input Accounts Mail List Data (Format: email|pass|token|client_id):</label>
+                <textarea id="mailInputData" placeholder="example1@outlook.com|pass123|token_here|client_id_here&#10;example2@outlook.com|pass456|token_here|client_id_here"></textarea>
+            </div>
+
+            <div class="action-row">
+                <button class="btn-start" id="startMailBtn" onclick="startMailProcessor()">Start Mail Scraper Engine</button>
+                <button class="btn-clear" onclick="clearMailTool()">Clear</button>
+            </div>
+
+            <div class="console-box" id="mailConsoleScreen" style="color: #38bdf8;">Console ready for Mail Engine Server execution routine nodes...</div>
+
+            <div class="counters-grid">
+                <div class="counter-card c-live"><span class="counter-num" id="countLive" style="color: var(--success);">0</span><span class="counter-label">Live / Success</span></div>
+                <div class="counter-card c-bad"><span class="counter-num" id="countBad" style="color: var(--danger);">0</span><span class="counter-label">Bad / Error</span></div>
+                <div class="counter-card c-2fa"><span class="counter-num" id="count2fa" style="color: var(--warning);">0</span><span class="counter-label">Two Factor Blocked</span></div>
+            </div>
+
+            <div class="footer-row">
+                <div class="total-display">Total Mail Accounts: <span id="mailTotalCount" style="color: #fff;">0</span></div>
+                <button class="btn-download" onclick="downloadMailCSV()">Download Extracted Codes (CSV)</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // ⚠️ Place your backend API OnRender application service web domain link context here
+    // ⚠️ Place your live backend application active routing Render server service domain URL address link here
     const BACKEND_URL = "https://apnar-render-app-name.onrender.com"; 
 
-    let selectedMailService = 'hotmail';
+    let mailPlatform = 'hotmail';
+    let mailSuccessList = [];
     let history = [];
 
     function switchPage(pageId) {
@@ -234,14 +244,14 @@
         if(document.getElementById('nav-' + pageId)) document.getElementById('nav-' + pageId).classList.add('active');
     }
 
-    function changeMailService(serviceType) {
-        selectedMailService = serviceType;
-        document.getElementById('mailHotmailOption').classList.toggle('mail-selected', serviceType === 'hotmail');
-        document.getElementById('mailGmailOption').classList.toggle('mail-selected', serviceType === 'gmail');
+    function setMailPlatform(plat) {
+        mailPlatform = plat;
+        document.getElementById('boxHotmail').classList.toggle('active-box', plat === 'hotmail');
+        document.getElementById('boxGmail').classList.toggle('active-box', plat === 'gmail');
     }
 
     // ====================================================
-    // CRYPTOGRAPHIC 2FA CALCULATOR ROUTINE RULES
+    // CRYPTOGRAPHIC CALCULATION SCHEMES CORE RULES (2FA)
     // ====================================================
     const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
     function base32Decode(base32) {
@@ -340,7 +350,7 @@
     }
 
     // ====================================================
-    // HIGH SPEED MULTI-THREAD COMPLIANT UID ENGINE CONTEXT
+    // HIGH SPEED FACEBOOK UID CONCURRENCY ASYNC VALIDATORS
     // ====================================================
     let liveAccounts = [];
     async function checkFacebookUID(uid) {
@@ -360,7 +370,7 @@
         if (!inputStr) { alert("Please paste UIDs data!"); return; }
 
         const lines = inputStr.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        consoleScreen.innerHTML = "Initializing asynchronous live scan routines...<br>";
+        consoleScreen.innerHTML = "Initializing asynchronous multi-worker live check threads...<br>";
         liveAccounts = [];
         
         let total = lines.length;
@@ -408,7 +418,7 @@
             }
         }
 
-        await Promise.all([worker(), worker(), worker()]);
+        await Promise.all([worker(), worker(), worker(), worker()]);
         startBtn.disabled = false;
     }
 
@@ -432,56 +442,98 @@
     }
 
     // ====================================================
-    // REAL PREMIUM ORIGINAL SINGLE API MAIL MECHANICS
+    // REAL BULK DATA SCRAPER APPLICATION API MAIL LOGIC
     // ====================================================
-    async function extractMailOTP() {
-        const rawInput = document.getElementById('mailSingleInput').value.trim();
-        const displayVal = document.getElementById('mailOtpValue');
-        const displayLabel = document.getElementById('mailOtpLabel');
-        const errorLogs = document.getElementById('mailErrorLogs');
-        const triggerBtn = document.getElementById('triggerMailBtn');
+    async function startMailProcessor() {
+        const inputStr = document.getElementById('mailInputData').value.trim();
+        const consoleScreen = document.getElementById('mailConsoleScreen');
+        const startBtn = document.getElementById('startMailBtn');
+        if (!inputStr) { alert("Please paste your email rows account data list!"); return; }
+        
+        const lines = inputStr.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        consoleScreen.innerHTML = "Opening client pipeline validation node connection to Render Cloud...<br>";
+        startBtn.disabled = true;
+        
+        document.getElementById('mailTotalCount').innerText = lines.length;
+        
+        let liveCount = 0, badCount = 0, twoFactorCount = 0;
+        mailSuccessList = [];
 
-        if (!rawInput) { alert("Please entry the line sequence data format!"); return; }
+        // UI Initialization states
+        document.getElementById('countLive').innerText = "0";
+        document.getElementById('countBad').innerText = "0";
+        document.getElementById('count2fa').innerText = "0";
 
-        displayVal.innerText = "FETCHING...";
-        displayVal.style.color = "#38bdf8";
-        displayLabel.style.display = "block";
-        errorLogs.innerText = "";
-        triggerBtn.disabled = true;
-
-        try {
-            // Render Cloud Service request node
-            const response = await fetch(`${BACKEND_URL}/get-code`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ raw_input: rawInput, mode: selectedMailService })
-            });
-
-            const result = await response.json();
-            if (result.status === "success" && result.code) {
-                displayVal.innerText = result.code;
-                displayVal.style.color = "var(--success)";
-                // Auto Copy verification code match feature
-                navigator.clipboard.writeText(result.code).catch(() => {});
-            } else {
-                displayVal.innerText = "FAILED";
-                displayVal.style.color = "var(--danger)";
-                errorLogs.innerText = result.message || "Unknown server response issue occurred.";
+        for (let i = 0; i < lines.length; i++) {
+            const currentLine = lines[i];
+            const logLine = document.createElement('div');
+            logLine.className = 'console-log';
+            const emailPrefix = currentLine.split('|')[0] || "Unknown";
+            
+            try {
+                // Connecting directly to your external Python Render application deployment layer structure
+                const response = await fetch(`${BACKEND_URL}/get-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ raw_input: currentLine, mode: mailPlatform })
+                });
+                
+                const result = await response.json();
+                if (result.status === "success") {
+                    logLine.style.color = "var(--success)";
+                    logLine.innerText = `[SUCCESS] ${emailPrefix} -> EXTRACTED OTP: ${result.code}`;
+                    liveCount++;
+                    document.getElementById('countLive').innerText = liveCount;
+                    mailSuccessList.push({ email: emailPrefix, code: result.code });
+                } else {
+                    if(result.message.toLowerCase().includes("2fa") || result.message.toLowerCase().includes("factor")) {
+                        logLine.style.color = "var(--warning)";
+                        logLine.innerText = `[2FA CHECK] ${emailPrefix} -> Verification Blocked`;
+                        twoFactorCount++;
+                        document.getElementById('count2fa').innerText = twoFactorCount;
+                    } else {
+                        logLine.style.color = "var(--danger)";
+                        logLine.innerText = `[DIE/ERROR] ${emailPrefix} -> ${result.message}`;
+                        badCount++;
+                        document.getElementById('countBad').innerText = badCount;
+                    }
+                }
+            } catch (err) {
+                logLine.style.color = "var(--danger)";
+                logLine.innerText = `[NETWORK ERROR] Could not fetch response nodes from active Render deployments.`;
+                badCount++;
+                document.getElementById('countBad').innerText = badCount;
             }
-        } catch (err) {
-            displayVal.innerText = "ERROR";
-            displayVal.style.color = "var(--danger)";
-            errorLogs.innerText = "Render Backend down or Network pipeline failed to connect.";
+            consoleScreen.appendChild(logLine);
+            consoleScreen.scrollTop = consoleScreen.scrollHeight;
+            
+            // Dynamic delay parameters processing logic rules
+            const currentDelay = parseInt(document.getElementById('mailDelay').value) || 0;
+            if(currentDelay > 0 && i < lines.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, currentDelay * 1000));
+            }
         }
-        triggerBtn.disabled = false;
+        startBtn.disabled = false;
     }
 
-    function clearMailTool() {
-        document.getElementById('mailSingleInput').value = '';
-        document.getElementById('mailOtpValue').innerText = "READY";
-        document.getElementById('mailOtpValue').style.color = "#38bdf8";
-        document.getElementById('mailOtpLabel').style.display = "none";
-        document.getElementById('mailErrorLogs').innerText = "";
+    function downloadMailCSV() {
+        if (mailSuccessList.length === 0) { alert("No extracted data arrays found to export."); return; }
+        let csvRows = ["EMAIL,OTP_CODE"];
+        mailSuccessList.forEach(item => csvRows.push(`"${item.email}","${item.code}"`));
+        const blob = new Blob([csvRows.join("\n")], { type: 'text/csv' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "extracted_mail_otps.csv";
+        link.click();
+    }
+
+    function clearMailTool() { 
+        document.getElementById('mailInputData').value = ''; 
+        document.getElementById('mailConsoleScreen').innerHTML = 'Console ready for Mail Engine Server execution routine nodes...'; 
+        document.getElementById('countLive').innerText = "0";
+        document.getElementById('countBad').innerText = "0";
+        document.getElementById('count2fa').innerText = "0";
+        document.getElementById('mailTotalCount').innerText = "0";
     }
 </script>
 </body>
