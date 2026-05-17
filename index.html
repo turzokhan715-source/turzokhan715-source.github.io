@@ -1,267 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Bulk UID Checker Panel</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #090b0e;
-            color: #333;
-            min-height: 100vh;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Top Header Navigation */
-        .top-navbar {
-            width: 100%;
-            max-width: 1100px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding: 0 10px;
-        }
-
-        .nav-left .nav-btn-home {
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-        }
-
-        .nav-right {
-            display: flex;
-            gap: 12px;
-        }
-
-        .nav-right .nav-btn {
-            background: #4f46e5;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
-        }
-
-        /* Main Panel Card */
-        .main-panel {
-            width: 100%;
-            max-width: 1100px;
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 35px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .panel-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #8b5cf6;
-            margin-bottom: 25px;
-        }
-
-        /* Textarea Input */
-        .input-area-wrapper {
-            margin-bottom: 20px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 140px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px;
-            font-size: 14px;
-            color: #475569;
-            outline: none;
-            resize: none;
-            font-weight: 500;
-        }
-
-        /* Action Buttons */
-        .action-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .btn-start {
-            flex: 1;
-            background: linear-gradient(90deg, #6366f1, #3b82f6);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-clear {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 0 25px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        /* Black Console Box */
-        .console-box {
-            width: 100%;
-            height: 300px;
-            background: #090d16;
-            border-radius: 16px;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #10b981;
-            overflow-y: auto;
-            margin-bottom: 25px;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.8);
-            line-height: 1.6;
-        }
-
-        .console-log { margin-bottom: 4px; }
-        .log-live { color: #10b981; }
-        .log-die { color: #ef4444; }
-        .log-error { color: #f1c40f; }
-
-        /* Footer Stats & Download Button */
-        .footer-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .stats-group {
-            display: flex;
-            gap: 12px;
-        }
-
-        .stat-card {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 10px 20px;
-            text-align: center;
-            min-width: 95px;
-        }
-
-        .stat-num {
-            font-size: 15px;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #64748b;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .total-color { color: #334155; }
-        .live-color { color: #10b981; }
-        .die-color { color: #ef4444; }
-
-        .btn-download {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            transition: 0.2s;
-        }
-
-        .btn-download:hover { background: #059669; }
-    </style>
-</head>
-<body>
-
-    <div class="top-navbar">
-        <div class="nav-left">
-            <button class="nav-btn-home">🏠 HOME</button>
-        </div>
-        <div class="nav-right">
-            <button class="nav-btn">2FA</button>
-            <button class="nav-btn">MAIL</button>
-            <button class="nav-btn">CHECKER</button>
-        </div>
-    </div>
-
-    <div class="main-panel">
-        <div class="panel-title">Bulk UID Checker</div>
-        
-        <div class="input-area-wrapper">
-            <textarea id="inputData" placeholder="UID|PASS|2FA"></textarea>
-        </div>
-
-        <div class="action-row">
-            <button class="btn-start" id="startBtn" onclick="startScanner()">Start Scanner</button>
-            <button class="btn-clear" onclick="clearTool()">Clear</button>
-        </div>
-
-        <div class="console-box" id="consoleScreen">Console ready...</div>
-
-        <div class="footer-row">
-            <div class="stats-group">
-                <div class="stat-card">
-                    <span class="stat-num total-color" id="totalCount">0</span>
-                    <span class="stat-label">Total</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-num live-color" id="livePercent">0% LIVE</span>
-                    <span class="stat-label">Live</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-num die-color" id="diePercent">0% DIE</span>
-                    <span class="stat-label">Die</span>
-                </div>
-            </div>
-            
-            <button class="btn-download" onclick="downloadLiveCSV()">DOWNLOAD LIVE</button>
-        </div>
-    </div>
-
 <script>
-    let liveAccounts = []; // লাইভ অ্যাকাউন্টগুলোর সম্পূর্ণ ডেটা রাখার অ্যারে
+    let liveAccounts = []; // লাইভ অ্যাকাউন্টগুলোর ডেটা সেভ রাখার জন্য
+    const CONCURRENCY_LIMIT = 5; // একসাথে কয়টি আইডি চেক হবে (থ্রেড কাউন্ট)
 
     // ফেসবুক ইউআইডি লাইভ চেক করার মেথড
     async function checkFacebookUID(uid) {
         try {
-            const response = await fetch(`https://graph.facebook.com/${uid}/picture?type=normal`);
+            // ক্যাশ এড়াতে টাইমস্ট্যাম্প যুক্ত করা হয়েছে
+            const response = await fetch(`https://graph.facebook.com/${uid}/picture?type=normal&_ts=${Date.now()}`);
             if (response.ok && response.url.includes('100x100')) {
                 return "LIVE ✅";
             } else {
@@ -272,7 +17,7 @@
         }
     }
 
-    // স্ক্যানার স্টার্ট করার মেইন লজিক
+    // মাল্টি-থ্রেডেড প্রসেসিং ইঞ্জিন
     async function startScanner() {
         const inputStr = document.getElementById('inputData').value.trim();
         const consoleScreen = document.getElementById('consoleScreen');
@@ -285,8 +30,8 @@
 
         const lines = inputStr.split('\n').map(line => line.trim()).filter(line => line.length > 0);
         
-        // রিসেট ও সেটআপ
-        consoleScreen.innerHTML = "Starting scanner...<br>";
+        // সব রিসেট ও সেটআপ
+        consoleScreen.innerHTML = "Initializing fast multi-threaded scanner...<br>";
         liveAccounts = [];
         let total = lines.length;
         let live = 0;
@@ -294,51 +39,70 @@
 
         document.getElementById('totalCount').innerText = total;
         startBtn.disabled = true;
-        startBtn.innerText = "Scanning...";
+        startBtn.innerText = "Scanning Fast...";
 
-        for (let i = 0; i < total; i++) {
-            const currentLine = lines[i];
-            const parts = currentLine.split('|');
-            
-            const uid = parts[0] ? parts[0].trim() : '';
-            const pass = parts[1] ? parts[1].trim() : '';
-            const twoFA = parts[2] ? parts[2].trim() : '';
-
-            if (!uid) continue;
-
-            const result = await checkFacebookUID(uid);
-            const logLine = document.createElement('div');
-            logLine.className = 'console-log';
-
-            if (result === "LIVE ✅") {
-                logLine.className += ' log-live';
-                logLine.innerText = `[LIVE] ID: ${uid} | Status: Success`;
-                live++;
-                // লাইভ ডেটা গুগল শিট ফরম্যাটের জন্য সেভ করা হচ্ছে
-                liveAccounts.push({ uid, pass, twoFA });
-            } else {
-                logLine.className += ' log-die';
-                logLine.innerText = `[DIE] ID: ${uid} | Status: Dead`;
-                die++;
-            }
-
-            consoleScreen.appendChild(logLine);
-            consoleScreen.scrollTop = consoleScreen.scrollHeight; // অটো স্ক্রল ডাউন
-
-            // রিয়েল-টাইম পার্সেন্টেজ ও কাউন্টার আপডেট
-            const livePct = Math.round((live / total) * 100);
-            const diePct = Math.round((die / total) * 100);
-
+        // প্রগ্রেস ও কাউন্টার আপডেট করার ইন্টারনাল ফাংশন
+        function updateStats() {
+            const livePct = total > 0 ? Math.round((live / total) * 100) : 0;
+            const diePct = total > 0 ? Math.round((die / total) * 100) : 0;
             document.getElementById('livePercent').innerText = `${livePct}% LIVE`;
             document.getElementById('diePercent').innerText = `${diePct}% DIE`;
         }
 
-        // স্ক্যান শেষ হওয়ার পর বাটন রিসেট
+        // থ্রেড পুল তৈরি এবং কন্ট্রোল
+        const queue = [...lines];
+        
+        async function worker() {
+            while (queue.length > 0) {
+                const currentLine = queue.shift();
+                if (!currentLine) continue;
+
+                const parts = currentLine.split('|');
+                const uid = parts[0] ? parts[0].trim() : '';
+                const pass = parts[1] ? parts[1].trim() : '';
+                const twoFA = parts[2] ? parts[2].trim() : '';
+
+                if (!uid) continue;
+
+                const result = await checkFacebookUID(uid);
+                const logLine = document.createElement('div');
+                logLine.className = 'console-log';
+
+                if (result === "LIVE ✅") {
+                    logLine.className += ' log-live';
+                    logLine.innerText = `[LIVE] ID: ${uid} | Status: Success`;
+                    live++;
+                    liveAccounts.push({ uid, pass, twoFA });
+                } else {
+                    logLine.className += ' log-die';
+                    logLine.innerText = `[DIE] ID: ${uid} | Status: Dead`;
+                    die++;
+                }
+
+                consoleScreen.appendChild(logLine);
+                consoleScreen.scrollTop = consoleScreen.scrollHeight; // অটো স্ক্রল ডাউন
+                updateStats();
+            }
+        }
+
+        // একসাথে একাধিক ওয়ার্কার (Thread) রান করানো
+        const workers = [];
+        const activeThreads = Math.min(CONCURRENCY_LIMIT, queue.length);
+        
+        for (let i = 0; i < activeThreads; i++) {
+            workers.push(worker());
+        }
+
+        // সব থ্রেডের কাজ শেষ হওয়া পর্যন্ত অপেক্ষা করবে
+        await Promise.all(workers);
+
+        // কাজ শেষ হওয়ার ফাইনাল রিপোর্ট
         const finalLog = document.createElement('div');
         finalLog.style.color = '#58a6ff';
-        finalLog.style.marginTop = '10px';
-        finalLog.innerText = `Scanning completed! Total Live: ${live}, Total Die: ${die}`;
+        finalLog.style.paddingTop = '10px';
+        finalLog.innerText = `⚡ Scanning Completed Extremely Fast! Total Live: ${live}, Total Die: ${die}`;
         consoleScreen.appendChild(finalLog);
+        consoleScreen.scrollTop = consoleScreen.scrollHeight;
         
         startBtn.disabled = false;
         startBtn.innerText = "Start Scanner";
@@ -351,15 +115,12 @@
             return;
         }
 
-        // CSV হেডার সেটআপ (A: UID, B: PASS, C: 2FA)
         let csvContent = "data:text/csv;charset=utf-8,UID,PASSWORD,2FA\n";
 
-        // প্রতিটি লাইভ অ্যাকাউন্ট রো তৈরি
         liveAccounts.forEach(account => {
             csvContent += `"${account.uid}","${account.pass}","${account.twoFA}"\n`;
         });
 
-        // ডাউনলোড লিংক ট্রিগার করা
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
@@ -380,6 +141,3 @@
         liveAccounts = [];
     }
 </script>
-
-</body>
-</html>
