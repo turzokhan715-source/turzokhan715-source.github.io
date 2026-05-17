@@ -3,231 +3,709 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Longisir VIP Portal</title>
+    <title>🔐 Premium 2FA Authenticator Pro</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        
-        :root { 
-            --primary: #a855f7; 
-            --bg: #05060b; 
-            --card-bg: #0f111a; 
-            --text-gray: #94a3b8;
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg: #060813;
+            --card-bg: #0b0f19;
+            --input-bg: #111726;
+            --primary: #a855f7;
+            --primary-glow: rgba(168, 85, 247, 0.3);
             --btn-grad: linear-gradient(135deg, #a855f7, #3b82f6);
+            --text-gray: #94a3b8;
+            --border: rgba(255, 255, 255, 0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        body { 
-            background: var(--bg); 
-            color: #fff; 
-            padding: 20px 15px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: #fff;
             min-height: 100vh;
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
 
-        .container { 
-            max-width: 1100px; 
+        .container {
+            max-width: 520px;
             width: 100%;
-            margin-top: 10px;
         }
 
-        /* --- NAVIGATION --- */
-        .nav-bar {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            margin-bottom: 40px;
+        /* Main Card */
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .home-btn {
-            background: var(--btn-grad);
-            color: #fff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 12px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
-            cursor: pointer;
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.05) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        /* --- HERO SECTION --- */
-        .hero {
+        .card-header {
             text-align: center;
-            margin-bottom: 60px; /* পিসির জন্য স্ট্যান্ডার্ড গ্যাপ */
+            margin-bottom: 32px;
         }
 
-        .hero h1 {
-            font-size: clamp(32px, 7vw, 54px); /* রেসপনসিভ ফন্ট সাইজ */
+        .card-header h1 {
+            font-size: 1.85rem;
             font-weight: 800;
+            background: linear-gradient(135deg, #fff 40%, var(--text-gray));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
-        .hero p {
+        .card-header p {
+            font-size: 0.85rem;
             color: var(--text-gray);
-            letter-spacing: 3px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
+            font-weight: 500;
         }
 
-        /* --- HOME GRID (PC LAYOUT) --- */
-        .home-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 25px; 
-            margin-bottom: 40px; 
-        }
-        
-        .h-card { 
-            background: var(--card-bg); 
-            border: 1px solid rgba(255,255,255,0.05); 
-            padding: 50px 20px; /* পিসির জন্য পারফেক্ট সাইজ */
-            border-radius: 20px; 
-            text-align: center; 
-            transition: 0.3s ease;
-            cursor: pointer;
+        .input-group {
+            margin-bottom: 24px;
         }
 
-        .h-card i { 
-            font-size: 48px; 
-            color: var(--primary); 
-            margin-bottom: 20px; 
+        label {
             display: block;
-            filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.5));
-        }
-
-        .h-card h3 { 
-            font-size: 20px; 
-            font-weight: 800;
-            margin-bottom: 10px; 
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #e2e8f0;
+            font-size: 0.875rem;
             letter-spacing: 0.5px;
         }
 
-        .h-card p { 
-            font-size: 13px; 
-            color: var(--text-gray); 
+        input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            font-size: 1rem;
+            color: #fff;
+            transition: all 0.25s ease;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            background: var(--input-bg);
+            letter-spacing: 1px;
         }
 
-        .h-card:hover { 
-            transform: translateY(-6px);
-            border-color: rgba(168, 85, 247, 0.3);
-            background: #12141f;
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #151c2e;
+            box-shadow: 0 0 20px var(--primary-glow);
         }
 
-        /* --- ABOUT SECTION --- */
-        .about-box { 
-            background: var(--card-bg); 
-            padding: 35px; 
-            border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.03); 
+        /* Generate Button */
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--btn-grad);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.3);
         }
 
-        .about-box h2 { 
-            color: var(--primary); 
-            margin-bottom: 15px; 
-            font-size: 24px; 
+        button:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(168, 85, 247, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Code Display Box */
+        .code-display {
+            background: linear-gradient(135deg, #111827 0%, #030712 100%);
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 12px;
+            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-label {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .totp-code {
+            font-size: 2.25rem;
             font-weight: 800;
+            color: #34d399; /* গ্লোয়িং লাইভ গ্রিন */
+            font-family: 'Courier New', monospace;
+            letter-spacing: 6px;
+            text-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
         }
 
-        .about-box p { 
-            color: var(--text-gray); 
-            font-size: 14px; 
-            line-height: 1.6; 
+        .copy-hint {
+            text-align: center;
+            color: #34d399;
+            font-weight: 700;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        /* --- 📱 MOBILE RESPONSIVE FIXES --- */
-        @media (max-width: 850px) {
+        .copy-hint.show {
+            opacity: 1;
+        }
+
+        /* History Card */
+        .history-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            max-height: 500px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .history-header h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #f1f5f9;
+        }
+
+        #historyCount {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #c084fc;
+            background: rgba(168, 85, 247, 0.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        .history-list {
+            overflow-y: auto;
+            max-height: 400px;
+            padding-right: 4px;
+        }
+
+        /* সুন্দর কাস্টম স্ক্রলবার */
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-gray);
+            padding: 40px 20px;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* History Item Layout */
+        .history-item {
+            padding: 16px;
+            background: #111726;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .history-item:hover {
+            background: #161f33;
+            border-color: rgba(168, 85, 247, 0.2);
+            transform: translateX(2px);
+        }
+
+        .history-code {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #38bdf8; /* স্কাই ব্লু হাইলাইট */
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .history-details {
+            text-align: right;
+        }
+
+        .history-key {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .history-time {
+            font-size: 0.7rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* --- 📱 রেসপনসিভ মোবাইল সাইজ ফিক্স --- */
+        @media (max-width: 600px) {
             body {
-                padding: 15px 10px;
+                padding: 20px 14px;
             }
             
-            .nav-bar { 
-                justify-content: center; /* ফোনে বাটনটি মাঝখানে থাকবে */
-                margin-bottom: 30px;
-            }
-
-            .hero { 
-                margin-bottom: 40px; 
-            }
-
-            .home-grid { 
-                grid-template-columns: 1fr; /* ফোনে একটির নিচে আরেকটি আসবে */
-                gap: 15px; 
-                margin-bottom: 30px;
-            }
-
-            .h-card { 
-                padding: 30px 15px; /* ফোনে কার্ডের সাইজ ছোট করার জন্য প্যাডিং কমানো হলো */
-                border-radius: 16px;
-            }
-
-            .h-card i {
-                font-size: 38px; /* আইকন সাইজ ফোনের জন্য অপ্টিমাইজড */
-                margin-bottom: 15px;
-            }
-
-            .h-card h3 {
-                font-size: 18px;
-            }
-
-            .about-box {
-                padding: 25px 20px;
-                border-radius: 16px;
-            }
-
-            .about-box h2 {
-                font-size: 20px;
+            .main-card {
+                padding: 28px 20px;
+                border-radius: 20px;
             }
             
-            .about-box p {
-                font-size: 13px;
+            .card-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            button {
+                padding: 14px;
+                font-size: 0.95rem;
+            }
+            
+            .totp-code {
+                font-size: 1.85rem;
+                letter-spacing: 4px;
+            }
+            
+            .history-card {
+                padding: 24px 16px;
+                border-radius: 20px;
+            }
+            
+            .history-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .history-details {
+                text-align: left;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+                padding-top: 6px;
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<div class="container">
-    <nav class="nav-bar">
-        <button class="home-btn"><i class="fa-solid fa-house"></i> HOME</button>
-    </nav>
-
-    <header class="hero">
-        <h1>Longisir VIP Portal</h1>
-        <p>THE NEXT GEN AUTOMATION HUB</p>
-    </header>
-    
-    <main class="home-grid">
-        <div class="h-card">
-            <i class="fa-solid fa-shield-halved"></i>
-            <h3>2FA AUTH</h3>
-            <p>Fast Code Gen</p>
+    <div class="container">
+        <div class="main-card">
+            <div class="card-header">
+                <h1>🔐 2FA Authenticator Pro</h1>
+                <p>Secure Time-based One-Time Password Generator</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="secretKey">Enter your 2FA Secret Key:</label>
+                <input 
+                    type="text" 
+                    id="secretKey" 
+                    placeholder="JBSWY3DPEHPK3PXP"
+                    autocomplete="off"
+                >
+            </div>
+            
+            <button id="generateBtn" onclick="generateCode()">
+                <span class="btn-icon">🔑</span>
+                <span class="btn-text">Generate Code</span>
+            </button>
+            
+            <div id="codeDisplay" class="code-display" style="display: none;">
+                <div class="code-label">Your Code:</div>
+                <div id="totpCode" class="totp-code">------</div>
+            </div>
+            
+            <p class="copy-hint" id="copyHint">✓ Code copied to clipboard!</p>
         </div>
 
-        <div class="h-card">
-            <i class="fa-solid fa-envelope"></i>
-            <h3>API MAIL</h3>
-            <p>Email Scraper</p>
+        <div class="history-card">
+            <div class="history-header">
+                <h2>📋 Recent Codes</h2>
+                <span id="historyCount">0 saved</span>
+            </div>
+            <div id="historyList" class="history-list">
+                <p class="empty-state">No codes generated yet</p>
+            </div>
         </div>
+    </div>
 
-        <div class="h-card">
-            <i class="fa-solid fa-bolt"></i>
-            <h3>UID CHECKER</h3>
-            <p>Bulk Validator</p>
-        </div>
-    </main>
+<script>
+    // ==========================================
+    // ১. TOTP ও CRYPTO কোর ইঞ্জিন লজিক (Sync)
+    // ==========================================
+    const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
-    <footer class="about-box">
-        <h2>About Our Ecosystem</h2>
-        <p>Longisir VIP provides top-tier automation tools for professionals. Our infrastructure is optimized for multi-threaded performance, ensuring that your data processing is not only fast but also secure and reliable. Enjoy a seamless experience with our neon-integrated dashboard.</p>
-    </footer>
-</div>
+    function base32Decode(base32) {
+        base32 = base32.toUpperCase().replace(/=+$/, '');
+        let bits = '';
+        
+        for (let i = 0; i < base32.length; i++) {
+            const val = BASE32_CHARS.indexOf(base32[i]);
+            if (val === -1) throw new Error('Invalid base32 character');
+            bits += val.toString(2).padStart(5, '0');
+        }
+        
+        const bytes = [];
+        for (let i = 0; i + 8 <= bits.length; i += 8) {
+            bytes.push(parseInt(bits.substr(i, 8), 2));
+        }
+        
+        return new Uint8Array(bytes);
+    }
+
+    function hmacSha1Sync(key, message) {
+        const blockSize = 64;
+        
+        if (key.length > blockSize) {
+            key = sha1(key);
+        }
+        if (key.length < blockSize) {
+            const padded = new Uint8Array(blockSize);
+            padded.set(key);
+            key = padded;
+        }
+        
+        const innerKey = new Uint8Array(blockSize);
+        const outerKey = new Uint8Array(blockSize);
+        
+        for (let i = 0; i < blockSize; i++) {
+            innerKey[i] = key[i] ^ 0x36;
+            outerKey[i] = key[i] ^ 0x5c;
+        }
+        
+        const innerHash = sha1(concat(innerKey, message));
+        return sha1(concat(outerKey, innerHash));
+    }
+
+    function sha1(data) {
+        if (!(data instanceof Uint8Array)) {
+            data = new Uint8Array(data);
+        }
+        
+        let h0 = 0x67452301;
+        let h1 = 0xEFCDAB89;
+        let h2 = 0x98BADCFE;
+        let h3 = 0x10325476;
+        let h4 = 0xC3D2E1F0;
+        
+        const ml = data.length * 8;
+        const paddedLength = Math.ceil((ml + 65) / 512) * 512 / 8;
+        const padded = new Uint8Array(paddedLength);
+        padded.set(data);
+        padded[data.length] = 0x80;
+        
+        const view = new DataView(padded.buffer);
+        view.setUint32(paddedLength - 4, ml & 0xffffffff, false);
+        
+        for (let i = 0; i < paddedLength; i += 64) {
+            const w = new Uint32Array(80);
+            
+            for (let j = 0; j < 16; j++) {
+                w[j] = view.getUint32(i + j * 4, false);
+            }
+            
+            for (let j = 16; j < 80; j++) {
+                w[j] = leftRotate(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
+            }
+            
+            let a = h0, b = h1, c = h2, d = h3, e = h4;
+            
+            for (let j = 0; j < 80; j++) {
+                let f, k;
+                if (j < 20) {
+                    f = (b & c) | ((~b) & d);
+                    k = 0x5A827999;
+                } else if (j < 40) {
+                    f = b ^ c ^ d;
+                    k = 0x6ED9EBA1;
+                } else if (j < 60) {
+                    f = (b & c) | (b & d) | (c & d);
+                    k = 0x8F1BBCDC;
+                } else {
+                    f = b ^ c ^ d;
+                    k = 0xCA62C1D6;
+                }
+                
+                const temp = (leftRotate(a, 5) + f + e + k + w[j]) & 0xffffffff;
+                e = d;
+                d = c;
+                c = leftRotate(b, 30);
+                b = a;
+                a = temp;
+            }
+            
+            h0 = (h0 + a) & 0xffffffff;
+            h1 = (h1 + b) & 0xffffffff;
+            h2 = (h2 + c) & 0xffffffff;
+            h3 = (h3 + d) & 0xffffffff;
+            h4 = (h4 + e) & 0xffffffff;
+        }
+        
+        const result = new Uint8Array(20);
+        const resultView = new DataView(result.buffer);
+        resultView.setUint32(0, h0, false);
+        resultView.setUint32(4, h1, false);
+        resultView.setUint32(8, h2, false);
+        resultView.setUint32(12, h3, false);
+        resultView.setUint32(16, h4, false);
+        
+        return result;
+    }
+
+    function leftRotate(n, s) {
+        return ((n << s) | (n >>> (32 - s))) & 0xffffffff;
+    }
+
+    function concat(a, b) {
+        const result = new Uint8Array(a.length + b.length);
+        result.set(a);
+        result.set(b, a.length);
+        return result;
+    }
+
+    function generateTOTP(secret) {
+        try {
+            secret = secret.replace(/\s/g, '').toUpperCase();
+            const key = base32Decode(secret);
+            const epoch = Math.floor(Date.now() / 1000);
+            const timeStep = Math.floor(epoch / 30);
+            
+            const timeBytes = new Uint8Array(8);
+            const timeView = new DataView(timeBytes.buffer);
+            timeView.setUint32(4, timeStep, false);
+            
+            const hmac = hmacSha1Sync(key, timeBytes);
+            const offset = hmac[19] & 0x0f;
+            const truncated = (
+                ((hmac[offset] & 0x7f) << 24) |
+                ((hmac[offset + 1] & 0xff) << 16) |
+                ((hmac[offset + 2] & 0xff) << 8) |
+                (hmac[offset + 3] & 0xff)
+            );
+            
+            return (truncated % 1000000).toString().padStart(6, '0');
+        } catch (error) {
+            console.error('TOTP generation error:', error);
+            throw new Error('Invalid secret key');
+        }
+    }
+
+    // ==========================================
+    // ২. ইন্টারফেস কন্ট্রোল এবং হিস্টোরি ম্যানেজমেন্ট
+    // ==========================================
+    let history = [];
+    let autoHideTimeout = null;
+
+    function loadHistory() {
+        const saved = localStorage.getItem('totpHistory');
+        if (saved) {
+            try {
+                history = JSON.parse(saved);
+                updateHistoryDisplay();
+            } catch (e) {
+                console.error('Failed to load history:', e);
+                history = [];
+            }
+        }
+    }
+
+    function saveHistory() {
+        try {
+            localStorage.setItem('totpHistory', JSON.stringify(history));
+        } catch (e) {
+            console.error('Failed to save history:', e);
+        }
+    }
+
+    function generateCode() {
+        const secretInput = document.getElementById('secretKey');
+        const secret = secretInput.value.trim().toUpperCase().replace(/\s/g, '');
+        
+        if (!secret) {
+            alert('⚠️ Please enter a secret key!');
+            return;
+        }
+        
+        try {
+            const code = generateTOTP(secret);
+            
+            document.getElementById('totpCode').textContent = code;
+            document.getElementById('codeDisplay').style.display = 'block';
+            
+            copyToClipboard(code);
+            secretInput.value = '';
+            
+            if (autoHideTimeout) {
+                clearTimeout(autoHideTimeout);
+            }
+            
+            autoHideTimeout = setTimeout(() => {
+                addToHistory(secret, code);
+                document.getElementById('codeDisplay').style.display = 'none';
+                document.getElementById('totpCode').textContent = '------';
+            }, 30000);
+            
+        } catch (error) {
+            alert('❌ Invalid secret key! Please check and try again.');
+            console.error('Generation error:', error);
+        }
+    }
+
+    function copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyHint();
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                fallbackCopy(text);
+            });
+        } else {
+            fallbackCopy(text);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showCopyHint();
+        } catch (err) {
+            console.error('Fallback copy failed:', err);
+        }
+        document.body.removeChild(textarea);
+    }
+
+    function showCopyHint() {
+        const hint = document.getElementById('copyHint');
+        hint.classList.add('show');
+        setTimeout(() => {
+            hint.classList.remove('show');
+        }, 2000);
+    }
+
+    function addToHistory(secret, code) {
+        const now = new Date();
+        const timestamp = now.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+        
+        history.unshift({
+            secret: secret,
+            code: code,
+            time: timestamp
+        });
+        
+        if (history.length > 50) {
+            history = history.slice(0, 50);
+        }
+        
+        saveHistory();
+        updateHistoryDisplay();
+    }
+
+    function updateHistoryDisplay() {
+        const historyList = document.getElementById('historyList');
+        const historyCount = document.getElementById('historyCount');
+        
+        historyCount.textContent = `${history.length} saved`;
+        
+        if (history.length === 0) {
+            historyList.innerHTML = '<p class="empty-state">No codes generated yet</p>';
+            return;
+        }
+        
+        historyList.innerHTML = history.map(item => `
+            <div class="history-item">
+                <div class="history-code">${item.code}</div>
+                <div class="history-details">
+                    <div class="history-key">Key: ${item.secret}</div>
+                    <div class="history-time">${item.time}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Input-এ Enter চাপলে অটোমেটিক সাবমিট হবে
+    document.getElementById('secretKey').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            generateCode();
+        }
+    });
+
+    // পেজ লোড হবার পর হিস্টোরি ডেটা নিয়ে আসবে
+    document.addEventListener('DOMContentLoaded', function() {
+        loadHistory();
+    });
+</script>
 
 </body>
 </html>
