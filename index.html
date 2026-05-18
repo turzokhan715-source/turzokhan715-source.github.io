@@ -1,65 +1,65 @@
-<div id="page-mail" class="page" style="width: 100%; display: flex; justify-content: center; align-items: center; padding: 20px 0; background: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    <div class="luxury-card" style="background: #ffffff; width: 100%; max-width: 520px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); padding: 35px; border: 1px solid rgba(0,0,0,0.02); color: #333;">
+<div id="page-mail" class="page" style="width: 100%; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; background: #f1f5f9; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+    <div class="luxury-card" style="background: #ffffff; width: 100%; max-width: 500px; border-radius: 24px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06); padding: 30px; border: 1px solid rgba(226, 232, 240, 0.8); box-sizing: border-box;">
         
-        <div style="text-align: center; margin-bottom: 25px;">
-            <div style="font-size: 38px; margin-bottom: 8px;">🔮</div>
-            <h2 style="font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; margin-bottom: 4px;">FB & IG OTP Extractor</h2>
-            <p style="font-size: 13px; color: #64748b; font-weight: 500;">Facebook & Instagram Verification Code Extractor</p>
+        <div style="text-align: center; margin-bottom: 24px;">
+            <div style="font-size: 42px; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">🔮</div>
+            <h2 style="font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; margin: 0 0 6px 0;">FB & IG OTP Extractor</h2>
+            <p style="font-size: 13px; color: #64748b; font-weight: 500; margin: 0;">Facebook & Instagram Verification Code Extractor</p>
         </div>
 
-        <div style="display: flex; justify-content: center; margin-bottom: 25px;">
-            <div id="modeBadge" style="background: #fffbeb; border: 1px solid #fef3c7; color: #d97706; padding: 8px 24px; border-radius: 50px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(217,119,6,0.05);">
+        <div style="display: flex; justify-content: center; margin-bottom: 24px;">
+            <div id="modeBadge" style="background: #fffbeb; border: 1px solid #fef3c7; color: #d97706; padding: 8px 20px; border-radius: 50px; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(217,119,6,0.04); letter-spacing: 0.5px;">
                 ⭐ FACEBOOK PRIORITY MODE
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
-            <button id="tab-fb" onclick="setMailMode('facebook')" style="background: #2563eb; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,99,235,0.2); transition: all 0.2s;">
-                Facebook <span style="background: #f59e0b; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 800;">1st</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <button id="tab-fb" onclick="setMailMode('facebook')" style="background: #2563eb; color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(37,99,235,0.15); transition: all 0.2s; outline: none;">
+                Facebook <span style="background: #f59e0b; color: #fff; font-size: 9px; padding: 2px 5px; border-radius: 5px; font-weight: 800;">1st</span>
             </button>
-            <button id="tab-ig" onclick="setMailMode('instagram')" style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 14px; border-radius: 14px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
-                📷 Instagram <span id="igBadgeLabel" style="background: #cbd5e1; color: #64748b; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 700;">2nd</span>
+            <button id="tab-ig" onclick="setMailMode('instagram')" style="background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 14px; border-radius: 14px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; outline: none;">
+                📷 Instagram <span id="igBadgeLabel" style="background: #cbd5e1; color: #64748b; font-size: 9px; padding: 2px 5px; border-radius: 5px; font-weight: 700;">2nd</span>
             </button>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px;">
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 14px; text-align: center; font-size: 13px; font-weight: 600; color: #2563eb; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 12px; text-align: center; font-size: 12px; font-weight: 600; color: #2563eb; display: flex; align-items: center; justify-content: center; gap: 6px;">
                 👤 Account 1
             </div>
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 14px; text-align: center; font-size: 13px; font-weight: 600; color: #a855f7; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 12px; text-align: center; font-size: 12px; font-weight: 600; color: #a855f7; display: flex; align-items: center; justify-content: center; gap: 6px;">
                 🔮 Account 2
             </div>
         </div>
 
-        <div style="border-left: 3px solid #0f172a; border-right: 3px solid #0f172a; padding: 0 4px; margin-bottom: 25px; border-radius: 4px;">
-            <div style="font-size: 11px; font-weight: 800; color: #334155; margin-bottom: 8px; padding-left: 6px; letter-spacing: 0.5px; text-transform: uppercase;">📋 Paste your email data here:</div>
-            <textarea id="mailInputData" placeholder="Format: email|password|token|uuid" style="width: 100%; height: 120px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 14px; font-size: 13px; color: #334155; background: #ffffff; font-family: 'Courier New', monospace; resize: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01); outline: none; line-height: 1.5;"></textarea>
+        <div style="border-left: 3px solid #0f172a; border-right: 3px solid #0f172a; padding: 0 2px; margin-bottom: 24px;">
+            <div style="font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 8px; padding-left: 4px; letter-spacing: 0.5px; text-transform: uppercase;">📋 Paste your email data here:</div>
+            <textarea id="mailInputData" placeholder="Format: email|password|token|uuid অথবা যেকোনো টেক্সট পেস্ট করুন" style="width: 100%; height: 110px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 14px; font-size: 13px; color: #334155; background: #ffffff; font-family: 'Courier New', monospace; resize: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01); outline: none; line-height: 1.5; box-sizing: border-box;"></textarea>
         </div>
 
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 25px;">
-            <button id="startMailBtn" onclick="startMailProcessor()" style="background: #0f172a; color: #ffffff; border: none; padding: 15px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(15,23,42,0.15);">
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 24px;">
+            <button id="startMailBtn" onclick="startMailProcessor()" style="background: #0f172a; color: #ffffff; border: none; padding: 15px; border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(15,23,42,0.15); outline: none;">
                 🔍 Extract OTP Code
             </button>
-            <button onclick="clearMailTool()" style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 15px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <button onclick="clearMailTool()" style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 15px; border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 6px; outline: none;">
                 🗑️ Clear
             </button>
         </div>
 
-        <div id="mailStatusAlertBox" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #cbd5e1; border-radius: 16px; padding: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s;">
-            <div style="flex: 1; padding-right: 10px;">
+        <div id="mailStatusAlertBox" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #cbd5e1; border-radius: 16px; padding: 16px; margin-bottom: 20px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 10px; transition: all 0.3s; box-sizing: border-box;">
+            <div style="flex: 1; min-width: 0;">
                 <div id="mailStatusTitle" style="font-size: 13px; font-weight: 800; color: #475569; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">💤 Engine Idle</div>
-                <div style="font-size: 12px; color: #64748b; font-family: monospace; word-break: break-all;" id="currentProcessingMail">Mail: Waiting for data input...</div>
+                <div style="font-size: 12px; color: #64748b; font-family: monospace; word-break: break-all; line-height: 1.4;" id="currentProcessingMail">Mail: Waiting for data input...</div>
             </div>
-            <button id="copyEmailBtn" onclick="copyTextToClipboard('currentProcessingMail', 'Email Copied!')" style="background: #eef2ff; color: #4f46e5; border: none; padding: 10px 16px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background 0.2s;">
-                ✉️ Copy Email
+            <button id="copyEmailBtn" onclick="copyTextToClipboard('currentProcessingMail', 'Email Copied!')" style="background: #eef2ff; color: #4f46e5; border: none; padding: 10px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background 0.2s; shrink: 0; white-space: nowrap; outline: none;">
+                ✉️ Copy
             </button>
         </div>
 
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 20px; text-align: left; position: relative;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 18px; text-align: left; position: relative; box-sizing: border-box;">
             <div style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Verification Code:</div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div id="extractedOtpValue" style="font-size: 28px; font-weight: 900; color: #64748b; font-family: 'Courier New', monospace; letter-spacing: 1px;">EMPTY</div>
-                <button id="copyCodeBtn" onclick="copyTextToClipboard('extractedOtpValue', 'OTP Code Copied!')" style="background: #2563eb; color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(37,99,235,0.15); transition: background 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div id="extractedOtpValue" style="font-size: 28px; font-weight: 900; color: #64748b; font-family: 'Courier New', monospace; letter-spacing: 1px; word-break: break-all;">EMPTY</div>
+                <button id="copyCodeBtn" onclick="copyTextToClipboard('extractedOtpValue', 'OTP Code Copied!')" style="background: #2563eb; color: #ffffff; border: none; padding: 12px 18px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 4px 10px rgba(37,99,235,0.15); transition: background 0.2s; shrink: 0; white-space: nowrap; outline: none;">
                     🔷 Copy Code
                 </button>
             </div>
@@ -72,15 +72,14 @@
 </div>
 
 <script>
-    // ⚠️ এখানে আপনার রেন্ডার করা ব্যাকএন্ড অ্যাপের ইউআরএলটি বসাবেন
+    // ⚠️ আপনার রেন্ডার ব্যাকএন্ড ইউআরএল বসাবেন
     if (typeof BACKEND_URL === 'undefined') {
         var BACKEND_URL = "https://apnar-render-app-name.onrender.com"; 
     }
 
-    // গ্লোবাল ভেরিয়েবল মোড ট্র্যাক করার জন্য (Default: facebook)
     let currentMailMode = 'facebook';
 
-    // ১. ফেসবুক এবং ইনস্টাগ্রাম ট্যাব সুইচিং ফাংশন
+    // ১. ট্যাব সুইচিং লাক্সারি ডিজাইন হ্যান্ডলার
     function setMailMode(mode) {
         currentMailMode = mode;
         const fbTab = document.getElementById('tab-fb');
@@ -94,7 +93,7 @@
             fbTab.style.boxShadow = '0 4px 12px rgba(37,99,235,0.2)';
             fbTab.style.border = 'none';
 
-            igTab.style.background = '#f1f5f9';
+            igTab.style.background = '#f8fafc';
             igTab.style.color = '#64748b';
             igTab.style.border = '1px solid #e2e8f0';
             igTab.style.boxShadow = 'none';
@@ -113,7 +112,7 @@
             igLabel.style.background = '#f59e0b';
             igLabel.style.color = '#fff';
 
-            fbTab.style.background = '#f1f5f9';
+            fbTab.style.background = '#f8fafc';
             fbTab.style.color = '#64748b';
             fbTab.style.border = '1px solid #e2e8f0';
             fbTab.style.boxShadow = 'none';
@@ -125,7 +124,15 @@
         }
     }
 
-    // ২. ওটিপি এক্সট্রাকশন মেইন প্রসেসর (আপনার ফিক্সড ইমেইল ফিল্টারসহ)
+    // 🔥 স্মার্ট ইমেইল এক্সট্রাক্টর ফাংশন (Regex ফিল্টার)
+    function extractEmailFromString(text) {
+        // এই রেজেক্সটি যেকোনো টেক্সট বা হিজিবিজি কোডের ভেতর থেকে নিখুঁত ইমেইল বের করে আনে
+        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+        const match = text.match(emailRegex);
+        return match ? match[0].trim() : null;
+    }
+
+    // ২. মেইন ওটিপি প্রসেসর
     async function startMailProcessor() {
         const inputData = document.getElementById('mailInputData').value.trim();
         const startBtn = document.getElementById('startMailBtn');
@@ -139,28 +146,21 @@
             return; 
         }
 
-        // 🔥 ফিক্সড ফিল্টার লজিক: প্রথম পাইপ (|) চিহ্নের আগের একদম ফ্রেশ ইমেইল আলাদা করা
-        const firstPipeIndex = inputData.indexOf('|');
-        let emailPrefix = "Unknown Mail";
-        
-        if (firstPipeIndex !== -1) {
-            emailPrefix = inputData.substring(0, firstPipeIndex).replace(/[\r\n]/g, "").trim();
-        } else {
-            emailPrefix = inputData.replace(/[\r\n]/g, "").split(' ')[0].trim();
-        }
-
-        // রেন্ডার ব্যাকএন্ডে পাঠানোর জন্য প্রথম লাইনটি নেওয়া
+        // পুরো পেস্ট করা ডাটার প্রথম লাইনটি আলাদা করা
         const firstLine = inputData.split('\n')[0].trim();
+        
+        // 🎯 স্মার্টলি শুধু আসল ইমেইল এড্রেস খুঁজে বের করা হচ্ছে
+        const detectedEmail = extractEmailFromString(firstLine);
+        const displayMail = detectedEmail ? detectedEmail : "No Email Detected";
 
-        // UI-তে লোডিং স্ট্যাটাস সেট করা
+        // UI লোডিং মোড ও কালার ট্রিগার
         startBtn.disabled = true;
         startBtn.innerText = "⏳ Processing...";
         alertBox.style.borderLeftColor = "#3b82f6"; 
         statusTitle.innerText = "⚡ Fetching OTP...";
         statusTitle.style.color = "#2563eb";
         
-        // এখন স্ক্রিনে নিখুঁতভাবে শুধু মেইল আইডিই শো করবে
-        mailDisplay.innerText = "Mail: " + emailPrefix;
+        mailDisplay.innerText = "Mail: " + displayMail;
         otpDisplay.innerText = "WAITING";
         otpDisplay.style.color = "#64748b";
 
@@ -177,16 +177,15 @@
             const result = await response.json();
 
             if (result.status === "success") {
-                // সাকসেস হলে সবুজ থিম
                 alertBox.style.borderLeftColor = "#22c55e"; 
                 statusTitle.innerText = "✅ OTP Extracted Successfully";
                 statusTitle.style.color = "#16a34a";
                 
-                mailDisplay.innerText = "Mail: " + (result.email ? result.email.trim() : emailPrefix);
+                // ব্যাকএন্ডে ফিল্টার হওয়া ফ্রেশ ইমেইল থাকলে তা দেখাবে
+                mailDisplay.innerText = "Mail: " + (result.email ? result.email.trim() : displayMail);
                 otpDisplay.innerText = result.code; 
                 otpDisplay.style.color = "#ea580c"; 
             } else {
-                // এরর হলে লাল থিম এবং RETRY
                 alertBox.style.borderLeftColor = "#ef4444"; 
                 statusTitle.innerText = "❌ " + result.message;
                 statusTitle.style.color = "#dc2626";
@@ -194,11 +193,9 @@
                 otpDisplay.style.color = "#ef4444";
             }
         } catch (err) {
-            // কানেকশন এরর বা সার্ভার অফলাইন থাকলে
             alertBox.style.borderLeftColor = "#ef4444";
             statusTitle.innerText = "❌ Connection Failed";
             statusTitle.style.color = "#dc2626";
-            mailDisplay.innerText = "Backend Server is offline or unreachable.";
             otpDisplay.innerText = "RETRY";
             otpDisplay.style.color = "#ef4444";
         }
@@ -207,11 +204,11 @@
         startBtn.innerText = "🔍 Extract OTP Code";
     }
 
-    // ৩. ক্লিপবোর্ডে কপি করার ইউনিভার্সাল মেথড
+    // ৩. ক্লিপবোর্ড কপি হ্যান্ডলার
     function copyTextToClipboard(elementId, successMessage) {
         let textToCopy = document.getElementById(elementId).innerText.replace("Mail: ", "").trim();
         
-        if (textToCopy === "EMPTY" || textToCopy === "WAITING" || textToCopy.includes("Waiting for data")) {
+        if (textToCopy === "EMPTY" || textToCopy === "WAITING" || textToCopy.includes("Waiting for data") || textToCopy === "No Email Detected") {
             alert("No valid data available to copy!");
             return;
         }
@@ -219,7 +216,6 @@
         navigator.clipboard.writeText(textToCopy).then(() => {
             alert(successMessage);
         }).catch(err => {
-            // ব্রাউজার সিকিউরিটি প্রটেকশন ব্যাকআপ মেথড
             const el = document.createElement('textarea');
             el.value = textToCopy;
             document.body.appendChild(el);
@@ -230,7 +226,7 @@
         });
     }
 
-    // ৪. অল টেক্সট ক্লিয়ার করার স্ক্রিপ্ট
+    // ৪. ক্লিয়ার মেথড
     function clearMailTool() { 
         document.getElementById('mailInputData').value = ''; 
         document.getElementById('extractedOtpValue').innerText = 'EMPTY';
