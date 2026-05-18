@@ -1,63 +1,56 @@
-import re
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
-app = FastAPI()
+app = Flask(__name__)
+# 🌐 ব্রাউজারের CORS কানেকশন ব্লক সমস্যা দূর করার জন্য
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-# 🌐 ফ্রন্টএন্ডের সাথে কানেকশন ঠিক রাখার জন্য CORS পলিসি ওপেন করা হলো
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# ফ্রন্টএন্ড থেকে আসা ডাটার মডেল স্ট্রাকচার
-class MailRequest(BaseModel):
-    raw_input: str
-    mode: str  # এখানে 'facebook' অথবা 'instagram' আসবে
-
-@app.post("/get-code")
-async def get_code(request: MailRequest):
+@app.route('/get-code',彻 methods=['POST'])
+def get_code():
     try:
-        # ১. ইনপুট ডাটাকে পাইপ (|) সিম্বল দিয়ে ভেঙে আলাদা করা
-        parts = request.raw_input.split('|')
-        if not parts or len(parts) == 0:
-            return {"status": "error", "message": "Invalid format! Data must be split by '|'"}
-        
-        email = parts[0].strip()
+        data = request.get_json()
+        if not data:
+            return jsonify({"status": "error", "message": "No JSON data received!"}), 400
+            
+        raw_input = data.get("raw_input", "").strip()
+        mode = data.get("mode", "facebook").strip()
+
+        if not raw_input:
+            return jsonify({"status": "error", "message": "Input data is empty!"}), 400
+
+        # 📋 পাইপ (|) সিম্বল দিয়ে ডেটা আলাদা করা
+        parts = raw_input.split('|')
+        email = parts[0].strip() if len(parts) > 0 else ""
         password = parts[1].strip() if len(parts) > 1 else ""
         token = parts[2].strip() if len(parts) > 2 else ""
         uid = parts[3].strip() if len(parts) > 3 else ""
 
-        # 🔍 এখানে আপনার আসল জিমেইল/আউটলুক লগইন এবং ওটিপি রিড করার লজিক বসবে
-        # (নিচে উদাহরণস্বরূপ একটি ডামি কোড দেওয়া হলো যা ফেসবুক/ইনস্টাগ্রাম অনুযায়ী কাজ করবে)
-        
+        # 🔍 মোড অনুযায়ী আপনার ওটিপি এক্সট্রাকশন লজিক এখানে কাজ করবে
         extracted_otp = ""
         
-        if request.mode == "facebook":
-            # 🔵 ফেসবুকের ওটিপি খোঁজার আসল কোড এখানে লিখবেন
-            # উদাহরণ: extracted_otp = fetch_facebook_otp(email, password)
-            extracted_otp = "FB-992813"  # টেস্ট করার জন্য ডামি ওটিপি
+        if mode == "facebook":
+            # 🔵 এখানে আপনার ফেসবুক ওটিপি বের করার আসল স্ক্রিপ্ট/লজিক বসাবেন
+            extracted_otp = "FB-123456"  # টেস্ট ডামি ওটিপি
             
-        elif request.mode == "instagram":
-            # 🔮 ইনস্টাগ্রামের ওটিপি খোঁজার আসল কোড এখানে লিখবেন
-            # उदाहरण: extracted_otp = fetch_instagram_otp(email, password)
-            extracted_otp = "IG-482019"  # টেস্ট করার জন্য ডামি ওটিপি
-            
+        elif mode == "instagram":
+            # 🔮 এখানে আপনার ইনস্টাগ্রাম ওটিপি বের করার আসল স্ক্রিপ্ট/লজিক বসাবেন
+            extracted_otp = "IG-654321"  # টেস্ট ডামি ওটিপি
         else:
-            return {"status": "error", "message": "Unknown mode selection!"}
+            return jsonify({"status": "error", "message": "Invalid platform mode!"}), 400
 
-        # ২. সবকিছু সফল হলে ফ্রন্টএন্ডে ডাটা রিটার্ন করা
-        return {
+        # সবকিছু সফল হলে ফ্রন্টএন্ডে পাঠানো
+        return jsonify({
             "status": "success",
             "code": extracted_otp,
             "email": email,
             "uid": uid
-        }
+        })
 
     except Exception as e:
-        # কোনো কারণে ক্র্যাশ করলে এরর মেসেজ পাঠানো
-        return {"status": "error", "message": f"Python Server Error: {str(e)}"}
+        return jsonify({"status": "error", "message": f"Server Error: {str(e)}"}), 500
+
+if __name__ == '__main__':
+    # রেন্ডার পোর্টের সাথে ম্যাচ করানোর জন্য
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
