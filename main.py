@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template_string
 from flask_cors import CORS
 
 app = Flask(__name__)
-# 🌐 ব্রাউজারের সিকিউরিটি ব্লক সমস্যা দূর করার জন্য CORS সচল করা হলো
+# ব্রাউজারের CORS সিকিউরিটি ইস্যু হ্যান্ডেল করার জন্য
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
@@ -85,281 +85,636 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         return f"System Connection Error: {str(e)}"
 
 
-# 🔍 ইমেইল ছেঁকে বের করার ফাংশন
-def extract_email_from_string(text):
-    email_regex = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-    match = re.search(email_regex, text)
-    return match.group(0).strip() if match else None
-
-
-# 🔮 ULTRA-PREMIUM INTERFACE (HTML/Tailwind/JavaScript UI)
-HTML_TEMPLATE = """
-<!DOCTYPE html>
+# 📋 আপনার নিজস্ব অরিজিনাল ইন্টারফেস (HTML)
+HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FB & IG OTP Extractor Pro</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col justify-center items-center p-4 font-sans selection:bg-blue-500 selection:text-white">
-
-    <div class="w-full max-w-md bg-gradient-to-b from-[#111827] to-[#1f2937] border border-white/5 rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_40px_rgba(59,130,246,0.1)] p-6 relative overflow-hidden">
+    <title>Get Hotmail/Outlook Verification Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        <div class="absolute -top-[50px] left-1/2 -translate-x-1/2 w-[180px] h-[180px] bg-gradient-to-b from-blue-500/10 to-transparent rounded-full pointer-events-none"></div>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: rgb(240, 242, 245);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: rgb(255, 255, 255);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgb(228, 230, 235);
+        }
+        
+        .header-icon {
+            font-size: 24px;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            color: rgb(24, 119, 242);
+            font-weight: 600;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgb(75, 79, 86);
+            margin-bottom: 12px;
+        }
+        
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgb(228, 230, 235);
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            background: rgb(248, 249, 250);
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.3s;
+        }
+        
+        .input-box:focus {
+            outline: none;
+            border-color: rgb(24, 119, 242);
+            background: rgb(255, 255, 255);
+        }
+        
+        .hint {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 10px;
+            background: rgb(240, 242, 245);
+            border-radius: 6px;
+            font-size: 12px;
+            color: rgb(101, 103, 107);
+            line-height: 1.5;
+        }
+        
+        .hint-icon {
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        
+        .email-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgb(248, 249, 250);
+            border-radius: 8px;
+            border: 1px solid rgb(228, 230, 235);
+        }
+        
+        .email-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgb(75, 79, 86);
+            margin-bottom: 8px;
+        }
+        
+        .email-value {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .email-text {
+            font-size: 14px;
+            color: rgb(33, 37, 41);
+            font-weight: 600;
+            word-break: break-all;
+        }
+        
+        .email-text.placeholder {
+            color: rgb(136, 136, 136);
+            font-style: italic;
+        }
+        
+        .btn-copy-small {
+            padding: 8px 16px;
+            background: rgb(24, 119, 242);
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .btn-copy-small:hover {
+            background: rgb(21, 101, 192);
+        }
+        
+        .btn-copy-small:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            flex: 1;
+            padding: 14px;
+            background: rgb(24, 119, 242);
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: rgb(21, 101, 192);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-clear {
+            padding: 14px 24px;
+            background: rgb(239, 68, 68);
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-clear:hover {
+            background: rgb(220, 38, 38);
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: rgb(209, 250, 229);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .result-header.error {
+            background: rgb(254, 226, 226);
+        }
+        
+        .result-header.waiting {
+            background: rgb(243, 244, 246);
+        }
+        
+        .result-icon {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+        
+        .result-content {
+            flex: 1;
+        }
+        
+        .result-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: rgb(6, 95, 70);
+            margin-bottom: 6px;
+        }
+        
+        .result-header.error .result-title {
+            color: rgb(153, 27, 27);
+        }
+        
+        .result-header.waiting .result-title {
+            color: rgb(55, 65, 81);
+        }
+        
+        .result-detail {
+            font-size: 13px;
+            color: rgb(4, 120, 87);
+            margin: 4px 0;
+        }
+        
+        .result-header.error .result-detail {
+            color: rgb(185, 28, 28);
+        }
+        
+        .result-header.waiting .result-detail {
+            color: rgb(107, 114, 128);
+        }
+        
+        .code-box {
+            padding: 20px;
+            border: 2px solid rgb(228, 230, 235);
+            border-radius: 10px;
+            background: rgb(255, 255, 255);
+        }
+        
+        .code-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgb(75, 79, 86);
+            margin-bottom: 12px;
+        }
+        
+        .code-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .code-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: rgb(16, 185, 129);
+            letter-spacing: 6px;
+            font-family: 'Courier New', monospace;
+            user-select: all;
+        }
+        
+        .code-value.placeholder {
+            color: rgb(156, 163, 175);
+        }
+        
+        .btn-copy-large {
+            padding: 10px 20px;
+            background: rgb(16, 185, 129);
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .btn-copy-large:hover:not(:disabled) {
+            background: rgb(5, 150, 105);
+        }
+        
+        .btn-copy-large:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .how-to-use {
+            padding: 15px;
+            background: rgb(243, 244, 246);
+            border-radius: 8px;
+            border-left: 4px solid rgb(156, 163, 175);
+        }
+        
+        .how-to-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: rgb(55, 65, 81);
+            margin-bottom: 10px;
+        }
+        
+        .how-to-content {
+            font-size: 13px;
+            color: rgb(75, 85, 99);
+            line-height: 1.6;
+        }
+        
+        .how-to-content ol {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+        
+        .how-to-content li {
+            margin: 6px 0;
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: rgb(255, 255, 255);
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <span class="header-icon">📧</span>
+                <h1>Get Hotmail/Outlook Verification Code</h1>
+            </div>
 
-        <div class="text-center mb-6 relative z-10">
-            <div class="text-4xl mb-2 drop-shadow-[0_0_12px_rgba(147,51,234,0.6)]">🔮</div>
-            <h2 class="text-2xl font-black text-white tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">FB & IG OTP Extractor</h2>
-            <p class="text-xs text-gray-400 font-medium mt-1 tracking-wide">Next-Gen Verification Code Hub</p>
-        </div>
+            <div class="section-title">Account Details</div>
+            
+            <textarea 
+                class="input-box" 
+                id="accountInput" 
+                placeholder="email@outlook.com|password|refresh_token|client_id"></textarea>
 
-        <div class="flex justify-center mb-6">
-            <div id="modeBadge" class="bg-amber-500/10 border border-amber-500/30 text-amber-400 px-4 py-1.5 rounded-full text-[11px] font-extrabold tracking-wider shadow-[0_0_15px_rgba(217,119,6,0.1)]">
-                ⚡ FACEBOOK PRIORITY MODE
+            <div class="hint">
+                <span class="hint-icon">ℹ️</span>
+                <div>
+                    <strong>Format:</strong> email|password|refresh_token|client_id<br>
+                    <strong>Supports:</strong> @hotmail.com, @outlook.com, @live.com addresses
+                </div>
+            </div>
+
+            <div class="email-display">
+                <div class="email-label">Extracted Email:</div>
+                <div class="email-value">
+                    <span class="email-text placeholder" id="extractedEmail">No email entered yet</span>
+                    <button class="btn-copy-small" id="copyEmailBtn" onclick="copyEmail()" disabled>📋 Copy Email</button>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button class="btn-primary" id="getCodeBtn" onclick="getVerificationCode()">
+                    Get Verification Code
+                </button>
+                <button class="btn-clear" onclick="clearAll()">
+                    🗑️ Clear
+                </button>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 mb-4">
-            <button id="tab-fb" onclick="setMailMode('facebook')" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-xl font-bold text-xs cursor-pointer shadow-[0_4px_15px_rgba(37,99,235,0.25)] transition duration-200 focus:outline-none">
-                Facebook <span class="bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded ml-1 font-black">1st</span>
-            </button>
-            <button id="tab-ig" onclick="setMailMode('instagram')" class="bg-[#1f2937] text-gray-400 border border-white/5 p-3 rounded-xl font-semibold text-xs cursor-pointer transition duration-200 focus:outline-none">
-                📷 Instagram <span id="igBadgeLabel" class="bg-gray-700 text-gray-400 text-[9px] px-1.5 py-0.5 rounded ml-1 font-bold">2nd</span>
-            </button>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="bg-blue-500/5 border border-blue-500/10 p-2.5 rounded-xl text-center text-xs font-bold text-blue-400 flex items-center justify-center gap-1.5">
-                👤 Account 1
+        <div class="card">
+            <div class="result-header waiting" id="resultHeader">
+                <span class="result-icon" id="resultIcon">⏳</span>
+                <div class="result-content">
+                    <div class="result-title" id="resultTitle">Waiting for request...</div>
+                    <div class="result-detail" id="resultDetail">Enter your account details and click "Get Verification Code"</div>
+                </div>
             </div>
-            <div class="bg-purple-500/5 border border-purple-500/10 p-2.5 rounded-xl text-center text-xs font-bold text-purple-400 flex items-center justify-center gap-1.5">
-                🔮 Account 2
+
+            <div class="code-box">
+                <div class="code-label">Verification Code:</div>
+                <div class="code-display">
+                    <div class="code-value placeholder" id="codeValue">------</div>
+                    <button class="btn-copy-large" id="copyCodeBtn" onclick="copyCode()" disabled>📋 Copy Code</button>
+                </div>
             </div>
         </div>
 
-        <div class="border-l-2 border-blue-500 pl-1 mb-6">
-            <div class="text-[11px] font-bold text-gray-400 mb-2 pl-1 tracking-wider uppercase">📋 Paste your account data line:</div>
-            <textarea id="mailInputData" oninput="liveUpdateEmailDisplay()" placeholder="এখানে ডাটা পেস্ট করুন... মেইল সাথে সাথে শো করবে" class="w-full h-24 bg-[#111827] border border-white/5 rounded-xl p-3 text-xs font-mono text-blue-400 focus:outline-none focus:border-blue-500 transition duration-200 resize-none shadow-inner leading-relaxed"></textarea>
-        </div>
-
-        <div class="grid grid-cols-3 gap-3 mb-6">
-            <button id="startMailBtn" onclick="startMailProcessor()" class="col-span-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-3.5 rounded-xl text-xs font-extrabold uppercase tracking-wider cursor-pointer shadow-[0_4px_20px_rgba(37,99,235,0.25)] transition duration-200 focus:outline-none">
-                🔍 Extract Code
-            </button>
-            <button onclick="clearMailTool()" class="bg-[#374151] hover:bg-gray-600 border border-white/5 text-gray-200 p-3.5 rounded-xl text-xs font-bold uppercase cursor-pointer transition duration-200 focus:outline-none">
-                🗑️ Clear
-            </button>
-        </div>
-
-        <div id="mailStatusAlertBox" class="bg-[#111827] border border-white/5 border-l-4 border-gray-600 rounded-2xl p-4 mb-5 flex justify-between items-center gap-3 transition-all duration-300">
-            <div class="min-w-0 flex-1">
-                <div id="mailStatusTitle" class="text-[11px] font-black text-gray-400 mb-1 tracking-wider uppercase">💤 Engine Idle</div>
-                <div id="currentProcessingMail" class="text-xs font-mono text-gray-200 break-all font-semibold leading-relaxed">Mail: Waiting for data...</div>
+        <div class="card">
+            <div class="how-to-use">
+                <div class="how-to-title">
+                    <span>ℹ️</span>
+                    <span>How to Use</span>
+                </div>
+                <div class="how-to-content">
+                    <ol>
+                        <li>Enter your account details in the format: <code>email|password|token|client_id</code></li>
+                        <li>Click "Get Verification Code" button</li>
+                        <li>Wait for the system to fetch your latest verification email</li>
+                        <li>The code will be automatically extracted and displayed</li>
+                        <li>Click "Copy Code" to copy it to clipboard</li>
+                        <li>Use "Clear" button to reset and start over</li>
+                    </ol>
+                </div>
             </div>
-            <button onclick="copyTextToClipboard('currentProcessingMail', 'Email Copied!')" class="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 px-3 py-2 rounded-xl text-[11px] font-bold cursor-pointer transition whitespace-nowrap focus:outline-none">
-                ✉️ Copy
-            </button>
         </div>
-
-        <div class="bg-gradient-to-b from-[#111827] to-[#0f172a] border border-white/5 rounded-2xl p-4 shadow-inner flex justify-between items-center gap-3">
-            <div class="min-w-0">
-                <span class="text-[10px] font-extrabold text-gray-500 tracking-wider uppercase block mb-1">Verification Code:</span>
-                <div id="extractedOtpValue" class="text-2xl font-black font-mono text-gray-500 tracking-widest break-all">EMPTY</div>
-            </div>
-            <button id="copyCodeBtn" onclick="copyTextToClipboard('extractedOtpValue', 'OTP Code Copied!')" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-extrabold cursor-pointer shadow-[0_4px_15px_rgba(16,185,129,0.25)] transition whitespace-nowrap focus:outline-none">
-                🔷 Copy Code
-            </button>
-        </div>
-
     </div>
 
     <script>
-        let currentMailMode = 'facebook';
-
-        function liveUpdateEmailDisplay() {
-            const inputData = document.getElementById('mailInputData').value.trim();
-            const mailDisplay = document.getElementById('currentProcessingMail');
+        // Input পরিবর্তনের সাথে সাথে ইমেইল ডিটেক্ট করার লজিক
+        document.getElementById('accountInput').addEventListener('input', function() {
+            const input = this.value.trim();
+            const emailText = document.getElementById('extractedEmail');
+            const copyEmailBtn = document.getElementById('copyEmailBtn');
             
-            if (!inputData) {
-                mailDisplay.innerText = "Mail: Waiting for data...";
+            if (input) {
+                const email = input.split('|')[0].trim();
+                if (email && email.includes('@')) {
+                    emailText.textContent = email;
+                    emailText.classList.remove('placeholder');
+                    copyEmailBtn.disabled = false;
+                } else {
+                    emailText.textContent = 'Invalid email format';
+                    emailText.classList.add('placeholder');
+                    copyEmailBtn.disabled = true;
+                }
+            } else {
+                emailText.textContent = 'No email entered yet';
+                emailText.classList.add('placeholder');
+                copyEmailBtn.disabled = true;
+            }
+        });
+
+        async function getVerificationCode() {
+            const input = document.getElementById('accountInput').value.trim();
+            
+            if (!input) {
+                alert('⚠️ Please enter account details!');
                 return;
             }
 
-            const firstLine = inputData.split('\\n')[0].trim();
-            const detectedEmail = extractEmailFromString(firstLine);
+            const parts = input.split('|');
+            if (parts.length < 3) {
+                alert('⚠️ Invalid format! Use: email|password|token|client_id');
+                return;
+            }
+
+            const email = parts[0] ? parts[0].trim() : '';
+            const password = parts[1] ? parts[1].trim() : '';
+            const token = parts[2] ? parts[2].trim() : '';
+            const clientId = parts[3] ? parts[3].trim() : '';
+
+            const btn = document.getElementById('getCodeBtn');
+            const resultHeader = document.getElementById('resultHeader');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDetail = document.getElementById('resultDetail');
+            const codeValue = document.getElementById('codeValue');
+            const copyCodeBtn = document.getElementById('copyCodeBtn');
             
-            if (detectedEmail) {
-                mailDisplay.innerText = "Mail: " + detectedEmail;
-            } else {
-                mailDisplay.innerText = "Mail: No Email Detected";
-            }
-        }
-
-        function extractEmailFromString(text) {
-            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/;
-            const match = text.match(emailRegex);
-            return match ? match[0].trim() : null;
-        }
-
-        function setMailMode(mode) {
-            currentMailMode = mode;
-            const fbTab = document.getElementById('tab-fb');
-            const igTab = document.getElementById('tab-ig');
-            const modeBadge = document.getElementById('modeBadge');
-            const igLabel = document.getElementById('igBadgeLabel');
-
-            if (mode === 'facebook') {
-                fbTab.className = "bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-xl font-bold text-xs cursor-pointer shadow-[0_4px_15px_rgba(37,99,235,0.25)] transition duration-200 focus:outline-none";
-                igTab.className = "bg-[#1f2937] text-gray-400 border border-white/5 p-3 rounded-xl font-semibold text-xs cursor-pointer transition duration-200 focus:outline-none";
-                igLabel.className = "bg-gray-700 text-gray-400 text-[9px] px-1.5 py-0.5 rounded ml-1 font-bold";
-                modeBadge.innerText = "⚡ FACEBOOK PRIORITY MODE";
-                modeBadge.className = "bg-amber-500/10 border border-amber-500/30 text-amber-400 px-4 py-1.5 rounded-full text-[11px] font-extrabold tracking-wider";
-            } else {
-                igTab.className = "bg-gradient-to-r from-purple-500 to-purple-600 text-white p-3 rounded-xl font-bold text-xs cursor-pointer shadow-[0_4px_15px_rgba(168,85,247,0.25)] transition duration-200 focus:outline-none";
-                fbTab.className = "bg-[#1f2937] text-gray-400 border border-white/5 p-3 rounded-xl font-semibold text-xs cursor-pointer transition duration-200 focus:outline-none";
-                igLabel.className = "bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded ml-1 font-black";
-                modeBadge.innerText = "📷 INSTAGRAM PRIORITY MODE";
-                modeBadge.className = "bg-pink-500/10 border border-pink-500/30 text-pink-400 px-4 py-1.5 rounded-full text-[11px] font-extrabold tracking-wider";
-            }
-        }
-
-        async function startMailProcessor() {
-            const inputData = document.getElementById('mailInputData').value.trim();
-            const startBtn = document.getElementById('startMailBtn');
-            const alertBox = document.getElementById('mailStatusAlertBox');
-            const statusTitle = document.getElementById('mailStatusTitle');
-            const mailDisplay = document.getElementById('currentProcessingMail');
-            const otpDisplay = document.getElementById('extractedOtpValue');
-
-            if (!inputData) { 
-                alert("Please input credential string sets!"); 
-                return; 
-            }
-
-            const firstLine = inputData.split('\\n')[0].trim();
-            const detectedEmail = extractEmailFromString(firstLine);
-
-            startBtn.disabled = true;
-            startBtn.innerText = "⏳ Processing...";
-            alertBox.style.borderLeftColor = "#3b82f6"; 
-            statusTitle.innerText = "⚡ Fetching OTP...";
-            statusTitle.style.color = "#3b82f6";
-            
-            otpDisplay.innerText = "WAITING";
-            otpDisplay.className = "text-2xl font-black font-mono text-blue-400 animate-pulse tracking-widest break-all";
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loader"></span> Fetching verification code...';
 
             try {
-                // 🛠️ ফিক্স: হার্ডকোডেড স্লাশ তুলে সরাসরি রিলেটিভ পাথ ব্যবহার করা হয়েছে
-                const response = await fetch('get-code', {
+                // পাইথন এন্ডপয়েন্ট এপিআই কল করা হচ্ছে
+                const response = await fetch('/api/get-code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ raw_input: firstLine, mode: currentMailMode })
+                    body: JSON.stringify({ email, password, token, clientId })
                 });
-                const result = await response.json();
 
-                startBtn.disabled = false;
-                startBtn.innerText = "🔍 Extract Code";
+                const data = await response.json();
 
-                if (result.status === "success") {
-                    alertBox.style.borderLeftColor = "#10b981"; 
-                    statusTitle.innerText = "✅ OTP Extracted Successfully";
-                    statusTitle.style.color = "#10b981";
-                    mailDisplay.innerText = "Mail: " + result.email;
-                    otpDisplay.className = "text-2xl font-black font-mono text-emerald-400 tracking-widest break-all";
-                    otpDisplay.innerText = result.code; 
+                if (data.success) {
+                    resultHeader.classList.remove('error', 'waiting');
+                    resultIcon.textContent = '✅';
+                    resultTitle.textContent = 'Email Retrieved Successfully';
+                    resultDetail.textContent = `For: ${data.email}`;
+                    codeValue.textContent = data.code;
+                    codeValue.classList.remove('placeholder');
+                    copyCodeBtn.disabled = false;
+
+                    // অটো ক্লিপবোর্ড কপি অপশন
+                    try {
+                        await navigator.clipboard.writeText(data.code);
+                        console.log('✅ Code auto-copied');
+                    } catch(e) {}
                 } else {
-                    alertBox.style.borderLeftColor = "#ef4444"; 
-                    statusTitle.innerText = "❌ Failed";
-                    statusTitle.style.color = "#ef4444";
-                    otpDisplay.innerText = result.message;
-                    otpDisplay.className = "text-xs font-sans font-bold text-red-400 break-all";
+                    resultHeader.classList.add('error');
+                    resultHeader.classList.remove('waiting');
+                    resultIcon.textContent = '❌';
+                    resultTitle.textContent = 'Error';
+                    resultDetail.textContent = data.error;
+                    codeValue.textContent = '------';
+                    codeValue.classList.add('placeholder');
+                    copyCodeBtn.disabled = true;
                 }
-            } catch (err) {
-                startBtn.disabled = false;
-                startBtn.innerText = "🔍 Extract Code";
-                alertBox.style.borderLeftColor = "#ef4444";
-                statusTitle.innerText = "⚠️ Server Connection Failed";
-                statusTitle.style.color = "#ef4444";
-                otpDisplay.innerText = "RETRY";
-                otpDisplay.className = "text-2xl font-black font-mono text-red-500";
+
+            } catch (error) {
+                resultHeader.classList.add('error');
+                resultHeader.classList.remove('waiting');
+                resultIcon.textContent = '❌';
+                resultTitle.textContent = 'Network Error';
+                resultDetail.textContent = error.message;
+                codeValue.textContent = '------';
+                codeValue.classList.add('placeholder');
+                copyCodeBtn.disabled = true;
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = 'Get Verification Code';
+        }
+
+        function clearAll() {
+            document.getElementById('accountInput').value = '';
+            const emailText = document.getElementById('extractedEmail');
+            emailText.textContent = 'No email entered yet';
+            emailText.classList.add('placeholder');
+            document.getElementById('copyEmailBtn').disabled = true;
+            
+            const resultHeader = document.getElementById('resultHeader');
+            resultHeader.classList.remove('error');
+            resultHeader.classList.add('waiting');
+            document.getElementById('resultIcon').textContent = '⏳';
+            document.getElementById('resultTitle').textContent = 'Waiting for request...';
+            document.getElementById('resultDetail').textContent = 'Enter your account details and click "Get Verification Code"';
+            
+            const codeValue = document.getElementById('codeValue');
+            codeValue.textContent = '------';
+            codeValue.classList.add('placeholder');
+            document.getElementById('copyCodeBtn').disabled = true;
+        }
+
+        async function copyCode() {
+            const code = document.getElementById('codeValue').textContent;
+            if (code === '------') return;
+            
+            try {
+                await navigator.clipboard.writeText(code);
+                alert('✅ Code copied: ' + code);
+            } catch(e) {
+                alert('⚠️ Failed to copy');
             }
         }
 
-        function copyTextToClipboard(elementId, successMessage) {
-            let textToCopy = document.getElementById(elementId).innerText.replace("Mail: ", "").trim();
-            if (textToCopy === "EMPTY" || textToCopy === "WAITING" || textToCopy.includes("Waiting for data")) {
-                alert("No valid data to copy!");
-                return;
+        async function copyEmail() {
+            const email = document.getElementById('extractedEmail').textContent;
+            if (email === 'No email entered yet' || email === 'Invalid email format') return;
+            
+            try {
+                await navigator.clipboard.writeText(email);
+                alert('✅ Email copied: ' + email);
+            } catch(e) {
+                alert('⚠️ Failed to copy');
             }
-            navigator.clipboard.writeText(textToCopy).then(() => alert(successMessage));
-        }
-
-        function clearMailTool() { 
-            document.getElementById('mailInputData').value = ''; 
-            document.getElementById('extractedOtpValue').innerText = 'EMPTY';
-            document.getElementById('extractedOtpValue').className = "text-2xl font-black font-mono text-gray-500 tracking-widest break-all";
-            
-            const alertBox = document.getElementById('mailStatusAlertBox');
-            const statusTitle = document.getElementById('mailStatusTitle');
-            
-            alertBox.style.borderLeftColor = "#4b5563";
-            statusTitle.innerText = "💤 Engine Idle";
-            statusTitle.style.color = "#94a3b8";
-            document.getElementById('currentProcessingMail').innerText = 'Mail: Waiting for data...';
         }
     </script>
 </body>
-</html>
-"""
+</html>"""
 
 
-# রেন্ডার এবং লোকাল হোস্টে ইন্টারফেস রেন্ডার করার রুট
+# রুট ডোমেইনে আপনার অরিজিনাল ইন্টারফেস রেন্ডার করার ফাংশন
 @app.route('/', methods=['GET', 'HEAD'])
 def home():
     return render_template_string(HTML_TEMPLATE)
 
 
-# ওটিপি রিকোয়েস্ট হ্যান্ডলার এপিআই এন্ডপয়েন্ট
-@app.route('/get-code', methods=['POST'])
+# আপনার জাভাস্ক্রিপ্ট রিকোয়েস্টের সাথে সামঞ্জস্যপূর্ণ API এন্ডপয়েন্ট
+@app.route('/api/get-code', methods=['POST'])
 def get_code():
     try:
         data = request.get_json() or {}
-        raw_input = data.get('raw_input', '').strip()
+        email = data.get('email', '').strip()
+        password = data.get('password', '').strip()
+        refresh_token = data.get('token', '').strip()  # JS থেকে 'token' হিসেবে আসছে
+        client_id = data.get('clientId', '').strip()    # JS থেকে 'clientId' হিসেবে আসছে
 
-        if not raw_input:
-            return jsonify({'status': 'error', 'message': 'Input empty.'})
+        if not email or not refresh_token or not client_id:
+            return jsonify({
+                'success': False, 
+                'error': 'Missing email, refresh_token, or client_id from input.'
+            })
 
-        detected_email = extract_email_from_string(raw_input)
-        if not detected_email:
-            return jsonify({'status': 'error', 'message': 'No valid email found in data.'})
-
-        parts = raw_input.split('|')
-        if len(parts) < 4:
-            return jsonify({'status': 'error', 'message': 'Format must be email|pass|token|client_id'})
-
-        email = detected_email
-        password = parts[1].strip()
-        refresh_token = parts[2].strip()
-        client_id = parts[3].strip()
-
+        # মাইক্রোসফট এপিআই এর মাধ্যমে ওটিপি রিড করা হচ্ছে
         fb_code = extract_fb_code_via_api(email, refresh_token, client_id)
 
+        # প্রাপ্ত রেজাল্ট যদি ডিজিট (সংখ্যা) হয় তাহলে সাকসেস রেসপন্স পাঠানো হচ্ছে
         if fb_code.isdigit():
             return jsonify({
-                'status': 'success', 
+                'success': True, 
                 'email': email, 
                 'code': fb_code
             })
         else:
             return jsonify({
-                'status': 'error', 
-                'message': fb_code
+                'success': False, 
+                'error': fb_code
             })
 
     except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 if __name__ == '__main__':
