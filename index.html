@@ -72,7 +72,7 @@
 </div>
 
 <script>
-    // ⚠️ আপনার ব্যাকএন্ড অ্যাপ ইউআরএল
+    // ⚠️ এখানে আপনার রেন্ডার করা ব্যাকএন্ড অ্যাপের ইউআরএলটি বসাবেন
     if (typeof BACKEND_URL === 'undefined') {
         var BACKEND_URL = "https://apnar-render-app-name.onrender.com"; 
     }
@@ -89,13 +89,11 @@
         const igLabel = document.getElementById('igBadgeLabel');
 
         if (mode === 'facebook') {
-            // ফেসবুক একটিভ স্টাইল
             fbTab.style.background = '#2563eb';
             fbTab.style.color = '#ffffff';
             fbTab.style.boxShadow = '0 4px 12px rgba(37,99,235,0.2)';
             fbTab.style.border = 'none';
 
-            // ইনস্টাগ্রাম ইন-একটিভ স্টাইল
             igTab.style.background = '#f1f5f9';
             igTab.style.color = '#64748b';
             igTab.style.border = '1px solid #e2e8f0';
@@ -103,27 +101,23 @@
             igLabel.style.background = '#cbd5e1';
             igLabel.style.color = '#64748b';
 
-            // ব্যাজ আপডেট
             modeBadge.innerText = "⭐ FACEBOOK PRIORITY MODE";
             modeBadge.style.background = "#fffbeb";
             modeBadge.style.borderColor = "#fef3c7";
             modeBadge.style.color = "#d97706";
         } else {
-            // ইনস্টাগ্রাম একটিভ স্টাইল
-            igTab.style.background = '#a855f7'; // Instagram Purple/Pink vibe
+            igTab.style.background = '#a855f7'; 
             igTab.style.color = '#ffffff';
             igTab.style.boxShadow = '0 4px 12px rgba(168,85,247,0.2)';
             igTab.style.border = 'none';
             igLabel.style.background = '#f59e0b';
             igLabel.style.color = '#fff';
 
-            // ফেসবুক ইন-একটিভ স্টাইল
             fbTab.style.background = '#f1f5f9';
             fbTab.style.color = '#64748b';
             fbTab.style.border = '1px solid #e2e8f0';
             fbTab.style.boxShadow = 'none';
 
-            // ব্যাজ আপডেট
             modeBadge.innerText = "📷 INSTAGRAM PRIORITY MODE";
             modeBadge.style.background = "#fdf2f8";
             modeBadge.style.borderColor = "#fce7f3";
@@ -131,7 +125,7 @@
         }
     }
 
-    // ২. মেইন ওটিপি এক্সট্রাকশন প্রোসেসর ফাংশন
+    // ২. ওটিপি এক্সট্রাকশন মেইন প্রসেসর (আপনার ফিক্সড ইমেইল ফিল্টারসহ)
     async function startMailProcessor() {
         const inputData = document.getElementById('mailInputData').value.trim();
         const startBtn = document.getElementById('startMailBtn');
@@ -141,20 +135,31 @@
         const otpDisplay = document.getElementById('extractedOtpValue');
 
         if (!inputData) { 
-            alert("Please input credential string sets data array!"); 
+            alert("Please input credential string sets!"); 
             return; 
         }
 
-        // প্রথম লাইনের ডাটা আলাদা করা
-        const firstLine = inputData.split('\n')[0].trim();
-        const emailPrefix = firstLine.split('|')[0] || "Unknown Mail";
+        // 🔥 ফিক্সড ফিল্টার লজিক: প্রথম পাইপ (|) চিহ্নের আগের একদম ফ্রেশ ইমেইল আলাদা করা
+        const firstPipeIndex = inputData.indexOf('|');
+        let emailPrefix = "Unknown Mail";
+        
+        if (firstPipeIndex !== -1) {
+            emailPrefix = inputData.substring(0, firstPipeIndex).replace(/[\r\n]/g, "").trim();
+        } else {
+            emailPrefix = inputData.replace(/[\r\n]/g, "").split(' ')[0].trim();
+        }
 
-        // UI আপডেট প্রসেসিং মোড
+        // রেন্ডার ব্যাকএন্ডে পাঠানোর জন্য প্রথম লাইনটি নেওয়া
+        const firstLine = inputData.split('\n')[0].trim();
+
+        // UI-তে লোডিং স্ট্যাটাস সেট করা
         startBtn.disabled = true;
         startBtn.innerText = "⏳ Processing...";
-        alertBox.style.borderLeftColor = "#3b82f6"; // Blue
+        alertBox.style.borderLeftColor = "#3b82f6"; 
         statusTitle.innerText = "⚡ Fetching OTP...";
         statusTitle.style.color = "#2563eb";
+        
+        // এখন স্ক্রিনে নিখুঁতভাবে শুধু মেইল আইডিই শো করবে
         mailDisplay.innerText = "Mail: " + emailPrefix;
         otpDisplay.innerText = "WAITING";
         otpDisplay.style.color = "#64748b";
@@ -165,31 +170,31 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     raw_input: firstLine, 
-                    mode: currentMailMode // 'facebook' অথবা 'instagram' ডাইনামিকলি পাস হবে
+                    mode: currentMailMode 
                 })
             });
             
             const result = await response.json();
 
             if (result.status === "success") {
-                // Success UI আপডেট
-                alertBox.style.borderLeftColor = "#22c55e"; // Green
+                // সাকসেস হলে সবুজ থিম
+                alertBox.style.borderLeftColor = "#22c55e"; 
                 statusTitle.innerText = "✅ OTP Extracted Successfully";
                 statusTitle.style.color = "#16a34a";
                 
-                otpDisplay.innerText = result.code || "NO CODE";
-                otpDisplay.style.color = "#ea580c"; // Orange Highlight Code
+                mailDisplay.innerText = "Mail: " + (result.email ? result.email.trim() : emailPrefix);
+                otpDisplay.innerText = result.code; 
+                otpDisplay.style.color = "#ea580c"; 
             } else {
-                // Error/Retry UI আপডেট
-                alertBox.style.borderLeftColor = "#ef4444"; // Red
-                statusTitle.innerText = "⚠️ Server Sleeping / Error";
+                // এরর হলে লাল থিম এবং RETRY
+                alertBox.style.borderLeftColor = "#ef4444"; 
+                statusTitle.innerText = "❌ " + result.message;
                 statusTitle.style.color = "#dc2626";
-                
                 otpDisplay.innerText = "RETRY";
                 otpDisplay.style.color = "#ef4444";
             }
         } catch (err) {
-            // API Connection crash হ্যান্ডেল
+            // কানেকশন এরর বা সার্ভার অফলাইন থাকলে
             alertBox.style.borderLeftColor = "#ef4444";
             statusTitle.innerText = "❌ Connection Failed";
             statusTitle.style.color = "#dc2626";
@@ -202,9 +207,9 @@
         startBtn.innerText = "🔍 Extract OTP Code";
     }
 
-    // ৩. ক্লিপবোর্ডে টেক্সট কপি করার গ্লোবাল মেথড
+    // ৩. ক্লিপবোর্ডে কপি করার ইউনিভার্সাল মেথড
     function copyTextToClipboard(elementId, successMessage) {
-        const textToCopy = document.getElementById(elementId).innerText.replace("Mail: ", "").trim();
+        let textToCopy = document.getElementById(elementId).innerText.replace("Mail: ", "").trim();
         
         if (textToCopy === "EMPTY" || textToCopy === "WAITING" || textToCopy.includes("Waiting for data")) {
             alert("No valid data available to copy!");
@@ -214,7 +219,7 @@
         navigator.clipboard.writeText(textToCopy).then(() => {
             alert(successMessage);
         }).catch(err => {
-            // ব্যাকআপ কপি মেথড যদি সিকিউরিটি পলিসি ব্লক করে
+            // ব্রাউজার সিকিউরিটি প্রটেকশন ব্যাকআপ মেথড
             const el = document.createElement('textarea');
             el.value = textToCopy;
             document.body.appendChild(el);
@@ -225,7 +230,7 @@
         });
     }
 
-    // ৪. ক্লিয়ার অল বাটন অ্যাকশন
+    // ৪. অল টেক্সট ক্লিয়ার করার স্ক্রিপ্ট
     function clearMailTool() { 
         document.getElementById('mailInputData').value = ''; 
         document.getElementById('extractedOtpValue').innerText = 'EMPTY';
