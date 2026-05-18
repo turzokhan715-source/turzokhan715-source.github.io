@@ -13,14 +13,12 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def extract_fb_code_via_api(email, refresh_token, client_id):
     token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
 
-    # মোবাইল অ্যাপের মতো নিখুঁত হেডার যাতে মাইক্রোসফট ব্লক না করে
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
         "Accept": "application/json"
     }
 
-    # ব্যাকআপ এবং মেইন সব ধরনের স্কোপ একসাথে লিস্ট করা হলো
     payload = {
         "client_id": client_id,
         "grant_type": "refresh_token",
@@ -32,12 +30,12 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         # ১ম চেষ্টা: মডার্ন গ্রাফ এপিআই স্কোপ
         res = requests.post(token_url, headers=headers, data=payload, timeout=15)
 
-        # ২য় চেষ্টা: যদি প্রথমবার রিজেক্ট হয়, তবে ডাইরেক্ট ওডব্লিউএ (OWA) স্কোপ ট্রাই করবে
+        # ২য় চেষ্টা: ওডব্লিউএ (OWA) স্কোপ
         if res.status_code != 200:
             payload["scope"] = "https://outlook.office.com/IMAP.AccessAsUser.All offline_access"
             res = requests.post(token_url, headers=headers, data=payload, timeout=15)
 
-        # ৩য় চেষ্টা: কোনো স্কোপ ছাড়া একদম বেসিক এক্সচেঞ্জ
+        # ৩য় চেষ্টা: বেসিক এক্সচেঞ্জ
         if res.status_code != 200:
             payload.pop("scope", None)
             res = requests.post(token_url, headers=headers, data=payload, timeout=15)
@@ -60,7 +58,6 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
 
         msg_res = requests.get(messages_url, headers=api_headers, timeout=15)
 
-        # গ্রাফ এপিআই ফেইল করলে ওডব্লিউএ আউটলুক এপিআই কল করবে
         if msg_res.status_code != 200:
             messages_url = "https://outlook.office.com/api/v2.0/me/messages?$search=\"Facebook\"&$top=1"
             msg_res = requests.get(messages_url, headers=api_headers, timeout=15)
@@ -77,7 +74,6 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         subject = latest_message.get("subject", "") or latest_message.get("Subject", "")
 
         combined_text = f"{subject} {body_content}"
-        # বডি থেকে ফেসবুক সিকিউরিটি কোড (৫ বা ৬ ডিজিট) রিড করা
         code_match = re.search(r'\b(\d{5,6})\b', combined_text)
 
         if code_match:
@@ -89,14 +85,14 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         return f"System Connection Error: {str(e)}"
 
 
-# 🔍 যেকোনো পজিশন থেকে ফ্রেশ ইমেইল এড্রেস ছেঁকে বের করার জন্য রেজেক্স ফাংশন
+# 🔍 ইমেইল ছেঁকে বের করার ফাংশন
 def extract_email_from_string(text):
     email_regex = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
     match = re.search(email_regex, text)
     return match.group(0).strip() if match else None
 
 
-# 🔮 ULTRA-PREMIUM CYBERPUNK INTERFACE (HTML/Tailwind/JavaScript UI)
+# 🔮 ULTRA-PREMIUM INTERFACE (HTML/Tailwind/JavaScript UI)
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
@@ -109,9 +105,9 @@ HTML_TEMPLATE = """
 </head>
 <body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col justify-center items-center p-4 font-sans selection:bg-blue-500 selection:text-white">
 
-    <div class="w-full max-w-md bg-gradient-to-b from-[#111827] to-[#1f2937] border border-white/5 rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_40px_rgba(59,130,246,0.1)] p-6 relative overflow-hidden box-sizing-border">
+    <div class="w-full max-w-md bg-gradient-to-b from-[#111827] to-[#1f2937] border border-white/5 rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_40px_rgba(59,130,246,0.1)] p-6 relative overflow-hidden">
         
-        <div class="absolute -top-[50px] left-1/2 -translate-x-1/2 w-[180px] height-[180px] bg-gradient-to-b from-blue-500/10 to-transparent rounded-full pointer-events-none"></div>
+        <div class="absolute -top-[50px] left-1/2 -translate-x-1/2 w-[180px] h-[180px] bg-gradient-to-b from-blue-500/10 to-transparent rounded-full pointer-events-none"></div>
 
         <div class="text-center mb-6 relative z-10">
             <div class="text-4xl mb-2 drop-shadow-[0_0_12px_rgba(147,51,234,0.6)]">🔮</div>
@@ -125,7 +121,7 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <div class="grid grid-template-columns grid-cols-2 gap-3 mb-4">
+        <div class="grid grid-cols-2 gap-3 mb-4">
             <button id="tab-fb" onclick="setMailMode('facebook')" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-xl font-bold text-xs cursor-pointer shadow-[0_4px_15px_rgba(37,99,235,0.25)] transition duration-200 focus:outline-none">
                 Facebook <span class="bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded ml-1 font-black">1st</span>
             </button>
@@ -143,7 +139,7 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <div class="border-l-3 border-blue-500 pl-1 mb-6">
+        <div class="border-l-2 border-blue-500 pl-1 mb-6">
             <div class="text-[11px] font-bold text-gray-400 mb-2 pl-1 tracking-wider uppercase">📋 Paste your account data line:</div>
             <textarea id="mailInputData" oninput="liveUpdateEmailDisplay()" placeholder="এখানে ডাটা পেস্ট করুন... মেইল সাথে সাথে শো করবে" class="w-full h-24 bg-[#111827] border border-white/5 rounded-xl p-3 text-xs font-mono text-blue-400 focus:outline-none focus:border-blue-500 transition duration-200 resize-none shadow-inner leading-relaxed"></textarea>
         </div>
@@ -182,7 +178,6 @@ HTML_TEMPLATE = """
     <script>
         let currentMailMode = 'facebook';
 
-        // 🎯 বক্সে পেস্ট করার সাথে সাথে ইনস্ট্যান্টলি ইমেইল রিড করার ফাংশন
         function liveUpdateEmailDisplay() {
             const inputData = document.getElementById('mailInputData').value.trim();
             const mailDisplay = document.getElementById('currentProcessingMail');
@@ -198,7 +193,7 @@ HTML_TEMPLATE = """
             if (detectedEmail) {
                 mailDisplay.innerText = "Mail: " + detectedEmail;
             } else {
-                mailDisplay.innerText = "Mail: No Email Detected Yet";
+                mailDisplay.innerText = "Mail: No Email Detected";
             }
         }
 
@@ -245,7 +240,6 @@ HTML_TEMPLATE = """
 
             const firstLine = inputData.split('\\n')[0].trim();
             const detectedEmail = extractEmailFromString(firstLine);
-            const displayMail = detectedEmail ? detectedEmail : "No Email Detected";
 
             startBtn.disabled = true;
             startBtn.innerText = "⏳ Processing...";
@@ -257,7 +251,8 @@ HTML_TEMPLATE = """
             otpDisplay.className = "text-2xl font-black font-mono text-blue-400 animate-pulse tracking-widest break-all";
 
             try {
-                const response = await fetch('/get-code', {
+                // 🛠️ ফিক্স: হার্ডকোডেড স্লাশ তুলে সরাসরি রিলেটিভ পাথ ব্যবহার করা হয়েছে
+                const response = await fetch('get-code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ raw_input: firstLine, mode: currentMailMode })
@@ -272,7 +267,7 @@ HTML_TEMPLATE = """
                     statusTitle.innerText = "✅ OTP Extracted Successfully";
                     statusTitle.style.color = "#10b981";
                     mailDisplay.innerText = "Mail: " + result.email;
-                    otpOutput.className = "text-2xl font-black font-mono text-amber-500 tracking-widest break-all";
+                    otpDisplay.className = "text-2xl font-black font-mono text-emerald-400 tracking-widest break-all";
                     otpDisplay.innerText = result.code; 
                 } else {
                     alertBox.style.borderLeftColor = "#ef4444"; 
@@ -336,23 +331,19 @@ def get_code():
         if not raw_input:
             return jsonify({'status': 'error', 'message': 'Input empty.'})
 
-        # পাইপ চিহ্নের পজিশন নির্বিশেষে ডাটা থেকে আসল ইমেইল খুঁজে নেওয়া
         detected_email = extract_email_from_string(raw_input)
         if not detected_email:
             return jsonify({'status': 'error', 'message': 'No valid email found in data.'})
 
         parts = raw_input.split('|')
         if len(parts) < 4:
-            return jsonify({'status': 'error', 'message': 'Data line missing parts (need 4 properties).'})
+            return jsonify({'status': 'error', 'message': 'Format must be email|pass|token|client_id'})
 
-        # আপনার মাইক্রোসফট এপিআই এর রিকোয়ারমেন্ট অনুযায়ী ডাটা ফিল্টারিং
-        # ফরম্যাট: email|password|refresh_token|client_id
         email = detected_email
         password = parts[1].strip()
         refresh_token = parts[2].strip()
         client_id = parts[3].strip()
 
-        # ওটিপি রিকোয়েস্ট ফাংশন কল
         fb_code = extract_fb_code_via_api(email, refresh_token, client_id)
 
         if fb_code.isdigit():
@@ -373,4 +364,4 @@ def get_code():
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port)
