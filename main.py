@@ -4,12 +4,12 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-# Complete dynamic cross-origin rule mapping
+# গ্লোবাল CORS অন করা হলো এবং সব রিকোয়েস্ট ওপেন করা হলো
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 @app.route('/get-code', methods=['POST', 'OPTIONS'])
 def get_code():
-    # Preflight routing configuration block
+    # 🌟 ব্রাউজারের প্রি-ফ্লাইট (OPTIONS) চেক ম্যানুয়ালি হ্যান্ডেল করা হলো (CORS Fix)
     if request.method == 'OPTIONS':
         response = jsonify({'status': 'CORS_ok'})
         response.headers.add("Access-Control-Allow-Origin", "*")
@@ -24,27 +24,32 @@ def get_code():
 
         raw_input = data.get("raw_input", "").strip()
         if not raw_input:
-            return jsonify({"status": "error", "message": "The account credential field cannot be blank."}), 400
+            return jsonify({"status": "error", "message": "Input field cannot be blank."}), 400
 
-        # Structural array string breakdown
+        # পাইপ (|) সিম্বল দিয়ে ডেটা আলাদা করা
         parts = raw_input.split('|')
         email = parts[0].strip() if len(parts) > 0 else ""
         password = parts[1].strip() if len(parts) > 1 else ""
         refresh_token = parts[2].strip() if len(parts) > 2 else ""
 
         # ----------------------------------------------------
-        # 🛠️ APNAR API CALL / IMAP CODE EKHANE INTEGRATE KORUN
+        # 🛠️ আপনার আসল ইমেইল ও ওটিপি বের করার কোডটি এখানে বসবে
         # ----------------------------------------------------
-        extracted_otp_code = "482015"  # Actual extracted code value assignment variable
+        extracted_otp_code = "482015"  # উদাহরণ হিসেবে ডামি কোড পাঠানো হলো
 
-        return jsonify({
+        # রেসপন্সের সাথেও CORS হেডার যুক্ত করা হলো নিশ্চিত করার জন্য
+        response = jsonify({
             "status": "success",
             "verification_code": extracted_otp_code,
             "email": email
-        }), 200
+        })
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response, 200
 
     except Exception as e:
-        return jsonify({"status": "error", "message": f"Server process fault: {str(e)}"}), 500
+        response = jsonify({"status": "error", "message": f"Server error: {str(e)}"})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response, 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
