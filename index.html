@@ -1,87 +1,4 @@
-// mail-otp-extractor.js - Exact Design Match
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-const OUTLOOK_API = 'https://graph.microsoft.com/v1.0/me/messages';
-
-function extractOTP(text) {
-    if (!text) return null;
-    const cleanText = text.replace(/<[^>]*>?/gm, ' ');
-    const patterns = [
-        /(\d{5,8})\s+is\s+your/i,
-        /code[\s:is]+(\d{5,8})/i,
-        /\b(\d{5,8})\b/g
-    ];
-    
-    for (const pattern of patterns) {
-        const match = cleanText.match(pattern);
-        if (match) return Array.isArray(match) ? match[match.length - 1] : match[1];
-    }
-    return null;
-}
-
-app.post('/api/get-code', async (req, res) => {
-    try {
-        const { email, password, token, clientId } = req.body;
-        
-        if (!token) {
-            return res.json({ success: false, error: 'Token is required!' });
-        }
-        
-        const response = await axios.get(OUTLOOK_API, {
-            headers: { 'Authorization': `Bearer ${token}` },
-            params: {
-                '$top': 15,
-                '$orderby': 'receivedDateTime DESC',
-                '$select': 'subject,bodyPreview,body,from'
-            }
-        });
-        
-        const messages = response.data.value || [];
-        
-        if (messages.length === 0) {
-            return res.json({ success: false, error: 'No emails found' });
-        }
-        
-        // Find verification email
-        const keywords = ['verification', 'code', 'confirm', 'facebook', 'instagram'];
-        let targetEmail = messages.find(m => {
-            const subject = (m.subject || '').toLowerCase();
-            const from = (m.from?.emailAddress?.address || '').toLowerCase();
-            return keywords.some(k => subject.includes(k) || from.includes(k));
-        });
-        
-        if (!targetEmail) targetEmail = messages[0];
-        
-        const fullText = `${targetEmail.subject} ${targetEmail.bodyPreview} ${targetEmail.body?.content || ''}`;
-        const code = extractOTP(fullText);
-        
-        if (code) {
-            return res.json({
-                success: true,
-                code: code,
-                email: email,
-                from: targetEmail.from?.emailAddress?.address
-            });
-        } else {
-            return res.json({ success: false, error: 'No verification code found' });
-        }
-        
-    } catch (error) {
-        return res.json({
-            success: false,
-            error: error.response?.data?.error?.message || 'Invalid token or network error'
-        });
-    }
-});
-
-app.get('/', (req, res) => {
-    res.send(`<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -99,6 +16,7 @@ app.get('/', (req, res) => {
             background: 
 ;
             padding: 40px 20px;
+            min-height: 100vh;
         }
         
         .container {
@@ -193,6 +111,7 @@ app.get('/', (req, res) => {
             border-radius: 8px;
             border: 1px solid 
 ;
+            display: none;
         }
         
         .email-label {
@@ -423,6 +342,7 @@ app.get('/', (req, res) => {
 </head>
 <body>
     <div class="container">
+        <!-- Main Input Card -->
         <div class="card">
             <div class="header">
                 <span class="header-icon">📧</span>
@@ -444,7 +364,7 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
-            <div class="email-display" id="emailDisplay" style="display: none;">
+            <div class="email-display" id="emailDisplay">
                 <div class="email-label">Extracted Email:</div>
                 <div class="email-value">
                     <span class="email-text" id="extractedEmail">-</span>
@@ -457,6 +377,7 @@ app.get('/', (req, res) => {
             </button>
         </div>
 
+        <!-- Result Card -->
         <div class="card result-card" id="resultCard">
             <div class="result-header" id="resultHeader">
                 <span class="result-icon" id="resultIcon">✅</span>
@@ -470,12 +391,13 @@ app.get('/', (req, res) => {
             <div class="code-box" id="codeBox">
                 <div class="code-label">Verification Code:</div>
                 <div class="code-display">
-                    <div class="code-value" id="codeValue">------</div>
+                    <div class="code-value" id="codeValue">090841</div>
                     <button class="btn-copy-large" onclick="copyCode()">📋 Copy Code</button>
                 </div>
             </div>
         </div>
 
+        <!-- How to Use Card -->
         <div class="card">
             <div class="how-to-use">
                 <div class="how-to-title">
@@ -497,6 +419,12 @@ app.get('/', (req, res) => {
 
     <script>
         let extractedCode = '';
+
+        // Show result for demo
+        window.addEventListener('load', () => {
+            // Uncomment to show demo result
+            // document.getElementById('resultCard').style.display = 'block';
+        });
 
         async function getVerificationCode() {
             const input = document.getElementById('accountInput').value.trim();
@@ -542,7 +470,7 @@ app.get('/', (req, res) => {
                     resultHeader.classList.remove('error');
                     document.getElementById('resultIcon').textContent = '✅';
                     document.getElementById('resultTitle').textContent = 'Email Retrieved Successfully';
-                    document.getElementById('resultDetail').textContent = \`For: \${data.email}\`;
+                    document.getElementById('resultDetail').textContent = `For: ${data.email}`;
                     document.getElementById('codeValue').textContent = data.code;
                     codeBox.style.display = 'block';
                     
@@ -595,6 +523,4 @@ app.get('/', (req, res) => {
         }
     </script>
 </body>
-</html>`);
-});
-
+</html>
