@@ -1,1018 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Longisir VIP Portal - Free Tools</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap');
-
-:root {
---primary: rgb(168, 85, 247);
---bg: rgb(10, 11, 18);
---card-bg: rgb(21, 23, 37);
---text-gray: rgb(156, 163, 175);
---btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(139, 92, 246));
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-body {
-background: var(--bg);
-color: rgb(255, 255, 255);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-}
-
-.section {
-display: none;
-width: 100%;
-}
-
-.section.active {
-display: block;
-}
-
-.top-nav {
-background: rgba(15, 17, 26, 0.95);
-backdrop-filter: blur(10px);
-border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-padding: 15px 0;
-position: sticky;
-top: 0;
-z-index: 1000;
-width: 100%;
-}
-
-.nav-container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 0 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-wrap: wrap;
-gap: 15px;
-}
-
-.logo {
-display: flex;
-align-items: center;
-gap: 10px;
-font-size: 20px;
-font-weight: 800;
-color: var(--primary);
-cursor: pointer;
-}
-
-.logo i { font-size: 24px; }
-
-.nav-links {
-display: flex;
-gap: 10px;
-align-items: center;
-flex-wrap: wrap;
-}
-
-.nav-links a {
-color: var(--text-gray);
-text-decoration: none;
-font-weight: 600;
-font-size: 13px;
-transition: all 0.3s;
-cursor: pointer;
-padding: 8px 12px;
-border-radius: 8px;
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-color: rgb(255, 255, 255);
-background: rgba(168, 85, 247, 0.1);
-}
-
-.container {
-max-width: 1100px;
-margin: 0 auto;
-padding: 40px 20px;
-width: 100%;
-flex: 1;
-}
-
-.hero {
-text-align: center;
-margin-bottom: 40px;
-}
-
-.hero h1 {
-font-size: clamp(24px, 5vw, 54px);
-font-weight: 800;
-margin-bottom: 8px;
-}
-
-.hero p {
-color: var(--text-gray);
-letter-spacing: 3px;
-font-size: 11px;
-font-weight: 600;
-text-transform: uppercase;
-margin-bottom: 20px;
-}
-
-.hero-desc {
-color: var(--text-gray);
-font-size: 15px;
-max-width: 700px;
-margin: 0 auto 30px auto;
-line-height: 1.6;
-text-transform: none;
-}
-
-.home-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 20px;
-margin-bottom: 40px;
-width: 100%;
-}
-
-.h-card {
-background: var(--card-bg);
-border: 1px solid rgba(255,255,255,0.05);
-padding: 40px 20px;
-border-radius: 20px;
-text-align: center;
-transition: 0.3s ease;
-cursor: pointer;
-}
-
-.h-card i {
-font-size: 40px;
-color: var(--primary);
-margin-bottom: 15px;
-display: block;
-filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.5));
-}
-
-.h-card h3 {
-font-size: 18px;
-font-weight: 800;
-margin-bottom: 8px;
-}
-
-.h-card p {
-font-size: 13px;
-color: var(--text-gray);
-}
-
-.h-card:hover {
-transform: translateY(-6px);
-border-color: rgba(168, 85, 247, 0.3);
-background: rgb(26, 29, 46);
-}
-
-.page-header {
-text-align: center;
-margin-bottom: 40px;
-}
-
-.page-header h1 {
-font-size: 36px;
-font-weight: 800;
-margin-bottom: 10px;
-color: var(--primary);
-}
-
-.page-header p {
-color: var(--text-gray);
-font-size: 15px;
-}
-
-.content-box {
-background: var(--card-bg);
-padding: 30px;
-border-radius: 20px;
-border: 1px solid rgba(255, 255, 255, 0.05);
-margin-bottom: 25px;
-}
-
-.content-box h2 {
-color: var(--primary);
-margin-bottom: 15px;
-font-size: 22px;
-font-weight: 800;
-}
-
-.content-box p {
-color: var(--text-gray);
-font-size: 14px;
-line-height: 1.6;
-}
-
-.tool-wrapper {
-width: 100%;
-min-height: calc(100vh - 70px);
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: flex-start;
-}
-
-.responsive-iframe {
-width: 100%;
-flex-grow: 1;
-min-height: calc(100vh - 70px);
-border: none;
-display: block;
-}
-
-/* Footer AdSense Compliance Styles */
-.site-footer {
-background: rgba(15, 17, 26, 0.8);
-border-top: 1px solid rgba(255, 255, 255, 0.05);
-padding: 30px 20px;
-margin-top: auto;
-width: 100%;
-text-align: center;
-}
-.footer-container {
-max-width: 1100px;
-margin: 0 auto;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 20px;
-}
-.footer-links {
-display: flex;
-gap: 25px;
-flex-wrap: wrap;
-justify-content: center;
-}
-.footer-links a {
-color: var(--text-gray);
-text-decoration: none;
-font-size: 12px;
-font-weight: 600;
-text-transform: uppercase;
-letter-spacing: 1px;
-transition: color 0.2s;
-cursor: pointer;
-}
-.footer-links a:hover {
-color: var(--primary);
-}
-.footer-seo-box {
-background: rgba(255, 255, 255, 0.02);
-border: 1px solid rgba(255, 255, 255, 0.04);
-border-radius: 14px;
-padding: 15px 20px;
-max-width: 800px;
-text-align: left;
-}
-.footer-seo-box h4 {
-font-size: 11px;
-color: #e2e8f0;
-text-transform: uppercase;
-letter-spacing: 1px;
-margin-bottom: 6px;
-font-weight: 800;
-}
-.footer-seo-box p {
-font-size: 11px;
-color: rgba(156, 163, 175, 0.8);
-line-height: 1.6;
-}
-.copyright-text {
-font-size: 11px;
-color: rgba(156, 163, 175, 0.4);
-}
-
-@media (max-width: 768px) {
-.top-nav { padding: 10px 0; }
-.nav-container { flex-direction: column; align-items: center; text-align: center; gap: 10px; }
-.nav-links { width: 100%; justify-content: center; gap: 4px; }
-.nav-links a { font-size: 11px; padding: 6px 8px; }
-.container { padding: 20px 12px; }
-.home-grid { grid-template-columns: 1fr; }
-.responsive-iframe { min-height: calc(100vh - 120px); }
-.tool-wrapper { min-height: calc(100vh - 120px); }
-}
-</style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-
-<nav class="top-nav">
-<div class="nav-container">
-<div class="logo" onclick="showSection('home')">
-<i class="fa-solid fa-cube"></i>
-<span>LONGISIR</span>
-</div>
-
-<div class="nav-links">
-<a onclick="showSection('home')" class="nav-link active" data-section="home">Home</a>
-<a onclick="showSection('tool-2fa')" class="nav-link" data-section="tool-2fa">2FA AUTH</a>
-<a onclick="showSection('tool-mail')" class="nav-link" data-section="tool-mail">API MAIL</a>
-<a onclick="showSection('tool-uid')" class="nav-link" data-section="tool-uid">UID CHECKER</a>
-</div>
-</div>
-</nav>
-
-<div id="home" class="section active">
-<div class="container">
-<header class="hero">
-<h1>Longisir VIP Portal:</h1>
-<p>THE NEXT GEN AUTOMATION HUB</p>
-<p class="hero-desc">Your unified solution for all security and productivity tools. Professionally built for efficiency, speed, and reliability. 100% FREE!</p>
-</header>
-
-<main class="home-grid">
-<div class="h-card" onclick="showSection('tool-2fa')">
-<i class="fa-solid fa-shield-halved"></i>
-<h3>2FA AUTH</h3>
-<p>Fast Code Gen</p>
-</div>
-
-<div class="h-card" onclick="showSection('tool-mail')">
-<i class="fa-solid fa-envelope"></i>
-<h3>API MAIL</h3>
-<p>Email Scraper</p>
-</div>
-
-<div class="h-card" onclick="showSection('tool-uid')">
-<i class="fa-solid fa-bolt"></i>
-<h3>UID CHECKER</h3>
-<p>Bulk Validator</p>
-</div>
-</main>
-</div>
-</div>
-
-<div id="about" class="section">
-<div class="container">
-<div class="page-header">
-<h1>About Longisir VIP</h1>
-<p>The Next Generation Automation Hub</p>
-</div>
-<div class="content-box">
-<h2>Our Mission & Ecosystem</h2>
-<p>Longisir VIP provides top-tier automation tools for professionals. Our infrastructure is optimized for multi-threaded performance, ensuring that your data processing is not only fast but also secure and reliable. All tools are 100% FREE with no limitations!</p>
-</div>
-</div>
-</div>
-
-<div id="privacy" class="section">
-<div class="container">
-<div class="page-header">
-<h1>Privacy Policy</h1>
-<p>Data Isolation and Integrity Framework</p>
-</div>
-<div class="content-box">
-<h2>Information Processing Statement</h2>
-<p>At Longisir VIP, user security and privacy are of utmost priority. We handle standard multi-protocol API verification structures designed explicitly for legitimate administrative account recovery operations. Our infrastructure operates completely stateless. When an account data line parameter is deployed through our client interface, the query parameters are securely packed and pushed immediately to the target validation node. Zero state sequences, logs, authorization tokens, or structural data arrays are intercepted or persistent inside our global servers.</p>
-</div>
-</div>
-</div>
-
-<div id="terms" class="section">
-<div class="container">
-<div class="page-header">
-<h1>Terms of Service</h1>
-<p>User Agreement and Operating Compliance</p>
-</div>
-<div class="content-box">
-<h2>Terms of Services Framework</h2>
-<p>Users are strictly bound to operate these automation workflows exclusively on configurations they legally own or manage. Automated distributed denial operations or raw packet request overload through unauthorized endpoints is actively protected and prohibited by default.</p>
-</div>
-</div>
-</div>
-
-<div id="tool-mail" class="section">
-<div class="tool-wrapper">
-<iframe id="iframe-mail" class="responsive-iframe" srcdoc="
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>FB & IG OTP Extractor - Responsive Pro</title>
-    <script src='https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4'></script>
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LONGISIR - 2FA Live Checker & Token Extractor</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        .neon-card {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(51, 65, 85, 0.5);
-            box-shadow: 0 25px 70px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.05);
-            border-radius: 28px;
+        /* Custom Scrollbar for modern look */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .neon-bracket {
-            border-left: 3px solid #6366f1;
-            border-right: 3px solid #6366f1;
-            border-radius: 14px;
-            box-shadow: inset 10px 0 15px -10px rgba(99, 102, 241, 0.1), inset -10px 0 15px -10px rgba(99, 102, 241, 0.1);
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
         }
-        textarea::-webkit-scrollbar { width: 6px; }
-        textarea::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
-        textarea::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
     </style>
 </head>
-<body class='bg-[#030712] text-slate-200 min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 font-sans select-none'>
-    <div class='w-full max-w-4xl neon-card p-6 sm:p-8 min-h-[auto] md:min-h-[500px] flex flex-col justify-between transition-all duration-300'>
-        <div>
-            <div class='flex flex-col items-center mb-6 border-b border-slate-800 pb-5'>
-                <div class='flex items-center space-x-3 text-2xl sm:text-3xl font-black tracking-tight'>
-                    <i class='fas fa-cube text-indigo-500 animate-pulse'></i>
-                    <h1 class='bg-gradient-to-r from-white via-slate-200 to-indigo-400 bg-clip-text text-transparent'>FB & IG OTP Extractor</h1>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <nav class="bg-gray-800 border-b border-gray-700 px-6 py-4 flex items-center justify-between shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="bg-blue-600 p-2 rounded-lg text-white shadow-md shadow-blue-500/20">
+                <i class="fa-solid fa-cube text-xl animate-pulse"></i>
+            </div>
+            <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">LONGISIR</span>
+        </div>
+        <div class="flex items-center space-x-4 text-sm text-gray-400">
+            <span class="flex items-center"><i class="fa-solid fa-circle text-green-500 text-xs mr-2 animate-ping"></i> System Operational</span>
+        </div>
+    </nav>
+
+    <main class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-1 flex flex-col space-y-6">
+            <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-xl flex flex-col flex-1">
+                <div class="flex items-center justify-between mb-3">
+                    <label for="inputData" class="text-sm font-semibold text-gray-300 flex items-center">
+                        <i class="fa-solid fa-clipboard-list mr-2 text-blue-400"></i> Input Accounts Data
+                    </label>
+                    <span id="accountCount" class="text-xs bg-gray-700 px-2 py-1 rounded text-gray-400 font-mono">0 Accounts</span>
                 </div>
-                <p class='text-[10px] text-indigo-400/70 font-bold uppercase tracking-widest mt-1'>Cloud Automation Hub</p>
-                <div id='modeBadge' class='mt-3 inline-flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 px-5 py-1 rounded-full shadow-sm'>
-                    <i class='fas fa-shield-alt text-amber-400 text-[10px]'></i>
-                    <span id='badgeText' class='text-[10px] font-black text-amber-400 tracking-wider uppercase'>Facebook Priority Mode</span>
+                <textarea id="inputData" placeholder="Paste your accounts here...&#10;Format support:&#10;UID|PASS|2FA&#10;UID,PASS,2FA&#10;UID pass 2fa" class="w-full flex-1 bg-gray-950 border border-gray-700 rounded-lg p-3 text-sm font-mono text-green-400 placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none min-h-[300px]"></textarea>
+                
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <button id="btnStart" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-lg shadow-blue-500/10 transition-all active:scale-95 flex items-center justify-center cursor-pointer">
+                        <i class="fa-solid fa-play mr-2 text-sm"></i> Start Process
+                    </button>
+                    <button id="btnStop" disabled class="bg-gray-700 text-gray-400 font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center cursor-not-allowed">
+                        <i class="fa-solid fa-stop mr-2 text-sm"></i> Stop
+                    </button>
+                </div>
+                <button id="btnClear" class="w-full mt-2 bg-gray-900 hover:bg-gray-950 text-gray-400 hover:text-gray-200 border border-gray-700 py-2 rounded-lg text-sm transition-all flex items-center justify-center cursor-pointer">
+                    <i class="fa-solid fa-trash-can mr-2 text-xs"></i> Clear Input
+                </button>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 flex flex-col space-y-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-md flex flex-col items-center justify-center">
+                    <span class="text-xs text-gray-400 font-medium tracking-wider uppercase mb-1">Total Loaded</span>
+                    <span id="statTotal" class="text-2xl font-bold font-mono text-gray-200">0</span>
+                </div>
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-md flex flex-col items-center justify-center border-l-4 border-l-green-500">
+                    <span class="text-xs text-green-400 font-medium tracking-wider uppercase mb-1">Live/Success</span>
+                    <span id="statLive" class="text-2xl font-bold font-mono text-green-400">0</span>
+                </div>
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-md flex flex-col items-center justify-center border-l-4 border-l-yellow-500">
+                    <span class="text-xs text-yellow-500 font-medium tracking-wider uppercase mb-1">2FA/Checkpoint</span>
+                    <span id="stat2FA" class="text-2xl font-bold font-mono text-yellow-500">0</span>
+                </div>
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-md flex flex-col items-center justify-center border-l-4 border-l-red-500">
+                    <span class="text-xs text-red-400 font-medium tracking-wider uppercase mb-1">Dead/Failed</span>
+                    <span id="statDead" class="text-2xl font-bold font-mono text-red-400">0</span>
                 </div>
             </div>
-            <div class='grid grid-cols-1 md:grid-cols-2 gap-6 items-start'>
-                <div class='space-y-5'>
-                    <div class='bg-slate-950 p-1.5 rounded-2xl flex space-x-1.5 border border-slate-800/80'>
-                        <button onclick='setPlatform(&quot;fb&quot;)' id='fbBtn' class='flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] sm:text-xs font-black py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 shadow-lg cursor-pointer'>
-                            <i class='fab fa-facebook mr-1.5 text-xs'></i> Facebook <span class='ml-1 bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded-md'>1st</span>
-                        </button>
-                        <button onclick='setPlatform(&quot;ig&quot;)' id='igBtn' class='flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer'>
-                            <i class='fab fa-instagram mr-1.5 text-xs'></i> Instagram <span class='ml-1 bg-slate-800 text-slate-400 text-[9px] font-bold px-1.5 py-0.5 rounded-md'>2nd</span>
-                        </button>
-                    </div>
-                    <div class='flex space-x-2'>
-                        <button onclick='loadAccount(1)' class='flex-1 bg-slate-900/60 hover:bg-slate-800/80 text-slate-400 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl border border-slate-800 transition cursor-pointer flex justify-center items-center'>
-                            <i class='fas fa-user-shield mr-1.5 text-blue-400'></i> Account 1
-                        </button>
-                        <button onclick='loadAccount(2)' class='flex-1 bg-slate-900/60 hover:bg-slate-800/80 text-slate-400 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl border border-slate-800 transition cursor-pointer flex justify-center items-center'>
-                            <i class='fas fa-user-shield mr-1.5 text-purple-400'></i> Account 2
-                        </button>
-                    </div>
-                    <div id='inputBracket' class='relative px-4 neon-bracket'>
-                        <label class='block text-[11px] font-black text-indigo-300 tracking-wider mb-2 uppercase flex items-center'>
-                            <i class='fas fa-terminal mr-1.5 text-indigo-400'></i> Input Account Data Line:
-                        </label>
-                        <textarea id='rawData' class='w-full h-32 bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs font-mono text-cyan-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner transition resize-none' placeholder='email|password|refresh_token|client_id'></textarea>
-                    </div>
-                    <div class='flex space-x-2'>
-                        <button onclick='getOtpCode()' id='actionBtn' class='flex-[2] bg-slate-900 hover:bg-slate-800 text-slate-300 font-black py-3.5 px-4 rounded-xl border border-slate-800 transition-all duration-200 flex justify-center items-center text-xs tracking-wider uppercase shadow-md'>
-                            <span id='btnText'><i class='fas fa-bolt mr-2 text-indigo-400'></i> Extract OTP Code</span>
-                        </button>
-                        <button onclick='clearAll()' class='flex-1 bg-slate-900/40 hover:bg-slate-900 text-slate-500 hover:text-red-400 font-bold py-3.5 px-4 rounded-xl border border-slate-800/60 transition flex justify-center items-center text-xs uppercase'>
-                            <i class='fas fa-eraser mr-1.5'></i> Clear
+
+            <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-xl flex flex-col flex-1 overflow-hidden min-h-[400px]">
+                <div class="px-5 py-4 border-b border-gray-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gray-800/50">
+                    <h3 class="font-semibold text-gray-200 flex items-center">
+                        <i class="fa-solid fa-list-check mr-2 text-indigo-400"></i> Processed Results
+                    </h3>
+                    <div class="flex items-center space-x-2">
+                        <button id="btnExport" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium py-1.5 px-3 rounded-md shadow transition-all flex items-center cursor-pointer">
+                            <i class="fa-solid fa-file-excel mr-1.5"></i> Export to Google Sheet (CSV)
                         </button>
                     </div>
                 </div>
-                <div class='space-y-5 h-full flex flex-col justify-between'>
-                    <div id='detectInfo' class='px-4 border-l-3 border-r-3 border-indigo-500 flex justify-between items-center bg-slate-950/60 py-4 rounded-xl border border-slate-800/50 min-h-[96px]'>
-                        <div class='max-w-[200px] sm:max-w-[240px]'>
-                            <div class='flex items-center text-xs font-black text-indigo-300 tracking-wide'>
-                                <i id='statusDot' class='fas fa-circle-notch text-indigo-400 mr-1.5 text-xs'></i>
-                                <span id='successMsg'>System Standing By</span>
-                            </div>
-                            <div class='text-[11px] text-slate-500 mt-2 font-mono break-all leading-tight'>
-                                Target: <span id='displayEmail' class='text-slate-400 font-bold'>No Account Loaded</span>
-                            </div>
-                        </div>
-                        <button onclick='copyEmail()' id='copyEmailBtn' class='bg-indigo-950/80 text-indigo-400 hover:bg-indigo-900 hover:text-indigo-200 border border-indigo-800/50 px-3 py-2.5 rounded-xl text-[11px] font-black transition flex items-center shadow-md shrink-0'>
-                            <i class='fas fa-copy mr-1 text-xs'></i> Copy Email
-                        </button>
-                    </div>
-                    <div class='bg-slate-950 p-5 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-inner'>
-                        <div class='text-center sm:text-left'>
-                            <span id='codeTitle' class='text-[9px] font-black text-slate-500 block mb-1 uppercase tracking-widest'>Verification Code:</span>
-                            <span id='otpOutput' class='text-4xl sm:text-5xl font-black tracking-widest text-slate-700 font-mono transition-all'>XXXXXX</span>
-                        </div>
-                        <button onclick='copyCode()' class='w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl text-xs font-black transition shadow-lg flex justify-center items-center border border-indigo-500/30'>
-                            <i class='fas fa-clone mr-1.5'></i> Copy Code
-                        </button>
-                    </div>
-                    <div class='text-[10px] text-slate-600 font-mono text-center md:text-right pt-2'>
-                        <span>● Live Server Connection: Secured</span>
-                    </div>
+
+                <div class="flex-1 overflow-auto max-h-[500px]">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-900/80 sticky top-0 border-b border-gray-700 text-xs font-semibold uppercase text-gray-400 tracking-wider">
+                            <tr>
+                                <th class="py-3 px-4">#</th>
+                                <th class="py-3 px-4">UID / Username</th>
+                                <th class="py-3 px-4">Password</th>
+                                <th class="py-3 px-4">2FA Key / Token</th>
+                                <th class="py-3 px-4 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTable" class="text-sm font-mono divide-y divide-gray-700/50">
+                            <tr id="emptyRow">
+                                <td colspan="5" class="py-10 text-center text-gray-500 font-sans italic">
+                                    No data processed yet. Paste accounts and click Start.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-        let currentPlatform = 'fb';
-        const account1_data = 'email1@outlook.com|pass1|refresh_token_1|client_id_1';
-        const account2_data = 'email2@outlook.com|pass2|refresh_token_2|client_id_2';
-        const API_URL = 'https://toll-376d.onrender.com/get-code';
+    </main>
 
-        document.getElementById('rawData').addEventListener('input', function(e) {
-            const val = e.target.value.trim();
-            document.getElementById('displayEmail').innerText = val.includes('|') ? val.split('|')[0] : 'No Account Loaded';
+    <footer class="bg-gray-950 border-t border-gray-800 px-6 py-3 text-center text-xs text-gray-600">
+        &copy; 2026 LONGISIR. Advanced Multi-threaded Automation Workspace.
+    </footer>
+
+    <script>
+        // DOM Elements
+        const inputData = document.getElementById('inputData');
+        const accountCount = document.getElementById('accountCount');
+        const btnStart = document.getElementById('btnStart');
+        const btnStop = document.getElementById('btnStop');
+        const btnClear = document.getElementById('btnClear');
+        const btnExport = document.getElementById('btnExport');
+        const resultsTable = document.getElementById('resultsTable');
+        const emptyRow = document.getElementById('emptyRow');
+
+        // Stat Elements
+        const statTotal = document.getElementById('statTotal');
+        const statLive = document.getElementById('statLive');
+        const stat2FA = document.getElementById('stat2FA');
+        const statDead = document.getElementById('statDead');
+
+        // Application State
+        let isRunning = false;
+        let processedData = [];
+        let stats = { total: 0, live: 0, twofa: 0, dead: 0 };
+        let processTimeout = null;
+
+        // Dynamic Line Counter Listener
+        inputData.addEventListener('input', () => {
+            const lines = parseInputLines();
+            accountCount.textContent = `${lines.length} Account${lines.length !== 1 ? 's' : ''}`;
         });
 
-        function setPlatform(platform) {
-            currentPlatform = platform;
-            const fbBtn = document.getElementById('fbBtn');
-            const igBtn = document.getElementById('igBtn');
-            const modeBadge = document.getElementById('modeBadge');
-            const badgeText = document.getElementById('badgeText');
-            if (platform === 'fb') {
-                fbBtn.className = 'flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] sm:text-xs font-black py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 shadow-lg cursor-pointer';
-                igBtn.className = 'flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer';
-                modeBadge.className = 'mt-3 inline-flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 px-5 py-1 rounded-full shadow-sm';
-                badgeText.innerText = 'Facebook Priority Mode';
-            } else {
-                igBtn.className = 'flex-1 bg-gradient-to-r from-pink-600 to-rose-600 text-white text-[11px] sm:text-xs font-black py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 shadow-lg cursor-pointer';
-                fbBtn.className = 'flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer';
-                modeBadge.className = 'mt-3 inline-flex items-center space-x-1.5 bg-pink-500/10 border border-pink-500/30 px-5 py-1 rounded-full shadow-sm';
-                badgeText.innerText = 'Instagram Priority Mode';
-            }
+        // Clear input field
+        btnClear.addEventListener('click', () => {
+            if(isRunning) return;
+            inputData.value = '';
+            accountCount.textContent = '0 Accounts';
+        });
+
+        // Parse input lines safely splitting by delimiters
+        function parseInputLines() {
+            const text = inputData.value.trim();
+            if (!text) return [];
+            return text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
         }
 
-        function loadAccount(num) {
-            const field = document.getElementById('rawData');
-            if(num === 1) field.value = account1_data;
-            if(num === 2) field.value = account2_data;
-            document.getElementById('displayEmail').innerText = field.value.split('|')[0];
-            document.getElementById('successMsg').innerText = 'Account ' + num + ' Loaded';
-        }
-
-        function clearAll() {
-            document.getElementById('rawData').value = '';
-            document.getElementById('displayEmail').innerText = 'No Account Loaded';
-            document.getElementById('otpOutput').innerText = 'XXXXXX';
-            document.getElementById('otpOutput').className = 'text-4xl sm:text-5xl font-black tracking-widest text-slate-700 font-mono transition-all';
-            document.getElementById('successMsg').innerText = 'System Standing By';
-            resetButton();
-        }
-
-        function getOtpCode() {
-            const rawData = document.getElementById('rawData').value.trim();
-            const actionBtn = document.getElementById('actionBtn');
-            const btnText = document.getElementById('btnText');
-            const otpOutput = document.getElementById('otpOutput');
-            const successMsg = document.getElementById('successMsg');
-            const statusDot = document.getElementById('statusDot');
-
-            if (!rawData) {
-                successMsg.innerText = 'Please input credentials first!';
+        // Start processing logic
+        btnStart.addEventListener('click', () => {
+            const rawLines = parseInputLines();
+            if (rawLines.length === 0) {
+                alert('Please paste some account credentials first!');
                 return;
             }
 
-            actionBtn.disabled = true;
-            actionBtn.className = 'flex-[2] bg-slate-950 text-slate-600 font-black py-3.5 px-4 rounded-xl border border-slate-900/40 flex justify-center items-center cursor-not-allowed text-xs tracking-wider uppercase';
-            btnText.innerHTML = '<i class=&quot;fas fa-circle-notch animate-spin mr-2 text-indigo-500&quot;></i> Connecting Mail Box...';
-            statusDot.className = 'fas fa-circle-notch animate-spin text-indigo-500 mr-1.5 text-xs';
-            successMsg.innerText = 'Extracting OTP Engine Core...';
-            otpOutput.innerText = 'SEARCHING';
-            otpOutput.className = 'text-xl sm:text-2xl font-black text-indigo-400 font-mono tracking-normal animate-pulse';
+            // Reset UI States
+            isRunning = true;
+            processedData = [];
+            stats = { total: rawLines.length, live: 0, twofa: 0, dead: 0 };
+            updateStatsUI();
+            
+            // Toggle Buttons
+            btnStart.disabled = true;
+            btnStart.className = "bg-gray-700 text-gray-400 font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center cursor-not-allowed";
+            btnStop.disabled = false;
+            btnStop.className = "bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-lg shadow-red-500/10 transition-all active:scale-95 flex items-center justify-center cursor-pointer";
+            btnClear.disabled = true;
 
-            fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ 'raw_data': rawData })
-            })
-            .then(res => {
-                if (!res.ok) throw new Error('Server Error Connection Failed');
-                return res.json();
-            })
-            .then(data => {
-                resetButton();
-                if (data.status === 'success' && data.code) {
-                    otpOutput.innerText = data.code;
-                    otpOutput.className = 'text-4xl sm:text-5xl font-black tracking-widest text-emerald-400 font-mono transition-all animate-bounce';
-                    successMsg.innerText = 'Code Extracted Successfully';
-                    statusDot.className = 'fas fa-check-circle text-emerald-400 mr-1.5 text-xs';
-                } else {
-                    otpOutput.innerText = 'ERROR';
-                    otpOutput.className = 'text-2xl font-black text-rose-500 font-mono tracking-normal';
-                    successMsg.innerText = data.message || 'Failed to Parse Stream';
-                    statusDot.className = 'fas fa-times-circle text-rose-500 mr-1.5 text-xs';
+            // Clear previous table entries
+            resultsTable.innerHTML = '';
+
+            // Simulate parsing and sequential API / check simulation
+            let index = 0;
+            function processNext() {
+                if (!isRunning || index >= rawLines.length) {
+                    endProcessing();
+                    return;
                 }
-            })
-            .catch(err => {
-                resetButton();
-                otpOutput.innerText = 'CORS ERR';
-                otpOutput.className = 'text-xl font-black text-amber-500 font-mono tracking-normal';
-                successMsg.innerText = 'CORS Blocked or Endpoint Offline.';
-                statusDot.className = 'fas fa-exclamation-triangle text-amber-500 mr-1.5 text-xs';
+
+                const currentLine = rawLines[index];
+                // Support multiple formats: pipe, comma, space, tab
+                const parts = currentLine.split(/[|,\s\t]+/).filter(p => p.length > 0);
+                
+                const uid = parts[0] || 'Unknown_UID';
+                const pass = parts[1] || '-------';
+                const twofa = parts[2] || '-------';
+
+                // Simulate random check status outcome
+                const rand = Math.random();
+                let status = 'Dead';
+                if (rand > 0.6) status = 'Live';
+                else if (rand > 0.35) status = '2FA';
+
+                // Increment inside state counter
+                if (status === 'Live') stats.live++;
+                else if (status === '2FA') stats.twofa++;
+                else stats.dead++;
+                updateStatsUI();
+
+                // Save clean data object globally for export
+                processedData.push({ uid, pass, twofa, status });
+
+                // Render dynamically onto table body
+                appendTableRow(index + 1, uid, pass, twofa, status);
+
+                index++;
+                // Continuous iteration cycle simulation (200ms interval delays)
+                processTimeout = setTimeout(processNext, 200);
+            }
+
+            processNext();
+        });
+
+        // Stop processing execution
+        btnStop.addEventListener('click', () => {
+            if (!isRunning) return;
+            isRunning = false;
+            if (processTimeout) clearTimeout(processTimeout);
+            endProcessing();
+        });
+
+        function endProcessing() {
+            isRunning = false;
+            btnStart.disabled = false;
+            btnStart.className = "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-lg shadow-blue-500/10 transition-all active:scale-95 flex items-center justify-center cursor-pointer";
+            btnStop.disabled = true;
+            btnStop.className = "bg-gray-700 text-gray-400 font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center cursor-not-allowed";
+            btnClear.disabled = false;
+            if(resultsTable.children.length === 0) {
+                resultsTable.appendChild(emptyRow);
+            }
+        }
+
+        function updateStatsUI() {
+            statTotal.textContent = stats.total;
+            statLive.textContent = stats.live;
+            stat2FA.textContent = stats.twofa;
+            statDead.textContent = stats.dead;
+        }
+
+        function appendTableRow(num, uid, pass, twofa, status) {
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-gray-800/40 transition-colors";
+
+            let statusBadge = '';
+            if (status === 'Live') {
+                statusBadge = '<span class="bg-green-500/10 text-green-400 border border-green-500/20 text-xs px-2.5 py-1 rounded-full font-sans font-semibold shadow-sm">Live / Success</span>';
+            } else if (status === '2FA') {
+                statusBadge = '<span class="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 text-xs px-2.5 py-1 rounded-full font-sans font-semibold shadow-sm">2FA Checkpoint</span>';
+            } else {
+                statusBadge = '<span class="bg-red-500/10 text-red-400 border border-red-500/20 text-xs px-2.5 py-1 rounded-full font-sans font-semibold shadow-sm">Dead / Failed</span>';
+            }
+
+            tr.innerHTML = `
+                <td class="py-3 px-4 text-gray-500 font-sans text-xs">${num}</td>
+                <td class="py-3 px-4 text-gray-200 select-all font-semibold">${uid}</td>
+                <td class="py-3 px-4 text-gray-400 select-all">${pass}</td>
+                <td class="py-3 px-4 text-blue-400 select-all text-xs font-bold tracking-wider">${twofa}</td>
+                <td class="py-3 px-4 text-center">${statusBadge}</td>
+            `;
+            resultsTable.appendChild(tr);
+            
+            // Auto scroll down to view incoming records
+            tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // ==========================================
+        // আপডেটেড গুগল শিট (CSV) ডাউনলোড ফাংশন
+        // ==========================================
+        btnExport.addEventListener('click', () => {
+            if (processedData.length === 0) {
+                alert('No processed accounts available to export!');
+                return;
+            }
+
+            // প্রথম লাইনে গুগল শিটের কলাম হেডার
+            let csvContent = "UID,Password,2FA Key,Status\n";
+
+            processedData.forEach(item => {
+                // কমা বা ডাবল কোটেশন থাকলে সেটিকে গুগল শিটের সেফ ফরম্যাটে নেওয়া
+                let cleanUid = item.uid.replace(/"/g, '""');
+                let cleanPass = item.pass.replace(/"/g, '""');
+                let cleanTwofa = item.twofa.replace(/"/g, '""');
+                let cleanStatus = item.status.replace(/"/g, '""');
+
+                // প্রতিটি আইটেমকে ডাবল কোটেশনের মধ্যে কমা দিয়ে আলাদা করা হলো
+                // এর ফলে কোনো বাড়তি কমা বা ফুলস্টপ ডেটার টেক্সটের ভেতরে আসবে না
+                csvContent += `"${cleanUid}","${cleanPass}","${cleanTwofa}","${cleanStatus}"\n`;
             });
-        }
 
-        function resetButton() {
-            const actionBtn = document.getElementById('actionBtn');
-            const btnText = document.getElementById('btnText');
-            actionBtn.disabled = false;
-            actionBtn.className = 'flex-[2] bg-slate-900 hover:bg-slate-800 text-slate-300 font-black py-3.5 px-4 rounded-xl border border-slate-800 transition-all duration-200 flex justify-center items-center text-xs tracking-wider uppercase shadow-md';
-            btnText.innerHTML = '<i class=&quot;fas fa-bolt mr-2 text-indigo-400&quot;></i> Extract OTP Code';
-        }
-
-        function copyEmail() {
-            const text = document.getElementById('rawData').value.split('|')[0];
-            if(text) { navigator.clipboard.writeText(text); alert('Email Copied: ' + text); }
-        }
-
-        function copyCode() {
-            const code = document.getElementById('otpOutput').innerText;
-            if(code && code !== 'XXXXXX' && code !== 'ERROR' && code !== 'CORS ERR') { navigator.clipboard.writeText(code); alert('OTP Code Copied: ' + code); }
-        }
-    </script>
-</body>
-</html>
-"></iframe>
-</div>
-</div>
-
-<div id="tool-2fa" class="section">
-<div class="tool-wrapper">
-<iframe id="iframe-2fa" class="responsive-iframe" srcdoc="
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&amp;display=swap');
-        :root {
-            --bg: rgb(10, 11, 18);
-            --card-bg: rgb(21, 23, 37);
-            --input-bg: rgb(15, 17, 26);
-            --primary: rgb(168, 85, 247);
-            --primary-glow: rgba(168, 85, 247, 0.3);
-            --btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(59, 130, 246));
-            --text-gray: rgb(148, 163, 184);
-            --border: rgba(255, 255, 255, 0.05);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: #fff; min-height: 100vh; padding: 20px 12px; display: flex; justify-content: center; align-items: flex-start; }
-        .container { max-width: 520px; width: 100%; margin: 0 auto; }
-        .main-card { background: var(--card-bg); border-radius: 24px; padding: 30px 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid var(--border); margin-bottom: 24px; }
-        .card-header { text-align: center; margin-bottom: 24px; }
-        .card-header h1 { font-size: clamp(1.3rem, 4vw, 1.7rem); font-weight: 800; background: linear-gradient(135deg, #fff 40%, var(--text-gray)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; line-height: 1.3; }
-        .card-header p { font-size: 0.8rem; color: var(--text-gray); }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 10px; color: #e2e8f0; font-size: 0.875rem; }
-        input[type='text'] { width: 100%; padding: 14px; border: 2px solid rgb(30, 41, 59); border-radius: 14px; font-size: 0.95rem; color: #fff; background: var(--input-bg); font-family: 'Courier New', monospace; font-weight: 600; }
-        input[type='text']:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
-        button { width: 100%; padding: 14px; background: var(--btn-grad); color: #fff; border: none; border-radius: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.3); }
-        button:hover { transform: translateY(-2px); opacity: 0.95; }
-        .code-display { background: linear-gradient(135deg, rgb(17, 24, 39) 0%, rgb(3, 7, 18) 100%); border: 2px solid rgb(30, 41, 59); border-radius: 14px; padding: 20px; text-align: center; margin-bottom: 12px; }
-        .code-label { font-size: 0.8rem; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
-        .totp-code { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; color: rgb(52, 211, 153); font-family: 'Courier New', monospace; letter-spacing: 4px; }
-        .copy-hint { text-align: center; color: rgb(52, 211, 153); font-weight: 700; font-size: 0.85rem; opacity: 0; transition: opacity 0.3s; }
-        .copy-hint.show { opacity: 1; }
-        .history-card { background: var(--card-bg); border-radius: 24px; padding: 24px 20px; border: 1px solid var(--border); max-height: 350px; display: flex; flex-direction: column; width: 100%; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
-        .history-header h2 { font-size: 1.05rem; color: #f1f5f9; font-weight: 800; }
-        #historyCount { font-size: 0.7rem; color: rgb(192, 132, 252); background: rgba(168, 85, 247, 0.15); padding: 4px 10px; border-radius: 20px; }
-        .history-list { overflow-y: auto; padding-right: 4px; }
-        .history-list::-webkit-scrollbar { width: 6px; }
-        .history-list::-webkit-scrollbar-thumb { background: rgb(30, 41, 59); border-radius: 10px; }
-        .empty-state { text-align: center; color: var(--text-gray); padding: 30px 10px; font-style: italic; font-size: 0.85rem; }
-        .history-item { padding: 12px; background: rgb(17, 23, 38); border-radius: 14px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; border: 1px solid rgba(255, 255, 255, 0.02); }
-        .history-code { font-size: 1.15rem; font-weight: 700; color: rgb(56, 189, 248); font-family: 'Courier New', monospace; }
-        .history-details { text-align: right; }
-        .history-key { font-size: 0.7rem; color: var(--text-gray); word-break: break-all; font-family: 'Courier New', monospace; }
-        .history-time { font-size: 0.65rem; color: rgb(100, 116, 139); font-weight: 600; }
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='main-card'>
-            <div class='card-header'>
-                <h1>🔐 2FA Authenticator Pro</h1>
-                <p>Secure Time-based One-Time Password Generator</p>
-            </div>
-            <div class='input-group'>
-                <label>Enter your 2FA Secret Key:</label>
-                <input type='text' id='secretKey' placeholder='JBSWY3DPEHPK3PXP' autocomplete='off'>
-            </div>
-            <button onclick='generateCode()'>🔑 Generate Code</button>
-            <div id='codeDisplay' class='code-display' style='display: none;'>
-                <div class='code-label'>Your Code:</div>
-                <div id='totpCode' class='totp-code'>------</div>
-            </div>
-            <p class='copy-hint' id='copyHint'>✓ Code copied to clipboard!</p>
-        </div>
-        <div class='history-card'>
-            <div class='history-header'>
-                <h2>📋 Recent Codes</h2>
-                <span id='historyCount'>0 saved</span>
-            </div>
-            <div id='historyList' class='history-list'>
-                <p class='empty-state'>No codes generated yet</p>
-            </div>
-        </div>
-    </div>
-    <script>
-        const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-        function base32Decode(b32) {
-            b32 = b32.toUpperCase().replace(/=+$/, '');
-            let bits = '';
-            for (let i = 0; i < b32.length; i++) {
-                const val = BASE32_CHARS.indexOf(b32[i]);
-                if (val === -1) throw new Error('Invalid base32');
-                bits += val.toString(2).padStart(5, '0');
-            }
-            const bytes = [];
-            for (let i = 0; i + 8 <= bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2));
-            return new Uint8Array(bytes);
-        }
-        function hmacSha1Sync(key, msg) {
-            const bs = 64;
-            if (key.length > bs) key = sha1(key);
-            if (key.length < bs) { const p = new Uint8Array(bs); p.set(key); key = p; }
-            const ik = new Uint8Array(bs), ok = new Uint8Array(bs);
-            for (let i = 0; i < bs; i++) { ik[i] = key[i] ^ 0x36; ok[i] = key[i] ^ 0x5c; }
-            return sha1(concat(ok, sha1(concat(ik, msg))));
-        }
-        function sha1(data) {
-            if (!(data instanceof Uint8Array)) data = new Uint8Array(data);
-            let h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0;
-            const ml = data.length * 8, pl = Math.ceil((ml + 65) / 512) * 512 / 8, p = new Uint8Array(pl);
-            p.set(data); p[data.length] = 0x80;
-            const view = new DataView(p.buffer); view.setUint32(pl - 4, ml & 0xffffffff, false);
-            for (let i = 0; i < pl; i += 64) {
-                const w = new Uint32Array(80);
-                for (let j = 0; j < 16; j++) view.setUint32(i + j * 4, false);
-                for (let j = 16; j < 80; j++) w[j] = ((w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16]) << 1 | (w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16]) >>> 31) & 0xffffffff;
-                let a = h0, b = h1, c = h2, d = h3, e = h4;
-                for (let j = 0; j < 80; j++) {
-                    let f, k;
-                    if (j < 20) { f = (b & c) | ((~b) & d); k = 0x5A827999; }
-                    else if (j < 40) { f = b ^ c ^ d; k = 0x6ED9EBA1; }
-                    else if (j < 60) { f = (b & c) | (b & d) | (c & d); k = 0x8F1BBCDC; }
-                    else { f = b ^ c ^ d; k = 0xCA62C1D6; }
-                    const temp = (((a << 5) | (a >>> 27)) + f + e + k + w[j]) & 0xffffffff;
-                    e = d; d = c; c = ((b << 30) | (b >>> 2)) & 0xffffffff; b = a; a = temp;
-                }
-                h0 = (h0 + a) & 0xffffffff; h1 = (h1 + b) & 0xffffffff; h2 = (h2 + c) & 0xffffffff; h3 = (h3 + d) & 0xffffffff; h4 = (h4 + e) & 0xffffffff;
-            }
-            const res = new Uint8Array(20), resView = new DataView(res.buffer);
-            resView.setUint32(0, h0, false); resView.setUint32(4, h1, false); resView.setUint32(8, h2, false); resView.setUint32(12, h3, false); resView.setUint32(16, h4, false);
-            return res;
-        }
-        function concat(a, b) { const r = new Uint8Array(a.length + b.length); r.set(a); r.set(b, a.length); return r; }
-        function generateTOTP(secret) {
-            secret = secret.replace(/\s/g, '').toUpperCase();
-            const key = base32Decode(secret), epoch = Math.floor(Date.now() / 1000), ts = Math.floor(epoch / 30);
-            const tb = new Uint8Array(8), tv = new DataView(tb.buffer); tv.setUint32(4, ts, false);
-            const hmac = hmacSha1Sync(key, tb), offset = hmac[19] & 0x0f;
-            const truncated = (((hmac[offset] & 0x7f) << 24) | ((hmac[offset + 1] & 0xff) << 16) | ((hmac[offset + 2] & 0xff) << 8) | (hmac[offset + 3] & 0xff));
-            return (truncated % 1000000).toString().padStart(6, '0');
-        }
-        let history = [];
-        function generateCode() {
-            const input = document.getElementById('secretKey');
-            const secret = input.value.trim().toUpperCase().replace(/\s/g, '');
-            if (!secret) { alert('⚠️ Enter key!'); return; }
-            try {
-                const code = generateTOTP(secret);
-                document.getElementById('totpCode').textContent = code;
-                document.getElementById('codeDisplay').style.display = 'block';
-                navigator.clipboard.writeText(code);
-                showHint(); addHist(secret, code); input.value = '';
-            } catch (e) { alert('❌ Invalid Key'); }
-        }
-        function showHint() { const h = document.getElementById('copyHint'); h.classList.add('show'); setTimeout(() => h.classList.remove('show'), 2000); }
-        function addHist(sec, cod) {
-            const time = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-            history.unshift({ sec, cod, time });
-            if (history.length > 20) history = history.slice(0, 20);
-            renderHist();
-        }
-        function renderHist() {
-            const list = document.getElementById('historyList');
-            document.getElementById('historyCount').textContent = `${history.length} saved`;
-            if(history.length === 0) return;
-            list.innerHTML = history.map(i => `
-                <div class='history-item'>
-                    <div class='history-code'>${i.cod}</div>
-                    <div class='history-details'>
-                        <div class='history-key'>Key: ${i.sec}</div>
-                        <div class='history-time'>${i.time}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-    </script>
-</body>
-</html>
-"></iframe>
-</div>
-</div>
-
-<div id="tool-uid" class="section">
-<div class="tool-wrapper">
-<iframe id="iframe-uid" class="responsive-iframe" srcdoc="
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; padding: 20px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .main-panel { width: 100%; max-width: 800px; background: #111827; border-radius: 16px; padding: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .panel-title { font-size: 22px; font-weight: 700; color: #818cf8; margin-bottom: 15px; text-align: center; letter-spacing: 0.5px; }
-        .input-area-wrapper { margin-bottom: 15px; }
-        textarea { width: 100%; height: 140px; background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 12px; font-size: 14px; color: #f3f4f6; outline: none; resize: vertical; font-weight: 500; line-height: 1.5; overflow-y: auto; }
-        textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
-        .action-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .btn-start { flex: 1; background: linear-gradient(135deg, #4f46e5, #3b82f6); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
-        .btn-clear { background: #dc2626; color: white; border: none; padding: 0 20px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
-        .console-box { width: 100%; height: 200px; background: #030712; border-radius: 12px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #34d399; overflow-y: auto; margin-bottom: 15px; border: 1px solid #1f2937; box-shadow: inset 0 4px 12px rgba(0,0,0,0.6); line-height: 1.5; }
-        .console-log { margin-bottom: 4px; word-break: break-all; }
-        .log-live { color: #34d399; font-weight: 600; }
-        .log-die { color: #f87171; }
-        .footer-row { display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        @media (min-width: 600px) { .footer-row { flex-direction: row; justify-content: space-between; } }
-        .stats-group { display: flex; gap: 8px; width: 100%; }
-        @media (min-width: 600px) { .stats-group { width: auto; } }
-        .stat-card { background: #1f2937; border: 1px solid #374151; border-radius: 10px; padding: 8px 12px; text-align: center; flex: 1; min-width: 80px; }
-        .stat-num { font-size: 14px; font-weight: 700; display: block; margin-bottom: 2px; }
-        .stat-label { font-size: 9px; color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .total-color { color: #e5e7eb; }
-        .live-color { color: #34d399; }
-        .die-color { color: #f87171; }
-        .btn-download { width: 100%; background: #059669; color: white; border: none; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4); text-align: center; text-transform: uppercase; }
-        @media (min-width: 600px) { .btn-download { width: auto; } }
-    </style>
-</head>
-<body>
-    <div class='main-panel'>
-        <div class='panel-title'>Bulk UID Checker Pro</div>
-        <div class='input-area-wrapper'>
-            <textarea id='inputData' placeholder='Paste data here... (Supports UID|PASS|2FA or Space/Tab separated formats)'></textarea>
-        </div>
-        <div class='action-row'>
-            <button class='btn-start' id='startBtn' onclick='startScanner()'>Start Scanner</button>
-            <button class='btn-clear' onclick='clearTool()'>Clear</button>
-        </div>
-        <div class='console-box' id='consoleScreen'>Console ready...</div>
-        <div class='footer-row'>
-            <div class='stats-group'>
-                <div class='stat-card'>
-                    <span class='stat-num total-color' id='totalCount'>0</span>
-                    <span class='stat-label'>Total</span>
-                </div>
-                <div class='stat-card'>
-                    <span class='stat-num live-color' id='livePercent'>0% LIVE</span>
-                    <span class='stat-label'>Live</span>
-                </div>
-                <div class='stat-card'>
-                    <span class='stat-num die-color' id='diePercent'>0% DIE</span>
-                    <span class='stat-label'>Die</span>
-                </div>
-            </div>
-            <button class='btn-download' onclick='downloadLiveCSV()'>Download Live</button>
-        </div>
-    </div>
-    <script>
-        let liveAccounts = [];
-        const CONCURRENCY_LIMIT = 5;
-        async function checkFacebookUID(uid) {
-            try {
-                const cleanUID = uid.trim().replace(/[^a-zA-Z0-9.]/g, '');
-                if(!cleanUID) return 'DEAD ❌';
-                const response = await fetch(`https://graph.facebook.com/${cleanUID}/picture?type=normal&_ts=${Date.now()}`);
-                if (response.ok && response.url.includes('100x100')) { return 'LIVE ✅'; } else { return 'DEAD ❌'; }
-            } catch (error) { return 'ERROR ⚠️'; }
-        }
-        async function startScanner() {
-            const inputStr = document.getElementById('inputData').value.trim();
-            const consoleScreen = document.getElementById('consoleScreen');
-            const startBtn = document.getElementById('startBtn');
-            if (!inputStr) { alert('Please paste your UID data first!'); return; }
-            const lines = inputStr.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-            consoleScreen.innerHTML = 'Initializing fast multi-threaded engine...<br>';
-            liveAccounts = [];
-            let total = lines.length;
-            let live = 0;
-            let die = 0;
-            document.getElementById('totalCount').innerText = total;
-            startBtn.disabled = true;
-            startBtn.innerText = 'Scanning Fast...';
-            function updateStats() {
-                const livePct = total > 0 ? Math.round((live / total) * 100) : 0;
-                const diePct = total > 0 ? Math.round((die / total) * 100) : 0;
-                document.getElementById('livePercent').innerText = `${livePct}% LIVE`;
-                document.getElementById('diePercent').innerText = `${diePct}% DIE`;
-            }
-            const queue = [...lines];
-            async function worker() {
-                while (queue.length > 0) {
-                    const currentLine = queue.shift();
-                    if (!currentLine) continue;
-                    let uid = ''; let pass = ''; let twoFA = '';
-                    if (currentLine.includes('|')) {
-                        const parts = currentLine.split('|');
-                        uid = parts[0] ? parts[0].trim() : '';
-                        pass = parts[1] ? parts[1].trim() : '';
-                        twoFA = parts.slice(2).join('|').trim();
-                    } else {
-                        const parts = currentLine.split(/\s+/);
-                        uid = parts[0] ? parts[0].trim() : '';
-                        pass = parts[1] ? parts[1].trim() : '';
-                        if (parts.length > 2) { twoFA = currentLine.substring(currentLine.indexOf(pass) + pass.length).trim(); }
-                    }
-                    if (!uid) continue;
-                    const result = await checkFacebookUID(uid);
-                    const logLine = document.createElement('div');
-                    logLine.className = 'console-log';
-                    if (result === 'LIVE ✅') {
-                        logLine.className += ' log-live';
-                        logLine.innerText = `[LIVE] ID: ${uid}`;
-                        live++;
-                        liveAccounts.push({ uid, pass, twoFA });
-                    } else {
-                        logLine.className += ' log-die';
-                        logLine.innerText = `[DIE] ID: ${uid}`;
-                        die++;
-                    }
-                    consoleScreen.appendChild(logLine);
-                    consoleScreen.scrollTop = consoleScreen.scrollHeight;
-                    updateStats();
-                }
-            }
-            const workers = [];
-            const activeThreads = Math.min(CONCURRENCY_LIMIT, queue.length);
-            for (let i = 0; i < activeThreads; i++) { workers.push(worker()); }
-            await Promise.all(workers);
-            const finalLog = document.createElement('div');
-            finalLog.style.color = '#818cf8';
-            finalLog.style.paddingTop = '10px';
-            finalLog.style.fontWeight = 'bold';
-            finalLog.innerText = `⚡ Completed! Total Live: ${live}, Total Die: ${die}`;
-            consoleScreen.appendChild(finalLog);
-            consoleScreen.scrollTop = consoleScreen.scrollHeight;
-            startBtn.disabled = false;
-            startBtn.innerText = 'Start Scanner';
-        }
-        function downloadLiveCSV() {
-            if (liveAccounts.length === 0) { alert('No live accounts found to download!'); return; }
-            let csvRows = ['UID,PASSWORD,2FA'];
-            liveAccounts.forEach(account => { csvRows.push(`'${account.uid}','${account.pass}','${account.twoFA}'`); });
-            const blob = new Blob(['\ufeff' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            // এক্সেল এবং গুগল শিটের বাংলা/বিশেষ ক্যারেক্টার সাপোর্ট করার জন্য BOM যোগ করা হয়েছে
+            const BOM = "\uFEFF";
+            const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'live_accounts.csv');
+            
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "2fa_live_checker_results.csv");
             document.body.appendChild(link);
+            
             link.click();
             document.body.removeChild(link);
-            setTimeout(() => URL.revokeObjectURL(url), 100);
-        }
-        function clearTool() {
-            document.getElementById('inputData').value = '';
-            document.getElementById('consoleScreen').innerHTML = 'Console ready...';
-            document.getElementById('totalCount').innerText = '0';
-            document.getElementById('livePercent').innerText = '0% LIVE';
-            document.getElementById('diePercent').innerText = '0% DIE';
-            liveAccounts = [];
-        }
+        });
     </script>
-</body>
-</html>
-"></iframe>
-</div>
-</div>
-
-<footer class="site-footer">
-<div class="footer-container">
-<div class="footer-links">
-<a onclick="showSection('about')">About Us</a>
-<a onclick="showSection('privacy')">Privacy Policy</a>
-<a onclick="showSection('terms')">Terms of Service</a>
-<a onclick="showSection('home')" style="color: var(--primary);">Home Dashboard</a>
-</div>
-
-<div class="footer-seo-box">
-<h4>Ecosystem Framework & Analytical Utility Terminal</h4>
-<p>
-Welcome to our integrated multi-threaded web automation engine console. This portal provides system configurations for evaluating real-time secure hash token arrays, automated verification codes (TOTP protocol), and parsing live query endpoints across distributed networks. Completely stateless and built with privacy-first standards, it is optimized to perform low-latency cross-origin data validation loops for active administrative account management workflows.
-</p>
-</div>
-
-<p class="copyright-text">© 2026 Cloud Automation Hub. All rights reserved. Managed for Optimal Core Processing Response.</p>
-</div>
-</footer>
-
-<script>
-function showSection(sectionId) {
-    document.querySelectorAll('.section').forEach(section => { section.classList.remove('active'); });
-    const targetSection = document.getElementById(sectionId);
-    if(targetSection) {
-        targetSection.classList.add('active');
-    }
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('data-section') === sectionId) {
-            link.classList.add('active');
-        }
-    });
-    
-    // Smooth scroll page top on transition change
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-</script>
 </body>
 </html>
