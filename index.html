@@ -325,7 +325,7 @@ color: rgba(156, 163, 175, 0.4);
 <header class="hero">
 <h1>Longisir VIP Portal:</h1>
 <p>THE NEXT GEN AUTOMATION HUB</p>
-<p class="hero-desc">Your unified solution for all security and productivity tools. Professional built for efficiency, speed, and reliability. 100% FREE!</p>
+<p class="hero-desc">Your unified solution for all security and productivity tools. Professionally built for efficiency, speed, and reliability. 100% FREE!</p>
 </header>
 
 <main class="home-grid">
@@ -501,28 +501,31 @@ color: rgba(156, 163, 175, 0.4);
         const account1_data = 'email1@outlook.com|pass1|refresh_token_1|client_id_1';
         const account2_data = 'email2@outlook.com|pass2|refresh_token_2|client_id_2';
         const API_URL = 'https://toll-376d.onrender.com/get-code';
+
         document.getElementById('rawData').addEventListener('input', function(e) {
             const val = e.target.value.trim();
             document.getElementById('displayEmail').innerText = val.includes('|') ? val.split('|')[0] : 'No Account Loaded';
         });
+
         function setPlatform(platform) {
             currentPlatform = platform;
             const fbBtn = document.getElementById('fbBtn');
             const igBtn = document.getElementById('igBtn');
             const modeBadge = document.getElementById('modeBadge');
             const badgeText = document.getElementById('badgeText');
-            if(platform === 'fb') {
+            if (platform === 'fb') {
                 fbBtn.className = 'flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] sm:text-xs font-black py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 shadow-lg cursor-pointer';
                 igBtn.className = 'flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer';
                 modeBadge.className = 'mt-3 inline-flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 px-5 py-1 rounded-full shadow-sm';
                 badgeText.innerText = 'Facebook Priority Mode';
             } else {
-                fbBtn.className = 'flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer';
                 igBtn.className = 'flex-1 bg-gradient-to-r from-pink-600 to-rose-600 text-white text-[11px] sm:text-xs font-black py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 shadow-lg cursor-pointer';
+                fbBtn.className = 'flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer';
                 modeBadge.className = 'mt-3 inline-flex items-center space-x-1.5 bg-pink-500/10 border border-pink-500/30 px-5 py-1 rounded-full shadow-sm';
                 badgeText.innerText = 'Instagram Priority Mode';
             }
         }
+
         function loadAccount(num) {
             const field = document.getElementById('rawData');
             if(num === 1) field.value = account1_data;
@@ -530,6 +533,7 @@ color: rgba(156, 163, 175, 0.4);
             document.getElementById('displayEmail').innerText = field.value.split('|')[0];
             document.getElementById('successMsg').innerText = 'Account ' + num + ' Loaded';
         }
+
         function clearAll() {
             document.getElementById('rawData').value = '';
             document.getElementById('displayEmail').innerText = 'No Account Loaded';
@@ -538,47 +542,477 @@ color: rgba(156, 163, 175, 0.4);
             document.getElementById('successMsg').innerText = 'System Standing By';
             resetButton();
         }
+
         function getOtpCode() {
             const rawData = document.getElementById('rawData').value.trim();
             const actionBtn = document.getElementById('actionBtn');
             const btnText = document.getElementById('btnText');
             const otpOutput = document.getElementById('otpOutput');
-            if(!rawData) { alert('Please insert account data line first!'); return; }
+            const successMsg = document.getElementById('successMsg');
+            const statusDot = document.getElementById('statusDot');
+
+            if (!rawData) {
+                successMsg.innerText = 'Please input credentials first!';
+                return;
+            }
+
             actionBtn.disabled = true;
-            btnText.innerHTML = '<i class=\'fas fa-circle-notch animate-spin mr-2\'></i> Connecting Node...';
-            document.getElementById('successMsg').innerText = 'Request Sent to Cloud...';
+            actionBtn.className = 'flex-[2] bg-slate-950 text-slate-600 font-black py-3.5 px-4 rounded-xl border border-slate-900/40 flex justify-center items-center cursor-not-allowed text-xs tracking-wider uppercase';
+            btnText.innerHTML = '<i class=&quot;fas fa-circle-notch animate-spin mr-2 text-indigo-500&quot;></i> Connecting Mail Box...';
+            statusDot.className = 'fas fa-circle-notch animate-spin text-indigo-500 mr-1.5 text-xs';
+            successMsg.innerText = 'Extracting OTP Engine Core...';
+            otpOutput.innerText = 'SEARCHING';
+            otpOutput.className = 'text-xl sm:text-2xl font-black text-indigo-400 font-mono tracking-normal animate-pulse';
+
             fetch(API_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: currentPlatform, text: rawData })
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ 'raw_data': rawData })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Server Error Connection Failed');
+                return res.json();
+            })
             .then(data => {
-                if(data.status === 'success' && data.code) {
+                resetButton();
+                if (data.status === 'success' && data.code) {
                     otpOutput.innerText = data.code;
-                    otpOutput.className = 'text-4xl sm:text-5xl font-black tracking-widest text-green-400 font-mono drop-shadow-[0_0_15px_rgba(74,222,128,0.3)] animate-bounce';
-                    document.getElementById('successMsg').innerText = 'Extraction Complete!';
+                    otpOutput.className = 'text-4xl sm:text-5xl font-black tracking-widest text-emerald-400 font-mono transition-all animate-bounce';
+                    successMsg.innerText = 'Code Extracted Successfully';
+                    statusDot.className = 'fas fa-check-circle text-emerald-400 mr-1.5 text-xs';
                 } else {
                     otpOutput.innerText = 'ERROR';
-                    otpOutput.className = 'text-3xl sm:text-4xl font-black tracking-wide text-rose-500 font-mono';
-                    document.getElementById('successMsg').innerText = data.message || 'OTP Missing/Expired';
+                    otpOutput.className = 'text-2xl font-black text-rose-500 font-mono tracking-normal';
+                    successMsg.innerText = data.message || 'Failed to Parse Stream';
+                    statusDot.className = 'fas fa-times-circle text-rose-500 mr-1.5 text-xs';
                 }
             })
             .catch(err => {
+                resetButton();
                 otpOutput.innerText = 'CORS ERR';
-                otpOutput.className = 'text-2xl sm:text-3xl font-black tracking-wide text-amber-500 font-mono';
-                document.getElementById('successMsg').innerText = 'Connection Protocol Terminated';
-            })
-            .finally(() => { resetButton(); });
+                otpOutput.className = 'text-xl font-black text-amber-500 font-mono tracking-normal';
+                successMsg.innerText = 'CORS Blocked or Endpoint Offline.';
+                statusDot.className = 'fas fa-exclamation-triangle text-amber-500 mr-1.5 text-xs';
+            });
         }
+
         function resetButton() {
             const actionBtn = document.getElementById('actionBtn');
             const btnText = document.getElementById('btnText');
             actionBtn.disabled = false;
-            btnText.innerHTML = '<i class=\'fas fa-bolt mr-2 text-indigo-400\'></i> Extract OTP Code';
+            actionBtn.className = 'flex-[2] bg-slate-900 hover:bg-slate-800 text-slate-300 font-black py-3.5 px-4 rounded-xl border border-slate-800 transition-all duration-200 flex justify-center items-center text-xs tracking-wider uppercase shadow-md';
+            btnText.innerHTML = '<i class=&quot;fas fa-bolt mr-2 text-indigo-400&quot;></i> Extract OTP Code';
         }
+
         function copyEmail() {
             const text = document.getElementById('rawData').value.split('|')[0];
             if(text) { navigator.clipboard.writeText(text); alert('Email Copied: ' + text); }
         }
-        function copyCode
+
+        function copyCode() {
+            const code = document.getElementById('otpOutput').innerText;
+            if(code && code !== 'XXXXXX' && code !== 'ERROR' && code !== 'CORS ERR') { navigator.clipboard.writeText(code); alert('OTP Code Copied: ' + code); }
+        }
+    </script>
+</body>
+</html>
+"></iframe>
+</div>
+</div>
+
+<div id="tool-2fa" class="section">
+<div class="tool-wrapper">
+<iframe id="iframe-2fa" class="responsive-iframe" srcdoc="
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&amp;display=swap');
+        :root {
+            --bg: rgb(10, 11, 18);
+            --card-bg: rgb(21, 23, 37);
+            --input-bg: rgb(15, 17, 26);
+            --primary: rgb(168, 85, 247);
+            --primary-glow: rgba(168, 85, 247, 0.3);
+            --btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(59, 130, 246));
+            --text-gray: rgb(148, 163, 184);
+            --border: rgba(255, 255, 255, 0.05);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: #fff; min-height: 100vh; padding: 20px 12px; display: flex; justify-content: center; align-items: flex-start; }
+        .container { max-width: 520px; width: 100%; margin: 0 auto; }
+        .main-card { background: var(--card-bg); border-radius: 24px; padding: 30px 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid var(--border); margin-bottom: 24px; }
+        .card-header { text-align: center; margin-bottom: 24px; }
+        .card-header h1 { font-size: clamp(1.3rem, 4vw, 1.7rem); font-weight: 800; background: linear-gradient(135deg, #fff 40%, var(--text-gray)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; line-height: 1.3; }
+        .card-header p { font-size: 0.8rem; color: var(--text-gray); }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 10px; color: #e2e8f0; font-size: 0.875rem; }
+        input[type='text'] { width: 100%; padding: 14px; border: 2px solid rgb(30, 41, 59); border-radius: 14px; font-size: 0.95rem; color: #fff; background: var(--input-bg); font-family: 'Courier New', monospace; font-weight: 600; }
+        input[type='text']:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+        button { width: 100%; padding: 14px; background: var(--btn-grad); color: #fff; border: none; border-radius: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.3); }
+        button:hover { transform: translateY(-2px); opacity: 0.95; }
+        .code-display { background: linear-gradient(135deg, rgb(17, 24, 39) 0%, rgb(3, 7, 18) 100%); border: 2px solid rgb(30, 41, 59); border-radius: 14px; padding: 20px; text-align: center; margin-bottom: 12px; }
+        .code-label { font-size: 0.8rem; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+        .totp-code { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; color: rgb(52, 211, 153); font-family: 'Courier New', monospace; letter-spacing: 4px; }
+        .copy-hint { text-align: center; color: rgb(52, 211, 153); font-weight: 700; font-size: 0.85rem; opacity: 0; transition: opacity 0.3s; }
+        .copy-hint.show { opacity: 1; }
+        .history-card { background: var(--card-bg); border-radius: 24px; padding: 24px 20px; border: 1px solid var(--border); max-height: 350px; display: flex; flex-direction: column; width: 100%; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .history-header h2 { font-size: 1.05rem; color: #f1f5f9; font-weight: 800; }
+        #historyCount { font-size: 0.7rem; color: rgb(192, 132, 252); background: rgba(168, 85, 247, 0.15); padding: 4px 10px; border-radius: 20px; }
+        .history-list { overflow-y: auto; padding-right: 4px; }
+        .history-list::-webkit-scrollbar { width: 6px; }
+        .history-list::-webkit-scrollbar-thumb { background: rgb(30, 41, 59); border-radius: 10px; }
+        .empty-state { text-align: center; color: var(--text-gray); padding: 30px 10px; font-style: italic; font-size: 0.85rem; }
+        .history-item { padding: 12px; background: rgb(17, 23, 38); border-radius: 14px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; border: 1px solid rgba(255, 255, 255, 0.02); }
+        .history-code { font-size: 1.15rem; font-weight: 700; color: rgb(56, 189, 248); font-family: 'Courier New', monospace; }
+        .history-details { text-align: right; }
+        .history-key { font-size: 0.7rem; color: var(--text-gray); word-break: break-all; font-family: 'Courier New', monospace; }
+        .history-time { font-size: 0.65rem; color: rgb(100, 116, 139); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='main-card'>
+            <div class='card-header'>
+                <h1>🔐 2FA Authenticator Pro</h1>
+                <p>Secure Time-based One-Time Password Generator</p>
+            </div>
+            <div class='input-group'>
+                <label>Enter your 2FA Secret Key:</label>
+                <input type='text' id='secretKey' placeholder='JBSWY3DPEHPK3PXP' autocomplete='off'>
+            </div>
+            <button onclick='generateCode()'>🔑 Generate Code</button>
+            <div id='codeDisplay' class='code-display' style='display: none;'>
+                <div class='code-label'>Your Code:</div>
+                <div id='totpCode' class='totp-code'>------</div>
+            </div>
+            <p class='copy-hint' id='copyHint'>✓ Code copied to clipboard!</p>
+        </div>
+        <div class='history-card'>
+            <div class='history-header'>
+                <h2>📋 Recent Codes</h2>
+                <span id='historyCount'>0 saved</span>
+            </div>
+            <div id='historyList' class='history-list'>
+                <p class='empty-state'>No codes generated yet</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        function base32Decode(b32) {
+            b32 = b32.toUpperCase().replace(/=+$/, '');
+            let bits = '';
+            for (let i = 0; i < b32.length; i++) {
+                const val = BASE32_CHARS.indexOf(b32[i]);
+                if (val === -1) throw new Error('Invalid base32');
+                bits += val.toString(2).padStart(5, '0');
+            }
+            const bytes = [];
+            for (let i = 0; i + 8 <= bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2));
+            return new Uint8Array(bytes);
+        }
+        function hmacSha1Sync(key, msg) {
+            const bs = 64;
+            if (key.length > bs) key = sha1(key);
+            if (key.length < bs) { const p = new Uint8Array(bs); p.set(key); key = p; }
+            const ik = new Uint8Array(bs), ok = new Uint8Array(bs);
+            for (let i = 0; i < bs; i++) { ik[i] = key[i] ^ 0x36; ok[i] = key[i] ^ 0x5c; }
+            return sha1(concat(ok, sha1(concat(ik, msg))));
+        }
+        function sha1(data) {
+            if (!(data instanceof Uint8Array)) data = new Uint8Array(data);
+            let h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0;
+            const ml = data.length * 8, pl = Math.ceil((ml + 65) / 512) * 512 / 8, p = new Uint8Array(pl);
+            p.set(data); p[data.length] = 0x80;
+            const view = new DataView(p.buffer); view.setUint32(pl - 4, ml & 0xffffffff, false);
+            for (let i = 0; i < pl; i += 64) {
+                const w = new Uint32Array(80);
+                for (let j = 0; j < 16; j++) view.setUint32(i + j * 4, false);
+                for (let j = 16; j < 80; j++) w[j] = ((w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16]) << 1 | (w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16]) >>> 31) & 0xffffffff;
+                let a = h0, b = h1, c = h2, d = h3, e = h4;
+                for (let j = 0; j < 80; j++) {
+                    let f, k;
+                    if (j < 20) { f = (b & c) | ((~b) & d); k = 0x5A827999; }
+                    else if (j < 40) { f = b ^ c ^ d; k = 0x6ED9EBA1; }
+                    else if (j < 60) { f = (b & c) | (b & d) | (c & d); k = 0x8F1BBCDC; }
+                    else { f = b ^ c ^ d; k = 0xCA62C1D6; }
+                    const temp = (((a << 5) | (a >>> 27)) + f + e + k + w[j]) & 0xffffffff;
+                    e = d; d = c; c = ((b << 30) | (b >>> 2)) & 0xffffffff; b = a; a = temp;
+                }
+                h0 = (h0 + a) & 0xffffffff; h1 = (h1 + b) & 0xffffffff; h2 = (h2 + c) & 0xffffffff; h3 = (h3 + d) & 0xffffffff; h4 = (h4 + e) & 0xffffffff;
+            }
+            const res = new Uint8Array(20), resView = new DataView(res.buffer);
+            resView.setUint32(0, h0, false); resView.setUint32(4, h1, false); resView.setUint32(8, h2, false); resView.setUint32(12, h3, false); resView.setUint32(16, h4, false);
+            return res;
+        }
+        function concat(a, b) { const r = new Uint8Array(a.length + b.length); r.set(a); r.set(b, a.length); return r; }
+        function generateTOTP(secret) {
+            secret = secret.replace(/\s/g, '').toUpperCase();
+            const key = base32Decode(secret), epoch = Math.floor(Date.now() / 1000), ts = Math.floor(epoch / 30);
+            const tb = new Uint8Array(8), tv = new DataView(tb.buffer); tv.setUint32(4, ts, false);
+            const hmac = hmacSha1Sync(key, tb), offset = hmac[19] & 0x0f;
+            const truncated = (((hmac[offset] & 0x7f) << 24) | ((hmac[offset + 1] & 0xff) << 16) | ((hmac[offset + 2] & 0xff) << 8) | (hmac[offset + 3] & 0xff));
+            return (truncated % 1000000).toString().padStart(6, '0');
+        }
+        let history = [];
+        function generateCode() {
+            const input = document.getElementById('secretKey');
+            const secret = input.value.trim().toUpperCase().replace(/\s/g, '');
+            if (!secret) { alert('⚠️ Enter key!'); return; }
+            try {
+                const code = generateTOTP(secret);
+                document.getElementById('totpCode').textContent = code;
+                document.getElementById('codeDisplay').style.display = 'block';
+                navigator.clipboard.writeText(code);
+                showHint(); addHist(secret, code); input.value = '';
+            } catch (e) { alert('❌ Invalid Key'); }
+        }
+        function showHint() { const h = document.getElementById('copyHint'); h.classList.add('show'); setTimeout(() => h.classList.remove('show'), 2000); }
+        function addHist(sec, cod) {
+            const time = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+            history.unshift({ sec, cod, time });
+            if (history.length > 20) history = history.slice(0, 20);
+            renderHist();
+        }
+        function renderHist() {
+            const list = document.getElementById('historyList');
+            document.getElementById('historyCount').textContent = `${history.length} saved`;
+            if(history.length === 0) return;
+            list.innerHTML = history.map(i => `
+                <div class='history-item'>
+                    <div class='history-code'>${i.cod}</div>
+                    <div class='history-details'>
+                        <div class='history-key'>Key: ${i.sec}</div>
+                        <div class='history-time'>${i.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
+"></iframe>
+</div>
+</div>
+
+<div id="tool-uid" class="section">
+<div class="tool-wrapper">
+<iframe id="iframe-uid" class="responsive-iframe" srcdoc="
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; padding: 20px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .main-panel { width: 100%; max-width: 800px; background: #111827; border-radius: 16px; padding: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .panel-title { font-size: 22px; font-weight: 700; color: #818cf8; margin-bottom: 15px; text-align: center; letter-spacing: 0.5px; }
+        .input-area-wrapper { margin-bottom: 15px; }
+        textarea { width: 100%; height: 140px; background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 12px; font-size: 14px; color: #f3f4f6; outline: none; resize: vertical; font-weight: 500; line-height: 1.5; overflow-y: auto; }
+        textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
+        .action-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .btn-start { flex: 1; background: linear-gradient(135deg, #4f46e5, #3b82f6); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
+        .btn-clear { background: #dc2626; color: white; border: none; padding: 0 20px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
+        .console-box { width: 100%; height: 200px; background: #030712; border-radius: 12px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #34d399; overflow-y: auto; margin-bottom: 15px; border: 1px solid #1f2937; box-shadow: inset 0 4px 12px rgba(0,0,0,0.6); line-height: 1.5; }
+        .console-log { margin-bottom: 4px; word-break: break-all; }
+        .log-live { color: #34d399; font-weight: 600; }
+        .log-die { color: #f87171; }
+        .footer-row { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        @media (min-width: 600px) { .footer-row { flex-direction: row; justify-content: space-between; } }
+        .stats-group { display: flex; gap: 8px; width: 100%; }
+        @media (min-width: 600px) { .stats-group { width: auto; } }
+        .stat-card { background: #1f2937; border: 1px solid #374151; border-radius: 10px; padding: 8px 12px; text-align: center; flex: 1; min-width: 80px; }
+        .stat-num { font-size: 14px; font-weight: 700; display: block; margin-bottom: 2px; }
+        .stat-label { font-size: 9px; color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .total-color { color: #e5e7eb; }
+        .live-color { color: #34d399; }
+        .die-color { color: #f87171; }
+        .btn-download { width: 100%; background: #059669; color: white; border: none; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4); text-align: center; text-transform: uppercase; }
+        @media (min-width: 600px) { .btn-download { width: auto; } }
+    </style>
+</head>
+<body>
+    <div class='main-panel'>
+        <div class='panel-title'>Bulk UID Checker Pro</div>
+        <div class='input-area-wrapper'>
+            <textarea id='inputData' placeholder='Paste data here... (Supports UID|PASS|2FA or Space/Tab separated formats)'></textarea>
+        </div>
+        <div class='action-row'>
+            <button class='btn-start' id='startBtn' onclick='startScanner()'>Start Scanner</button>
+            <button class='btn-clear' onclick='clearTool()'>Clear</button>
+        </div>
+        <div class='console-box' id='consoleScreen'>Console ready...</div>
+        <div class='footer-row'>
+            <div class='stats-group'>
+                <div class='stat-card'>
+                    <span class='stat-num total-color' id='totalCount'>0</span>
+                    <span class='stat-label'>Total</span>
+                </div>
+                <div class='stat-card'>
+                    <span class='stat-num live-color' id='livePercent'>0% LIVE</span>
+                    <span class='stat-label'>Live</span>
+                </div>
+                <div class='stat-card'>
+                    <span class='stat-num die-color' id='diePercent'>0% DIE</span>
+                    <span class='stat-label'>Die</span>
+                </div>
+            </div>
+            <button class='btn-download' onclick='downloadLiveCSV()'>Download Live</button>
+        </div>
+    </div>
+    <script>
+        let liveAccounts = [];
+        const CONCURRENCY_LIMIT = 5;
+        async function checkFacebookUID(uid) {
+            try {
+                const cleanUID = uid.trim().replace(/[^a-zA-Z0-9.]/g, '');
+                if(!cleanUID) return 'DEAD ❌';
+                const response = await fetch(`https://graph.facebook.com/${cleanUID}/picture?type=normal&_ts=${Date.now()}`);
+                if (response.ok && response.url.includes('100x100')) { return 'LIVE ✅'; } else { return 'DEAD ❌'; }
+            } catch (error) { return 'ERROR ⚠️'; }
+        }
+        async function startScanner() {
+            const inputStr = document.getElementById('inputData').value.trim();
+            const consoleScreen = document.getElementById('consoleScreen');
+            const startBtn = document.getElementById('startBtn');
+            if (!inputStr) { alert('Please paste your UID data first!'); return; }
+            const lines = inputStr.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            consoleScreen.innerHTML = 'Initializing fast multi-threaded engine...<br>';
+            liveAccounts = [];
+            let total = lines.length;
+            let live = 0;
+            let die = 0;
+            document.getElementById('totalCount').innerText = total;
+            startBtn.disabled = true;
+            startBtn.innerText = 'Scanning Fast...';
+            function updateStats() {
+                const livePct = total > 0 ? Math.round((live / total) * 100) : 0;
+                const diePct = total > 0 ? Math.round((die / total) * 100) : 0;
+                document.getElementById('livePercent').innerText = `${livePct}% LIVE`;
+                document.getElementById('diePercent').innerText = `${diePct}% DIE`;
+            }
+            const queue = [...lines];
+            async function worker() {
+                while (queue.length > 0) {
+                    const currentLine = queue.shift();
+                    if (!currentLine) continue;
+                    let uid = ''; let pass = ''; let twoFA = '';
+                    if (currentLine.includes('|')) {
+                        const parts = currentLine.split('|');
+                        uid = parts[0] ? parts[0].trim() : '';
+                        pass = parts[1] ? parts[1].trim() : '';
+                        twoFA = parts.slice(2).join('|').trim();
+                    } else {
+                        const parts = currentLine.split(/\s+/);
+                        uid = parts[0] ? parts[0].trim() : '';
+                        pass = parts[1] ? parts[1].trim() : '';
+                        if (parts.length > 2) { twoFA = currentLine.substring(currentLine.indexOf(pass) + pass.length).trim(); }
+                    }
+                    if (!uid) continue;
+                    const result = await checkFacebookUID(uid);
+                    const logLine = document.createElement('div');
+                    logLine.className = 'console-log';
+                    if (result === 'LIVE ✅') {
+                        logLine.className += ' log-live';
+                        logLine.innerText = `[LIVE] ID: ${uid}`;
+                        live++;
+                        liveAccounts.push({ uid, pass, twoFA });
+                    } else {
+                        logLine.className += ' log-die';
+                        logLine.innerText = `[DIE] ID: ${uid}`;
+                        die++;
+                    }
+                    consoleScreen.appendChild(logLine);
+                    consoleScreen.scrollTop = consoleScreen.scrollHeight;
+                    updateStats();
+                }
+            }
+            const workers = [];
+            const activeThreads = Math.min(CONCURRENCY_LIMIT, queue.length);
+            for (let i = 0; i < activeThreads; i++) { workers.push(worker()); }
+            await Promise.all(workers);
+            const finalLog = document.createElement('div');
+            finalLog.style.color = '#818cf8';
+            finalLog.style.paddingTop = '10px';
+            finalLog.style.fontWeight = 'bold';
+            finalLog.innerText = `⚡ Completed! Total Live: ${live}, Total Die: ${die}`;
+            consoleScreen.appendChild(finalLog);
+            consoleScreen.scrollTop = consoleScreen.scrollHeight;
+            startBtn.disabled = false;
+            startBtn.innerText = 'Start Scanner';
+        }
+        function downloadLiveCSV() {
+            if (liveAccounts.length === 0) { alert('No live accounts found to download!'); return; }
+            let csvRows = ['UID,PASSWORD,2FA'];
+            liveAccounts.forEach(account => { csvRows.push(`'${account.uid}','${account.pass}','${account.twoFA}'`); });
+            const blob = new Blob(['\ufeff' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'live_accounts.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+        }
+        function clearTool() {
+            document.getElementById('inputData').value = '';
+            document.getElementById('consoleScreen').innerHTML = 'Console ready...';
+            document.getElementById('totalCount').innerText = '0';
+            document.getElementById('livePercent').innerText = '0% LIVE';
+            document.getElementById('diePercent').innerText = '0% DIE';
+            liveAccounts = [];
+        }
+    </script>
+</body>
+</html>
+"></iframe>
+</div>
+</div>
+
+<footer class="site-footer">
+<div class="footer-container">
+<div class="footer-links">
+<a onclick="showSection('about')">About Us</a>
+<a onclick="showSection('privacy')">Privacy Policy</a>
+<a onclick="showSection('terms')">Terms of Service</a>
+<a onclick="showSection('home')" style="color: var(--primary);">Home Dashboard</a>
+</div>
+
+<div class="footer-seo-box">
+<h4>Ecosystem Framework & Analytical Utility Terminal</h4>
+<p>
+Welcome to our integrated multi-threaded web automation engine console. This portal provides system configurations for evaluating real-time secure hash token arrays, automated verification codes (TOTP protocol), and parsing live query endpoints across distributed networks. Completely stateless and built with privacy-first standards, it is optimized to perform low-latency cross-origin data validation loops for active administrative account management workflows.
+</p>
+</div>
+
+<p class="copyright-text">© 2026 Cloud Automation Hub. All rights reserved. Managed for Optimal Core Processing Response.</p>
+</div>
+</footer>
+
+<script>
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(section => { section.classList.remove('active'); });
+    const targetSection = document.getElementById(sectionId);
+    if(targetSection) {
+        targetSection.classList.add('active');
+    }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-section') === sectionId) {
+            link.classList.add('active');
+        }
+    });
+    
+    // Smooth scroll page top on transition change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
