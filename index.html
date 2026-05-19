@@ -3,21 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Longisir VIP Suite - Professional Automation Tools</title>
+<title>Longisir VIP Portal - Free Tools</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap');
 
 :root {
 --primary: rgb(168, 85, 247);
---primary-glow: rgba(168, 85, 247, 0.2);
 --bg: rgb(10, 11, 18);
 --card-bg: rgb(21, 23, 37);
---input-bg: rgb(15, 17, 26);
 --text-gray: rgb(156, 163, 175);
 --btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(139, 92, 246));
---emerald: rgb(52, 211, 153);
---rose: rgb(248, 113, 113);
---border: rgba(255, 255, 255, 0.05);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -30,11 +25,19 @@ display: flex;
 flex-direction: column;
 }
 
-/* Nav Styles */
+.section {
+display: none;
+width: 100%;
+}
+
+.section.active {
+display: block;
+}
+
 .top-nav {
 background: rgba(15, 17, 26, 0.95);
 backdrop-filter: blur(10px);
-border-bottom: 1px solid var(--border);
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 padding: 15px 0;
 position: sticky;
 top: 0;
@@ -63,9 +66,11 @@ color: var(--primary);
 cursor: pointer;
 }
 
+.logo i { font-size: 24px; }
+
 .nav-links {
 display: flex;
-gap: 5px;
+gap: 10px;
 align-items: center;
 flex-wrap: wrap;
 }
@@ -87,16 +92,6 @@ color: rgb(255, 255, 255);
 background: rgba(168, 85, 247, 0.1);
 }
 
-/* Section Controls */
-.section {
-display: none;
-width: 100%;
-}
-
-.section.active {
-display: block;
-}
-
 .container {
 max-width: 1100px;
 margin: 0 auto;
@@ -104,109 +99,213 @@ padding: 40px 20px;
 width: 100%;
 }
 
-/* Hero Component */
-.hero { text-align: center; margin-bottom: 40px; }
-.hero h1 { font-size: clamp(24px, 5vw, 48px); font-weight: 800; margin-bottom: 8px; }
-.hero p { color: var(--text-gray); letter-spacing: 3px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; }
-.hero-desc { color: var(--text-gray); font-size: 15px; max-width: 700px; margin: 0 auto; line-height: 1.6; text-transform: none; }
+.hero {
+text-align: center;
+margin-bottom: 40px;
+}
 
-/* Grid Dashboard */
+.hero h1 {
+font-size: clamp(24px, 5vw, 54px);
+font-weight: 800;
+margin-bottom: 8px;
+}
+
+.hero p {
+color: var(--text-gray);
+letter-spacing: 3px;
+font-size: 11px;
+font-weight: 600;
+text-transform: uppercase;
+margin-bottom: 20px;
+}
+
+.hero-desc {
+color: var(--text-gray);
+font-size: 15px;
+max-width: 700px;
+margin: 0 auto 30px auto;
+line-height: 1.6;
+text-transform: none;
+}
+
 .home-grid {
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 gap: 20px;
 margin-bottom: 40px;
+width: 100%;
 }
 
 .h-card {
 background: var(--card-bg);
-border: 1px solid var(--border);
-padding: 35px 20px;
+border: 1px solid rgba(255,255,255,0.05);
+padding: 40px 20px;
 border-radius: 20px;
 text-align: center;
-transition: 0.3s;
+transition: 0.3s ease;
 cursor: pointer;
 }
 
-.h-card i { font-size: 36px; color: var(--primary); margin-bottom: 15px; display: block; }
-.h-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
-.h-card p { font-size: 13px; color: var(--text-gray); }
-.h-card:hover { transform: translateY(-5px); border-color: rgba(168, 85, 247, 0.4); background: rgb(26, 29, 46); }
+.h-card i {
+font-size: 40px;
+color: var(--primary);
+margin-bottom: 15px;
+display: block;
+filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.5));
+}
 
-/* Unified Layout for Inner Tools */
-.tool-ui-box {
+.h-card h3 {
+font-size: 18px;
+font-weight: 800;
+margin-bottom: 8px;
+}
+
+.h-card p {
+font-size: 13px;
+color: var(--text-gray);
+}
+
+.h-card:hover {
+transform: translateY(-6px);
+border-color: rgba(168, 85, 247, 0.3);
+background: rgb(26, 29, 46);
+}
+
+.about-box {
 background: var(--card-bg);
-border: 1px solid var(--border);
-border-radius: 24px;
+padding: 30px;
+border-radius: 20px;
+border: 1px solid rgba(255,255,255,0.03);
+width: 100%;
+margin-bottom: 30px;
+}
+
+.about-box h2 {
+color: var(--primary);
+margin-bottom: 15px;
+font-size: 22px;
+font-weight: 800;
+}
+
+.about-box p {
+color: var(--text-gray);
+font-size: 14px;
+line-height: 1.6;
+}
+
+.page-header {
+text-align: center;
+margin-bottom: 40px;
+}
+
+.page-header h1 {
+font-size: 36px;
+font-weight: 800;
+margin-bottom: 10px;
+color: var(--primary);
+}
+
+.page-header p {
+color: var(--text-gray);
+font-size: 15px;
+}
+
+.content-box {
+background: var(--card-bg);
+padding: 30px;
+border-radius: 20px;
+border: 1px solid rgba(255, 255, 255, 0.05);
+margin-bottom: 25px;
+}
+
+.tool-wrapper {
+width: 100%;
+min-height: calc(100vh - 70px);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+}
+
+.responsive-iframe {
+width: 100%;
+flex-grow: 1;
+min-height: calc(100vh - 70px);
+border: none;
+display: block;
+}
+
+/* AdSense Required Policy Styles */
+.adsense-footer {
+background: rgb(15, 17, 26);
+border-top: 1px solid rgba(255, 255, 255, 0.05);
 padding: 30px 20px;
-max-width: 750px;
-margin: 0 auto 30px auto;
-box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+text-align: center;
+margin-top: auto;
+width: 100%;
 }
 
-.tool-header { text-align: center; margin-bottom: 25px; }
-.tool-header h2 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 6px; }
-.tool-header p { font-size: 13px; color: var(--text-gray); }
-
-.input-box-group { margin-bottom: 20px; }
-label { display: block; font-weight: 600; margin-bottom: 10px; color: #e2e8f0; font-size: 14px; }
-input[type='text'], textarea {
-width: 100%; padding: 14px; background: var(--input-bg); border: 2px solid rgb(30, 41, 59);
-border-radius: 12px; color: #fff; font-size: 14px; outline: none; transition: 0.25s;
+.policy-links {
+display: flex;
+justify-content: center;
+gap: 20px;
+margin-bottom: 15px;
+flex-wrap: wrap;
 }
-input[type='text']:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
-textarea { height: 130px; resize: vertical; font-family: monospace; }
 
-.action-btn {
-width: 100%; padding: 14px; background: var(--btn-grad); color: #fff; border: none;
-border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s;
-display: flex; align-items: center; justify-content: center; gap: 10px;
+.policy-links a {
+color: var(--text-gray);
+font-size: 13px;
+text-decoration: none;
+font-weight: 600;
+transition: color 0.3s;
+cursor: pointer;
 }
-.action-btn:hover { transform: translateY(-2px); opacity: 0.95; }
-.action-btn:disabled { background: #1f2937; color: #4b5563; cursor: not-allowed; transform: none; }
 
-/* Tool Specific Displays */
-.code-out-block { background: rgb(15, 17, 26); border: 2px solid rgb(30, 41, 59); border-radius: 12px; padding: 20px; text-align: center; margin: 15px 0; display: none; }
-.code-label { font-size: 11px; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-.code-num { font-size: 32px; font-weight: 800; color: var(--emerald); letter-spacing: 4px; font-family: monospace; }
-
-.terminal-screen {
-width: 100%; height: 180px; background: #030712; border-radius: 12px; padding: 12px;
-font-family: monospace; font-size: 12px; color: var(--emerald); overflow-y: auto;
-margin-bottom: 15px; border: 1px solid #1f2937; line-height: 1.5;
+.policy-links a:hover {
+color: var(--primary);
 }
-.term-line { margin-bottom: 3px; word-break: break-all; }
-.term-live { color: var(--emerald); font-weight: 600; }
-.term-die { color: var(--rose); }
 
-/* Info & SEO Content Panels */
-.seo-article {
-background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--border);
-margin-top: 30px; line-height: 1.7; font-size: 14.5px; color: #cbd5e1;
+.copyright-text {
+color: rgb(100, 116, 139);
+font-size: 12px;
+line-height: 1.5;
 }
-.seo-article h3 { color: #fff; margin: 20px 0 10px 0; font-size: 18px; font-weight: 700; }
-.seo-article ul { margin-left: 20px; margin-bottom: 15px; }
 
-.pricing-wrap { display: flex; justify-content: center; margin-top: 20px; }
-.price-card {
-background: var(--card-bg); border: 2px solid rgba(168, 85, 247, 0.3); padding: 40px 30px;
-border-radius: 24px; text-align: center; max-width: 400px; width: 100%;
+.seo-content {
+max-width: 800px;
+margin: 20px auto 0 auto;
+text-align: left;
+background: rgba(21, 23, 37, 0.5);
+padding: 20px;
+border-radius: 12px;
+border: 1px solid rgba(255,255,255,0.02);
 }
-.price-card .cost { font-size: 44px; font-weight: 800; color: var(--emerald); margin: 15px 0; }
 
-.footer-nav-bot {
-margin-top: auto; border-top: 1px solid var(--border); padding: 20px; text-align: center;
-font-size: 12px; color: var(--text-gray); background: rgb(15, 17, 26);
+.seo-content h4 {
+color: #fff;
+font-size: 14px;
+margin-bottom: 8px;
+font-weight: 800;
 }
-.footer-nav-bot a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: 600; }
+
+.seo-content p {
+color: var(--text-gray);
+font-size: 12px;
+line-height: 1.6;
+}
 
 @media (max-width: 768px) {
-.nav-container { flex-direction: column; text-align: center; }
-.nav-links { justify-content: center; }
+.top-nav { padding: 10px 0; }
+.nav-container { flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+.nav-links { width: 100%; justify-content: center; gap: 4px; }
+.nav-links a { font-size: 11px; padding: 6px 8px; }
 .container { padding: 20px 12px; }
+.home-grid { grid-template-columns: 1fr; }
+.responsive-iframe { min-height: calc(100vh - 120px); }
+.tool-wrapper { min-height: calc(100vh - 120px); }
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.4.2/sha.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -215,15 +314,17 @@ font-size: 12px; color: var(--text-gray); background: rgb(15, 17, 26);
 <div class="nav-container">
 <div class="logo" onclick="showSection('home')">
 <i class="fa-solid fa-cube"></i>
-<span>LONGISIR VIP</span>
+<span>LONGISIR</span>
 </div>
+
 <div class="nav-links">
 <a onclick="showSection('home')" class="nav-link active" data-section="home">Home</a>
-<a onclick="showSection('tool-2fa')" class="nav-link" data-section="tool-2fa">2FA Auth</a>
-<a onclick="showSection('tool-uid')" class="nav-link" data-section="tool-uid">UID Checker</a>
-<a onclick="showSection('tool-mail')" class="nav-link" data-section="tool-mail">API Mail</a>
-<a onclick="showSection('about')" class="nav-link" data-section="about">About Suite</a>
-<a onclick="showSection('sales')" class="nav-link" data-section="sales">Licensing</a>
+<a onclick="showSection('tool-2fa')" class="nav-link" data-section="tool-2fa">2FA AUTH</a>
+<a onclick="showSection('tool-mail')" class="nav-link" data-section="tool-mail">API MAIL</a>
+<a onclick="showSection('tool-uid')" class="nav-link" data-section="tool-uid">UID CHECKER</a>
+<a onclick="showSection('about')" class="nav-link" data-section="about">About</a>
+<a onclick="showSection('sales')" class="nav-link" data-section="sales">Sales</a>
+<a onclick="showSection('policy-page')" class="nav-link" data-section="policy-page">Privacy Policy</a>
 </div>
 </div>
 </nav>
@@ -231,266 +332,527 @@ font-size: 12px; color: var(--text-gray); background: rgb(15, 17, 26);
 <div id="home" class="section active">
 <div class="container">
 <header class="hero">
-<h1>Advanced Automation Workspace</h1>
-<p>Secure, Instant & Optimized Infrastructure</p>
-<p class="hero-desc">Welcome to the elite productivity engine. Access premium multi-threaded validators, instantaneous 2FA token managers, and automated mail scrapers built seamlessly on secure framework mechanics.</p>
+<h1>Longisir VIP Portal:</h1>
+<p>THE NEXT GEN AUTOMATION HUB</p>
+<p class="hero-desc">Your unified solution for all security and productivity tools. Professionally built for efficiency, speed, and reliability. 100% FREE!</p>
 </header>
-<div class="home-grid">
+
+<main class="home-grid">
 <div class="h-card" onclick="showSection('tool-2fa')">
-<i class="fa-solid fa-key"></i>
-<h3>2FA Authenticator</h3>
-<p>Instant OTP Code Generator</p>
+<i class="fa-solid fa-shield-halved"></i>
+<h3>2FA AUTH</h3>
+<p>Fast Code Gen</p>
 </div>
-<div class="h-card" onclick="showSection('tool-uid')">
-<i class="fa-solid fa-user-check"></i>
-<h3>UID Checker</h3>
-<p>Bulk Multi-Threaded Profile Validator</p>
-</div>
+
 <div class="h-card" onclick="showSection('tool-mail')">
-<i class="fa-solid fa-envelope-open-text"></i>
-<h3>API Mail Extractor</h3>
-<p>Cloud Server OTP Mail Scraper</p>
-</div>
-</div>
-<div class="seo-article">
-<h3>Why Choose Longisir System Framework Ecosystem?</h3>
-<p>Our operational workspace provides high-tier data solutions without resource exhaustion. Designed explicitly to mitigate latency overheads, the platform processes heavy batches with structural safety protocols natively running directly inside your user terminal parameters.</p>
-</div>
-</div>
+<i class="fa-solid fa-envelope"></i>
+<h3>API MAIL</h3>
+<p>Email Scraper</p>
 </div>
 
-<div id="tool-2fa" class="section">
-<div class="container">
-<div class="tool-ui-box">
-<div class="tool-header">
-<h2>2FA Authenticator Engine</h2>
-<p>Generate Time-based One-Time Passwords securely instantly</p>
+<div class="h-card" onclick="showSection('tool-uid')">
+<i class="fa-solid fa-bolt"></i>
+<h3>UID CHECKER</h3>
+<p>Bulk Validator</p>
 </div>
-<div class="input-box-group">
-<label>Secret Token Key String:</label>
-<input type="text" id="secKey" placeholder="JBSWY3DPEHPK3PXP" autocomplete="off">
-</div>
-<button class="action-btn" onclick="run2faEngine()"><i class="fa-solid fa-unlock-keyhole"></i> Extract OTP Token</button>
-<div id="out2faBox" class="code-out-block">
-<div class="code-label">Active Passcode Generated:</div>
-<div id="val2fa" class="code-num">------</div>
-</div>
-</div>
-<div class="seo-article">
-<h3>Understanding TOTP Security Architectures</h3>
-<p>Time-based One-time Passwords (TOTP) rely upon cryptographic synchronization using a shared secret token block and uniform time granularities. Our secure system evaluates localized base32 arrays synchronously inside your environment structure, keeping data entirely separate from cloud intercept vectors.</p>
-</div>
-</div>
-</div>
+</main>
 
-<div id="tool-uid" class="section">
-<div class="container">
-<div class="tool-ui-box" style="max-width:850px;">
-<div class="tool-header">
-<h2>Bulk ID Validity Checker</h2>
-<p>Multi-threaded social framework availability inspector</p>
-</div>
-<div class="input-box-group">
-<label>Input Structured Data Batches (Supports: ID|PASS|2FA or Row Format):</label>
-<textarea id="uidInput" placeholder="Paste data rows here..."></textarea>
-</div>
-<div class="terminal-screen" id="uidTerm">Workspace standing by... Ready for system execution grid arrays.</div>
-<div style="display:flex; gap:10px;">
-<button class="action-btn" id="uidRunBtn" onclick="runUidChecker()" style="flex:2;"><i class="fa-solid fa-play"></i> Initialize Validation Engine</button>
-<button class="action-btn" onclick="clearUidWorkspace()" style="background:#ef4444; flex:1;">Clear Data</button>
-</div>
-</div>
-</div>
-</div>
-
-<div id="tool-mail" class="section">
-<div class="container">
-<div class="tool-ui-box">
-<div class="tool-header">
-<h2>Automated Mail OTP Extractor</h2>
-<p>Retrieve secure verification codes via dynamic API bridge stream relays</p>
-</div>
-<div class="input-box-group">
-<label>Input Credentials (email|password|refresh_token):</label>
-<textarea id="mailRaw" placeholder="user@domain.com|password|token_string..."></textarea>
-</div>
-<div class="terminal-screen" id="mailTerm">API Relay Standing By...</div>
-<button class="action-btn" id="mailRunBtn" onclick="fetchMailCode()"><i class="fa-solid fa-cloud-arrow-down"></i> Trigger Mail Stream Scan</button>
-</div>
+<footer class="about-box">
+<h2>About Our Ecosystem</h2>
+<p>Longisir VIP provides top-tier automation tools for professionals. Our infrastructure is optimized for multi-threaded performance, ensuring that your data processing is not only fast but also secure and reliable. All tools are 100% FREE with no limitations!</p>
+</footer>
 </div>
 </div>
 
 <div id="about" class="section">
 <div class="container">
-<div class="seo-article">
-<h2>About Longisir Productivity Hub Infrastructure</h2>
-<p>Longisir Suite represents a cutting-edge standard in client-side utility platforms. Focused strictly on processing speed, execution transparency, and clean UX design structures, our system features zero tracking integrations to ensure enterprise protection paradigms.</p>
-<h3>Core Technical Goals</h3>
-<ul>
-<li>High-Velocity Concurrent Framework Threads</li>
-<li>Optimized Asynchronous Network Interfacings</li>
-<li>Encrypted Session Allocations Exclusively Localized</li>
-</ul>
+<div class="page-header">
+<h1>About Longisir VIP</h1>
+<p>The Next Generation Automation Hub</p>
+</div>
+
+<div class="content-box">
+<h2>Our Mission</h2>
+<p>Longisir VIP was built with one goal in mind: to provide professionals with the most powerful, efficient, and reliable automation tools available - completely FREE.</p>
 </div>
 </div>
 </div>
 
 <div id="sales" class="section">
 <div class="container">
-<div class="pricing-wrap">
-<div class="price-card">
-<h2>Community Access License</h2>
-<div class="cost">$0<span>/ Lifetime Free</span></div>
-<p>Enjoy comprehensive diagnostic processing, token operations, and utility configurations without any monthly premium subscriptions.</p>
-</div>
+<div class="page-header">
+<h1>💎 100% FREE Tools</h1>
+<p>No payment required - All features unlocked</p>
 </div>
 </div>
 </div>
 
-<div id="policy-privacy" class="section">
-<div class="container"><div class="seo-article"><h2>Privacy Policy</h2><p>Your privacy is paramount. Longisir VIP operates completely inside client-side executions. Any input strings, account keys, or raw text streams remain contained securely within your browser window storage variables and are never transmitted to outside database endpoints.</p></div></div>
+<div id="policy-page" class="section">
+<div class="container">
+<div class="content-box">
+<h2>Privacy Policy</h2>
+<p style="color: var(--text-gray); margin-top: 15px; line-height: 1.6;">At Longisir VIP, accessible from your domain, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Longisir VIP and how we use it. If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us. We do not store any credentials or personal data processed through our online tools.</p>
+<h3 style="color: var(--primary); margin-top: 20px; margin-bottom: 10px;">Terms of Service</h3>
+<p style="color: var(--text-gray); line-height: 1.6;">By accessing our website, you agree to use these tools for legitimate administrative, verification, and security testing purposes only. Automated abuse or malicious data scraping through unauthorized endpoints is strictly prohibited.</p>
 </div>
-<div id="policy-terms" class="section">
-<div class="container"><div class="seo-article"><h2>Terms and Conditions</h2><p>These terms govern your access to the suite. All tools are explicitly structured for security evaluation, personal data backups, and testing environments. Users assume full system responsibilities for operation legality across external APIs.</p></div></div>
 </div>
-<div id="policy-contact" class="section">
-<div class="container"><div class="seo-article"><h2>Contact System Support</h2><p>For administrative reports, script queries, or layout optimization feedback, reach out to our dashboard portal administration directly at support workspace addresses.</p></div></div>
 </div>
 
-<footer class="footer-nav-bot">
-<p>&copy; 2026 Longisir VIP. All Rights Reserved.</p>
-<p style="margin-top: 8px;">
-<a onclick="showSection('policy-privacy')">Privacy Policy</a> | 
-<a onclick="showSection('policy-terms')">Terms & Conditions</a> | 
-<a onclick="showSection('policy-contact')">Contact Us</a>
-</p>
+<div id="tool-2fa" class="section">
+<div class="tool-wrapper">
+<iframe id="iframe-2fa" class="responsive-iframe" srcdoc="
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&amp;display=swap');
+        :root {
+            --bg: rgb(10, 11, 18);
+            --card-bg: rgb(21, 23, 37);
+            --input-bg: rgb(15, 17, 26);
+            --primary: rgb(168, 85, 247);
+            --primary-glow: rgba(168, 85, 247, 0.3);
+            --btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(59, 130, 246));
+            --text-gray: rgb(148, 163, 184);
+            --border: rgba(255, 255, 255, 0.05);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: #fff; min-height: 100vh; padding: 20px 12px; display: flex; justify-content: center; align-items: flex-start; }
+        .container { max-width: 520px; width: 100%; margin: 0 auto; }
+        .main-card { background: var(--card-bg); border-radius: 24px; padding: 30px 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid var(--border); margin-bottom: 24px; position: relative; overflow: hidden; width: 100%; }
+        .card-header { text-align: center; margin-bottom: 24px; }
+        .card-header h1 { font-size: clamp(1.3rem, 4vw, 1.7rem); font-weight: 800; background: linear-gradient(135deg, #fff 40%, var(--text-gray)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; line-height: 1.3; }
+        .card-header p { font-size: 0.8rem; color: var(--text-gray); }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 10px; color: #e2e8f0; font-size: 0.875rem; }
+        input[type='text'] { width: 100%; padding: 14px; border: 2px solid rgb(30, 41, 59); border-radius: 14px; font-size: 0.95rem; color: #fff; background: var(--input-bg); font-family: 'Courier New', monospace; font-weight: 600; }
+        input[type='text']:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+        button { width: 100%; padding: 14px; background: var(--btn-grad); color: #fff; border: none; border-radius: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.3); }
+        button:hover { transform: translateY(-2px); opacity: 0.95; }
+        .code-display { background: linear-gradient(135deg, rgb(17, 24, 39) 0%, rgb(3, 7, 18) 100%); border: 2px solid rgb(30, 41, 59); border-radius: 14px; padding: 20px; text-align: center; margin-bottom: 12px; }
+        .code-label { font-size: 0.8rem; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+        .totp-code { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; color: rgb(52, 211, 153); font-family: 'Courier New', monospace; letter-spacing: 4px; }
+        .copy-hint { text-align: center; color: rgb(52, 211, 153); font-weight: 700; font-size: 0.85rem; opacity: 0; transition: opacity 0.3s; }
+        .copy-hint.show { opacity: 1; }
+        .history-card { background: var(--card-bg); border-radius: 24px; padding: 24px 20px; border: 1px solid var(--border); max-height: 350px; display: flex; flex-direction: column; width: 100%; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .history-header h2 { font-size: 1.05rem; color: #f1f5f9; font-weight: 800; }
+        #historyCount { font-size: 0.7rem; color: rgb(192, 132, 252); background: rgba(168, 85, 247, 0.15); padding: 4px 10px; border-radius: 20px; }
+        .history-list { overflow-y: auto; padding-right: 4px; }
+        .history-list::-webkit-scrollbar { width: 6px; }
+        .history-list::-webkit-scrollbar-thumb { background: rgb(30, 41, 59); border-radius: 10px; }
+        .empty-state { text-align: center; color: var(--text-gray); padding: 30px 10px; font-style: italic; font-size: 0.85rem; }
+        .history-item { padding: 12px; background: rgb(17, 23, 38); border-radius: 14px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; border: 1px solid rgba(255, 255, 255, 0.02); }
+        .history-code { font-size: 1.15rem; font-weight: 700; color: rgb(56, 189, 248); font-family: 'Courier New', monospace; }
+        .history-details { text-align: right; }
+        .history-key { font-size: 0.7rem; color: var(--text-gray); word-break: break-all; font-family: 'Courier New', monospace; }
+        .history-time { font-size: 0.65rem; color: rgb(100, 116, 139); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='main-card'>
+            <div class='card-header'>
+                <h1>🔐 2FA Authenticator Pro</h1>
+                <p>Secure Time-based One-Time Password Generator</p>
+            </div>
+            <div class='input-group'>
+                <label>Enter your 2FA Secret Key:</label>
+                <input type='text' id='secretKey' placeholder='JBSWY3DPEHPK3PXP' autocomplete='off'>
+            </div>
+            <button onclick='generateCode()'>🔑 Generate Code</button>
+            <div id='codeDisplay' class='code-display' style='display: none;'>
+                <div class='code-label'>Your Code:</div>
+                <div id='totpCode' class='totp-code'>------</div>
+            </div>
+            <p class='copy-hint' id='copyHint'>✓ Code copied to clipboard!</p>
+        </div>
+        <div class='history-card'>
+            <div class='history-header'>
+                <h2>📋 Recent Codes</h2>
+                <span id='historyCount'>0 saved</span>
+            </div>
+            <div id='historyList' class='history-list'>
+                <p class='empty-state'>No codes generated yet</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        function base32Decode(b32) {
+            b32 = b32.toUpperCase().replace(/=+$/, '');
+            let bits = '';
+            for (let i = 0; i < b32.length; i++) {
+                const val = BASE32_CHARS.indexOf(b32[i]);
+                if (val === -1) throw new Error('Invalid base32');
+                bits += val.toString(2).padStart(5, '0');
+            }
+            const bytes = [];
+            for (let i = 0; i + 8 <= bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2));
+            return new Uint8Array(bytes);
+        }
+        function hmacSha1Sync(key, msg) {
+            const bs = 64;
+            if (key.length > bs) key = sha1(key);
+            if (key.length < bs) { const p = new Uint8Array(bs); p.set(key); key = p; }
+            const ik = new Uint8Array(bs), ok = new Uint8Array(bs);
+            for (let i = 0; i < bs; i++) { ik[i] = key[i] ^ 0x36; ok[i] = key[i] ^ 0x5c; }
+            return sha1(concat(ok, sha1(concat(ik, msg))));
+        }
+        function sha1(data) {
+            if (!(data instanceof Uint8Array)) data = new Uint8Array(data);
+            let h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0;
+            const ml = data.length * 8, pl = Math.ceil((ml + 65) / 512) * 512 / 8, p = new Uint8Array(pl);
+            p.set(data); p[data.length] = 0x80;
+            const view = new DataView(p.buffer); view.setUint32(pl - 4, ml & 0xffffffff, false);
+            for (let i = 0; i < pl; i += 64) {
+                const w = new Uint32Array(80);
+                for (let j = 0; j < 16; j++) view.setUint32(i + j * 4, false);
+                for (let j = 16; j < 80; j++) w[j] = ((w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16]) << 1 | (w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16]) >>> 31) & 0xffffffff;
+                let a = h0, b = h1, c = h2, d = h3, e = h4;
+                for (let j = 0; j < 80; j++) {
+                    let f, k;
+                    if (j < 20) { f = (b & c) | ((~b) & d); k = 0x5A827999; }
+                    else if (j < 40) { f = b ^ c ^ d; k = 0x6ED9EBA1; }
+                    else if (j < 60) { f = (b & c) | (b & d) | (c & d); k = 0x8F1BBCDC; }
+                    else { f = b ^ c ^ d; k = 0xCA62C1D6; }
+                    const temp = (((a << 5) | (a >>> 27)) + f + e + k + w[j]) & 0xffffffff;
+                    e = d; d = c; c = ((b << 30) | (b >>> 2)) & 0xffffffff; b = a; a = temp;
+                }
+                h0 = (h0 + a) & 0xffffffff; h1 = (h1 + b) & 0xffffffff; h2 = (h2 + c) & 0xffffffff; h3 = (h3 + d) & 0xffffffff; h4 = (h4 + e) & 0xffffffff;
+            }
+            const res = new Uint8Array(20), resView = new DataView(res.buffer);
+            resView.setUint32(0, h0, false); resView.setUint32(4, h1, false); resView.setUint32(8, h2, false); resView.setUint32(12, h3, false); resView.setUint32(16, h4, false);
+            return res;
+        }
+        function concat(a, b) { const r = new Uint8Array(a.length + b.length); r.set(a); r.set(b, a.length); return r; }
+        function generateTOTP(secret) {
+            secret = secret.replace(/\s/g, '').toUpperCase();
+            const key = base32Decode(secret), epoch = Math.floor(Date.now() / 1000), ts = Math.floor(epoch / 30);
+            const tb = new Uint8Array(8), tv = new DataView(tb.buffer); tv.setUint32(4, ts, false);
+            const hmac = hmacSha1Sync(key, tb), offset = hmac[19] & 0x0f;
+            const truncated = (((hmac[offset] & 0x7f) << 24) | ((hmac[offset + 1] & 0xff) << 16) | ((hmac[offset + 2] & 0xff) << 8) | (hmac[offset + 3] & 0xff));
+            return (truncated % 1000000).toString().padStart(6, '0');
+        }
+        let history = [];
+        function generateCode() {
+            const input = document.getElementById('secretKey');
+            const secret = input.value.trim().toUpperCase().replace(/\s/g, '');
+            if (!secret) { alert('⚠️ Enter key!'); return; }
+            try {
+                const code = generateTOTP(secret);
+                document.getElementById('totpCode').textContent = code;
+                document.getElementById('codeDisplay').style.display = 'block';
+                navigator.clipboard.writeText(code);
+                showHint(); addHist(secret, code); input.value = '';
+            } catch (e) { alert('❌ Invalid Key'); }
+        }
+        function showHint() { const h = document.getElementById('copyHint'); h.classList.add('show'); setTimeout(() => h.classList.remove('show'), 2000); }
+        function addHist(sec, cod) {
+            const time = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+            history.unshift({ sec, cod, time });
+            if (history.length > 20) history = history.slice(0, 20);
+            renderHist();
+        }
+        function renderHist() {
+            const list = document.getElementById('historyList');
+            document.getElementById('historyCount').textContent = `${history.length} saved`;
+            if(history.length === 0) return;
+            list.innerHTML = history.map(i => `
+                <div class='history-item'>
+                    <div class='history-code'>${i.cod}</div>
+                    <div class='history-details'>
+                        <div class='history-key'>Key: ${i.sec}</div>
+                        <div class='history-time'>${i.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
+"></iframe>
+</div>
+</div>
+
+<div id="tool-uid" class="section">
+<div class="tool-wrapper">
+<iframe id="iframe-uid" class="responsive-iframe" srcdoc="
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; padding: 20px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .main-panel { width: 100%; max-width: 800px; background: #111827; border-radius: 16px; padding: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .panel-title { font-size: 22px; font-weight: 700; color: #818cf8; margin-bottom: 15px; text-align: center; letter-spacing: 0.5px; }
+        .input-area-wrapper { margin-bottom: 15px; }
+        textarea { width: 100%; height: 140px; background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 12px; font-size: 14px; color: #f3f4f6; outline: none; resize: vertical; font-weight: 500; line-height: 1.5; overflow-y: auto; }
+        textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
+        .action-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .btn-start { flex: 1; background: linear-gradient(135deg, #4f46e5, #3b82f6); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
+        .btn-clear { background: #dc2626; color: white; border: none; padding: 0 20px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
+        .console-box { width: 100%; height: 200px; background: #030712; border-radius: 12px; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #34d399; overflow-y: auto; margin-bottom: 15px; border: 1px solid #1f2937; box-shadow: inset 0 4px 12px rgba(0,0,0,0.6); line-height: 1.5; }
+        .console-log { margin-bottom: 4px; word-break: break-all; }
+        .log-live { color: #34d399; font-weight: 600; }
+        .log-die { color: #f87171; }
+        .footer-row { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        @media (min-width: 600px) { .footer-row { flex-direction: row; justify-content: space-between; } }
+        .stats-group { display: flex; gap: 8px; width: 100%; }
+        @media (min-width: 600px) { .stats-group { width: auto; } }
+        .stat-card { background: #1f2937; border: 1px solid #374151; border-radius: 10px; padding: 8px 12px; text-align: center; flex: 1; min-width: 80px; }
+        .stat-num { font-size: 14px; font-weight: 700; display: block; margin-bottom: 2px; }
+        .stat-label { font-size: 9px; color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .total-color { color: #e5e7eb; }
+        .live-color { color: #34d399; }
+        .die-color { color: #f87171; }
+        .btn-download { width: 100%; background: #059669; color: white; border: none; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4); text-align: center; text-transform: uppercase; }
+        @media (min-width: 600px) { .btn-download { width: auto; } }
+    </style>
+</head>
+<body>
+    <div class='main-panel'>
+        <div class='panel-title'>Bulk UID Checker Pro</div>
+        <div class='input-area-wrapper'>
+            <textarea id='inputData' placeholder='Paste data here... (Supports UID|PASS|2FA or Space/Tab separated formats)'></textarea>
+        </div>
+        <div class='action-row'>
+            <button class='btn-start' id='startBtn' onclick='startScanner()'>Start Scanner</button>
+            <button class='btn-clear' onclick='clearTool()'>Clear</button>
+        </div>
+        <div class='console-box' id='consoleScreen'>Console ready...</div>
+        <div class='footer-row'>
+            <div class='stats-group'>
+                <div class='stat-card'>
+                    <span class='stat-num total-color' id='totalCount'>0</span>
+                    <span class='stat-label'>Total</span>
+                </div>
+                <div class='stat-card'>
+                    <span class='stat-num live-color' id='livePercent'>0% LIVE</span>
+                    <span class='stat-label'>Live</span>
+                </div>
+                <div class='stat-card'>
+                    <span class='stat-num die-color' id='diePercent'>0% DIE</span>
+                    <span class='stat-label'>Die</span>
+                </div>
+            </div>
+            <button class='btn-download' onclick='downloadLiveCSV()'>Download Live</button>
+        </div>
+    </div>
+    <script>
+        let liveAccounts = [];
+        const CONCURRENCY_LIMIT = 5;
+        async function checkFacebookUID(uid) {
+            try {
+                const cleanUID = uid.trim().replace(/[^a-zA-Z0-9.]/g, '');
+                if(!cleanUID) return 'DEAD ❌';
+                const response = await fetch(`https://graph.facebook.com/${cleanUID}/picture?type=normal&_ts=${Date.now()}`);
+                if (response.ok && response.url.includes('100x100')) { return 'LIVE ✅'; } else { return 'DEAD ❌'; }
+            } catch (error) { return 'ERROR ⚠️'; }
+        }
+        async function startScanner() {
+            const inputStr = document.getElementById('inputData').value.trim();
+            const consoleScreen = document.getElementById('consoleScreen');
+            const startBtn = document.getElementById('startBtn');
+            if (!inputStr) { alert('Please paste your UID data first!'); return; }
+            const lines = inputStr.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            consoleScreen.innerHTML = 'Initializing fast multi-threaded engine...<br>';
+            liveAccounts = [];
+            let total = lines.length; let live = 0; let die = 0;
+            document.getElementById('totalCount').innerText = total;
+            startBtn.disabled = true; startBtn.innerText = 'Scanning Fast...';
+            function updateStats() {
+                const livePct = total > 0 ? Math.round((live / total) * 100) : 0;
+                const diePct = total > 0 ? Math.round((die / total) * 100) : 0;
+                document.getElementById('livePercent').innerText = `${livePct}% LIVE`;
+                document.getElementById('diePercent').innerText = `${diePct}% DIE`;
+            }
+            const queue = [...lines];
+            async function worker() {
+                while (queue.length > 0) {
+                    const currentLine = queue.shift();
+                    if (!currentLine) continue;
+                    let uid = ''; let pass = ''; let twoFA = '';
+                    if (currentLine.includes('|')) {
+                        const parts = currentLine.split('|');
+                        uid = parts[0] ? parts[0].trim() : '';
+                        pass = parts[1] ? parts[1].trim() : '';
+                        twoFA = parts.slice(2).join('|').trim();
+                    } else {
+                        const parts = currentLine.split(/\s+/);
+                        uid = parts[0] ? parts[0].trim() : '';
+                        pass = parts[1] ? parts[1].trim() : '';
+                        if (parts.length > 2) { twoFA = currentLine.substring(currentLine.indexOf(pass) + pass.length).trim(); }
+                    }
+                    if (!uid) continue;
+                    const result = await checkFacebookUID(uid);
+                    const logLine = document.createElement('div');
+                    logLine.className = 'console-log';
+                    if (result === 'LIVE ✅') {
+                        logLine.className += ' log-live'; logLine.innerText = `[LIVE] ID: ${uid}`;
+                        live++; liveAccounts.push({ uid, pass, twoFA });
+                    } else { logLine.className += ' log-die'; logLine.innerText = `[DIE] ID: ${uid}`; die++; }
+                    consoleScreen.appendChild(logLine); consoleScreen.scrollTop = consoleScreen.scrollHeight; updateStats();
+                }
+            }
+            const workers = []; const activeThreads = Math.min(CONCURRENCY_LIMIT, queue.length);
+            for (let i = 0; i < activeThreads; i++) { workers.push(worker()); }
+            await Promise.all(workers);
+            const finalLog = document.createElement('div'); finalLog.style.color = '#818cf8'; finalLog.style.paddingTop = '10px'; finalLog.style.fontWeight = 'bold'; finalLog.innerText = `⚡ Completed! Total Live: ${live}, Total Die: ${die}`;
+            consoleScreen.appendChild(finalLog); consoleScreen.scrollTop = consoleScreen.scrollHeight; startBtn.disabled = false; startBtn.innerText = 'Start Scanner';
+        }
+        function downloadLiveCSV() {
+            if (liveAccounts.length === 0) { alert('No live accounts found to download!'); return; }
+            let csvRows = ['UID,PASSWORD,2FA'];
+            liveAccounts.forEach(account => { csvRows.push(`'${account.uid}','${account.pass}','${account.twoFA}'`); });
+            const blob = new Blob(['\ufeff' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob); const link = document.createElement('a');
+            link.href = url; link.setAttribute('download', 'live_accounts.csv'); document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
+"></iframe>
+</div>
+</div>
+
+<div id="tool-mail" class="section">
+<div class="tool-wrapper">
+<iframe id="iframe-mail" class="responsive-iframe" srcdoc="
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <script src='https://cdn.tailwindcss.com'></script>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
+</head>
+<body class='bg-[#0b0f19] text-slate-100 min-height-screen flex items-center justify-center p-3 font-sans selection:bg-indigo-500/30 selection:text-indigo-200'>
+    <div class='w-full max-w-lg bg-[#111827] rounded-3xl border border-slate-800/60 shadow-2xl p-6 relative overflow-hidden'>
+        <div class='absolute -top-24 -right-24 w-48 h-48 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none'></div>
+        <div class='absolute -bottom-24 -left-24 w-48 h-48 bg-emerald-600/5 rounded-full blur-3xl pointer-events-none'></div>
+        <div class='flex flex-col items-center mb-6 text-center relative z-10'>
+            <div class='w-12 h-12 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20 mb-3 border border-indigo-400/20 animate-pulse'>
+                <i class='fas fa-envelope-open-text text-lg text-white'></i>
+            </div>
+            <h1 class='text-xl font-black bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent tracking-tight'>API Mail Extractor</h1>
+            <p class='text-[11px] text-slate-400 font-medium tracking-wide uppercase mt-1'>Instant Mail OTP Scraper Engine</p>
+        </div>
+        <div class='space-y-4 relative z-10'>
+            <div>
+                <label class='block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex justify-between items-center'>
+                    <span>Raw Mail Data Input</span>
+                    <span class='text-[10px] text-slate-500 normal-case font-normal'>Format: email|pass</span>
+                </label>
+                <div class='relative group'>
+                    <textarea id='rawData' rows='3' class='w-full bg-[#1f2937] border-2 border-slate-800 rounded-2xl p-3.5 pl-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 resize-none' placeholder='example@hotmail.com|password123'></textarea>
+                </div>
+            </div>
+            <div class='flex gap-2.5 pt-1'>
+                <button id='actionBtn' onclick='extractOTP()' class='flex-[2] bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3 px-3 rounded-xl border border-indigo-500/30 transition-all duration-200 flex justify-center items-center cursor-pointer text-[11px] tracking-wider uppercase shadow-lg shadow-indigo-600/10 active:scale-[0.98]'>
+                    <span id='btnText'><i class='fas fa-bolt mr-1.5 text-indigo-200'></i> Extract OTP Code</span>
+                </button>
+                <button onclick='copyEmail()' class='flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-2 rounded-xl border border-slate-700/60 transition-all duration-200 flex justify-center items-center cursor-pointer text-[11px] tracking-wider uppercase active:scale-[0.98]'>
+                    <i class='fas fa-at mr-1.5 text-slate-400'></i> Copy Mail
+                </button>
+            </div>
+            <div class='border-t border-slate-800/80 my-2'></div>
+            <div class='bg-slate-950/60 rounded-2xl border border-slate-900 p-4 flex flex-col items-center justify-center relative group overflow-hidden min-h-[90px]'>
+                <div class='absolute top-2 left-3 flex items-center gap-1.5 pointer-events-none'>
+                    <span class='flex h-1.5 w-1.5 relative'>
+                        <span class='animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75'></span>
+                        <span class='relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500'></span>
+                    </span>
+                    <span class='text-[9px] font-bold text-slate-500 uppercase tracking-widest'>Live Output Stream</span>
+                </div>
+                <div id='otpOutput' class='text-3xl font-black tracking-widest font-mono text-emerald-400 filter drop-shadow-[0_0_12px_rgba(52,211,153,0.2)] selection:bg-emerald-500/20'>XXXXXX</div>
+                <button onclick='copyCode()' class='mt-2.5 text-[10px] font-extrabold text-slate-400 hover:text-indigo-400 bg-slate-900/80 hover:bg-slate-900 px-3 py-1 rounded-lg border border-slate-800/80 hover:border-indigo-500/30 transition-all duration-150 flex items-center gap-1 active:scale-[0.95]'>
+                    <i class='far fa-copy'></i> Copy OTP Code
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function extractOTP() {
+            const rawData = document.getElementById('rawData').value.trim();
+            const actionBtn = document.getElementById('actionBtn');
+            const btnText = document.getElementById('btnText');
+            const otpOutput = document.getElementById('otpOutput');
+            if(!rawData) { alert('Please enter raw data first!'); return; }
+            actionBtn.disabled = true;
+            actionBtn.className = 'flex-[2] bg-slate-800 text-slate-500 font-black py-3 px-3 rounded-xl border border-slate-800 transition-all duration-200 flex justify-center items-center cursor-not-allowed text-[11px] tracking-wider uppercase';
+            btnText.innerHTML = '<i class=\'fas fa-circle-notch animate-spin mr-1.5\'></i> Connecting...';
+            otpOutput.innerText = 'FETCHING';
+            otpOutput.className = 'text-xl font-black tracking-widest font-mono text-indigo-400 animate-pulse';
+            try {
+                const response = await fetch('https://toll-376d.onrender.com/get-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ 'raw_data': rawData })
+                });
+                if(response.ok) {
+                    const data = await response.json();
+                    if(data.status === 'success' && data.code) {
+                        otpOutput.innerText = data.code;
+                        otpOutput.className = 'text-3xl font-black tracking-widest font-mono text-emerald-400 filter drop-shadow-[0_0_12px_rgba(52,211,153,0.2)]';
+                        navigator.clipboard.writeText(data.code);
+                    } else {
+                        otpOutput.innerText = data.message || 'ERROR';
+                        otpOutput.className = 'text-xl font-black tracking-widest font-mono text-rose-500';
+                    }
+                } else {
+                    otpOutput.innerText = 'CORS ERR';
+                    otpOutput.className = 'text-xl font-black tracking-widest font-mono text-rose-500';
+                }
+            } catch(err) {
+                otpOutput.innerText = 'ERROR';
+                otpOutput.className = 'text-xl font-black tracking-widest font-mono text-rose-500';
+            }
+            btnText.innerHTML = '<i class=\'fas fa-bolt mr-1.5 text-indigo-400\'></i> Extract OTP Code';
+            actionBtn.disabled = false;
+            actionBtn.className = 'flex-[2] bg-slate-900 hover:bg-slate-800 text-slate-300 font-black py-3 px-3 rounded-xl border border-slate-800 transition-all duration-200 flex justify-center items-center cursor-pointer text-[11px] tracking-wider uppercase shadow-md';
+        }
+        function copyEmail() { const text = document.getElementById('rawData').value.split('|')[0]; if(text) { navigator.clipboard.writeText(text); alert('Email Copied: ' + text); } }
+        function copyCode() { const code = document.getElementById('otpOutput').innerText; if(code && code !== 'XXXXXX' && code !== 'ERROR' && code !== 'CORS ERR') { navigator.clipboard.writeText(code); alert('OTP Code Copied: ' + code); } }
+    </script>
+</body>
+</html>
+"></iframe>
+</div>
+</div>
+
+<footer class="adsense-footer">
+    <div class="policy-links">
+        <a onclick="showSection('home')">Home</a>
+        <a onclick="showSection('about')">About Us</a>
+        <a onclick="showSection('policy-page')">Privacy Policy</a>
+        <a onclick="showSection('policy-page')">Terms of Service</a>
+    </div>
+    
+    <div class="seo-content">
+        <h4>Professional Free Online Verification Suite</h4>
+        <p>Welcome to Longisir VIP Portal, the ultimate network validation dashboard. Our system aggregates web utility toolkits including standard cryptographic Multi-Factor Authenticator (2FA) algorithms based on secure internal computations, real-time asynchronous network API response validators for UID parameters, and automated protocol processing suites. All actions deployed within this control center maintain standard client-server request standards, structured perfectly to support multi-threaded batch operations. Rest assured, zero state logs or custom data parameters are saved or intercepted outside the immediate execution context.</p>
+    </div>
+    
+    <p class="copyright-text mt-4">© 2026 Longisir VIP. All Rights Reserved. Devoted to High Performance Automation Operations.</p>
 </footer>
 
 <script>
-// SPA Navigation Architecture
-function showSection(id) {
-document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-const target = document.getElementById(id);
-if(target) target.classList.add('active');
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(section => { section.classList.remove('active'); });
+    document.getElementById(sectionId).classList.add('active');
 
-document.querySelectorAll('.nav-link').forEach(l => {
-l.classList.remove('active');
-if(l.getAttribute('data-section') === id) l.classList.add('active');
-});
-window.scrollTo(0,0);
-}
-
-// ---------------------------------------------------------
-// RESTORED ORIGINAL WORKING ENGINES FOR 2FA & MAIL API
-// ---------------------------------------------------------
-
-// 1. ORIGINAL 2FA OTP GENERATOR ENGINE
-function run2faEngine() {
-    var secret = document.getElementById('secKey').value.trim().replace(/\s+/g, '');
-    if (!secret) {
-        alert('Please enter a 2FA secret key.');
-        return;
-    }
-    try {
-        // Your original logic using jsSHA library
-        var key = base32tohex(secret);
-        var epoch = Math.round(new Date().getTime() / 1000);
-        var time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, '0');
-        
-        var shaObj = new jsSHA("SHA-1", "HEX");
-        shaObj.setHMACKey(key, "HEX");
-        shaObj.update(time);
-        var hmac = shaObj.getHMAC("HEX");
-        
-        var offset = hex2dec(hmac.substring(hmac.length - 1));
-        var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec('7fffffff')) + '';
-        otp = otp.substr(otp.length - 6, 6);
-        
-        document.getElementById('val2fa').innerText = otp;
-        document.getElementById('out2faBox').style.display = 'block';
-        
-        // Auto-copy function
-        navigator.clipboard.writeText(otp);
-    } catch (err) {
-        alert('Invalid 2FA Secret Key format.');
-    }
-}
-
-function dec2hex(s) { return (s < 15.5 ? '0' : '') + Math.round(s).toString(16); }
-function hex2dec(s) { return parseInt(s, 16); }
-function leftpad(str, len, pad) {
-    if (len + 1 >= str.length) {
-        str = Array(len + 1 - str.length).join(pad) + str;
-    }
-    return str;
-}
-function base32tohex(base32) {
-    var base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    var bits = "";
-    var hex = "";
-    for (var i = 0; i < base32.length; i++) {
-        var val = base32chars.indexOf(base32.charAt(i).toUpperCase());
-        bits += leftpad(val.toString(2), 5, '0');
-    }
-    for (var i = 0; i + 4 <= bits.length; i += 4) {
-        var chunk = bits.substr(i, 4);
-        hex = hex + parseInt(chunk, 2).toString(16);
-    }
-    return hex;
-}
-
-// 2. ORIGINAL UID CHECKER ENGINE
-async function runUidChecker() {
-    const txt = document.getElementById('uidInput').value.trim(); 
-    const term = document.getElementById('uidTerm');
-    if(!txt) return alert('Insert UID Array Strings!');
-    const lines = txt.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    term.innerHTML = 'Starting multi-threaded validation matrix...<br>';
-    document.getElementById('uidRunBtn').disabled = true;
-    for(let line of lines) {
-        let uid = line.split('|')[0].trim().replace(/[^a-zA-Z0-9.]/g, '');
-        if(!uid) continue;
-        try {
-            const res = await fetch(`https://graph.facebook.com/${uid}/picture?type=normal&_ts=${Date.now()}`);
-            const el = document.createElement('div'); el.className = 'term-line';
-            if(res.ok && res.url.includes('100x100')) { el.className += ' term-live'; el.innerText = `[LIVE VALID] Core ID: ${uid}`; }
-            else { el.className += ' term-die'; el.innerText = `[TERMINATED] Core ID: ${uid}`; }
-            term.appendChild(el); term.scrollTop = term.scrollHeight;
-        } catch(err) { }
-    }
-    document.getElementById('uidRunBtn').disabled = false;
-}
-function clearUidWorkspace() { document.getElementById('uidInput').value = ''; document.getElementById('uidTerm').innerText = 'Workspace Reset Complete.'; }
-
-// 3. ORIGINAL API MAIL ENGINE (REAL FUNCTIONALITY RESTORED)
-function fetchMailCode() {
-    const raw = document.getElementById('mailRaw').value.trim(); 
-    const term = document.getElementById('mailTerm');
-    if(!raw) return alert('Missing Credentials Input Data streams!');
-    
-    const btn = document.getElementById('mailRunBtn'); 
-    btn.disabled = true;
-    term.innerHTML = 'Connecting endpoint dynamic channel pipelines...<br>';
-    
-    // Exactly your working OnRender backend connector
-    fetch('https://toll-376d.onrender.com/get-code', {
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ raw_input: raw })
-    })
-    .then(res => res.json())
-    .then(data => {
-        btn.disabled = false;
-        if(data.status === 'success') { 
-            term.innerHTML += `<span class="term-live">[SUCCESS] Retrieved Passcode: ${data.code}</span><br>`; 
-        } else { 
-            term.innerHTML += `<span class="term-die">[FAILURE] Bridge Message: ${data.message}</span><br>`; 
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-section') === sectionId) {
+            link.classList.add('active');
         }
-    })
-    .catch((err) => { 
-        btn.disabled = false; 
-        term.innerHTML += `<span class="term-die">[CORS / OFFLINE ERROR] Endpoint connection pipeline blocked.</span><br>`; 
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </body>
