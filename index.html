@@ -1,468 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Longisir VIP Portal - Free Tools</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap');
-
-:root {
---primary: rgb(168, 85, 247);
---bg: rgb(10, 11, 18);
---card-bg: rgb(21, 23, 37);
---text-gray: rgb(156, 163, 175);
---btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(139, 92, 246));
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-body {
-background: var(--bg);
-color: rgb(255, 255, 255);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-}
-
-.section {
-display: none;
-width: 100%;
-}
-
-.section.active {
-display: block;
-}
-
-.top-nav {
-background: rgba(15, 17, 26, 0.95);
-backdrop-filter: blur(10px);
-border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-padding: 15px 0;
-position: sticky;
-top: 0;
-z-index: 1000;
-width: 100%;
-}
-
-.nav-container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 0 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-wrap: wrap;
-gap: 15px;
-}
-
-.logo {
-display: flex;
-align-items: center;
-gap: 10px;
-font-size: 20px;
-font-weight: 800;
-color: var(--primary);
-cursor: pointer;
-}
-
-.logo i { font-size: 24px; }
-
-.nav-links {
-display: flex;
-gap: 10px;
-align-items: center;
-flex-wrap: wrap;
-}
-
-.nav-links a {
-color: var(--text-gray);
-text-decoration: none;
-font-weight: 600;
-font-size: 13px;
-transition: all 0.3s;
-cursor: pointer;
-padding: 8px 12px;
-border-radius: 8px;
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-color: rgb(255, 255, 255);
-background: rgba(168, 85, 247, 0.1);
-}
-
-.container {
-max-width: 1100px;
-margin: 0 auto;
-padding: 40px 20px;
-width: 100%;
-flex: 1;
-}
-
-.hero {
-text-align: center;
-margin-bottom: 40px;
-}
-
-.hero h1 {
-font-size: clamp(24px, 5vw, 54px);
-font-weight: 800;
-margin-bottom: 8px;
-}
-
-.hero p {
-color: var(--text-gray);
-letter-spacing: 3px;
-font-size: 11px;
-font-weight: 600;
-text-transform: uppercase;
-margin-bottom: 20px;
-}
-
-.hero-desc {
-color: var(--text-gray);
-font-size: 15px;
-max-width: 700px;
-margin: 0 auto 30px auto;
-line-height: 1.6;
-text-transform: none;
-}
-
-.home-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 20px;
-margin-bottom: 40px;
-width: 100%;
-}
-
-.h-card {
-background: var(--card-bg);
-border: 1px solid rgba(255,255,255,0.05);
-padding: 40px 20px;
-border-radius: 20px;
-text-align: center;
-transition: 0.3s ease;
-cursor: pointer;
-}
-
-.h-card i {
-font-size: 40px;
-color: var(--primary);
-margin-bottom: 15px;
-display: block;
-filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.5));
-}
-
-.h-card h3 {
-font-size: 18px;
-font-weight: 800;
-margin-bottom: 8px;
-}
-
-.h-card p {
-font-size: 13px;
-color: var(--text-gray);
-}
-
-.h-card:hover {
-transform: translateY(-6px);
-border-color: rgba(168, 85, 247, 0.3);
-background: rgb(26, 29, 46);
-}
-
-.page-header {
-text-align: center;
-margin-bottom: 40px;
-}
-
-.page-header h1 {
-font-size: 36px;
-font-weight: 800;
-margin-bottom: 10px;
-color: var(--primary);
-}
-
-.page-header p {
-color: var(--text-gray);
-font-size: 15px;
-}
-
-.content-box {
-background: var(--card-bg);
-padding: 30px;
-border-radius: 20px;
-border: 1px solid rgba(255, 255, 255, 0.05);
-margin-bottom: 25px;
-}
-
-.content-box h2 {
-color: var(--primary);
-margin-bottom: 15px;
-font-size: 22px;
-font-weight: 800;
-}
-
-.content-box p {
-color: var(--text-gray);
-font-size: 14px;
-line-height: 1.6;
-}
-
-.tool-wrapper {
-width: 100%;
-min-height: calc(100vh - 70px);
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: flex-start;
-}
-
-.responsive-iframe {
-width: 100%;
-flex-grow: 1;
-min-height: calc(100vh - 70px);
-border: none;
-display: block;
-}
-
-/* Footer AdSense Compliance Styles */
-.site-footer {
-background: rgba(15, 17, 26, 0.8);
-border-top: 1px solid rgba(255, 255, 255, 0.05);
-padding: 30px 20px;
-margin-top: auto;
-width: 100%;
-text-align: center;
-}
-.footer-container {
-max-width: 1100px;
-margin: 0 auto;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 20px;
-}
-.footer-links {
-display: flex;
-gap: 25px;
-flex-wrap: wrap;
-justify-content: center;
-}
-.footer-links a {
-color: var(--text-gray);
-text-decoration: none;
-font-size: 12px;
-font-weight: 600;
-text-transform: uppercase;
-letter-spacing: 1px;
-transition: color 0.2s;
-cursor: pointer;
-}
-.footer-links a:hover {
-color: var(--primary);
-}
-.footer-seo-box {
-background: rgba(255, 255, 255, 0.02);
-border: 1px solid rgba(255, 255, 255, 0.04);
-border-radius: 14px;
-padding: 15px 20px;
-max-width: 800px;
-text-align: left;
-}
-.footer-seo-box h4 {
-font-size: 11px;
-color: #e2e8f0;
-text-transform: uppercase;
-letter-spacing: 1px;
-margin-bottom: 6px;
-font-weight: 800;
-}
-.footer-seo-box p {
-font-size: 11px;
-color: rgba(156, 163, 175, 0.8);
-line-height: 1.6;
-}
-.copyright-text {
-font-size: 11px;
-color: rgba(156, 163, 175, 0.4);
-}
-
-@media (max-width: 768px) {
-.top-nav { padding: 10px 0; }
-.nav-container { flex-direction: column; align-items: center; text-align: center; gap: 10px; }
-.nav-links { width: 100%; justify-content: center; gap: 4px; }
-.nav-links a { font-size: 11px; padding: 6px 8px; }
-.container { padding: 20px 12px; }
-.home-grid { grid-template-columns: 1fr; }
-.responsive-iframe { min-height: calc(100vh - 120px); }
-.tool-wrapper { min-height: calc(100vh - 120px); }
-}
-</style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-
-<nav class="top-nav">
-<div class="nav-container">
-<div class="logo" onclick="showSection('home')">
-<i class="fa-solid fa-cube"></i>
-<span>LONGISIR</span>
-</div>
-
-<div class="nav-links">
-<a onclick="showSection('home')" class="nav-link active" data-section="home">Home</a>
-<a onclick="showSection('tool-2fa')" class="nav-link" data-section="tool-2fa">2FA AUTH</a>
-<a onclick="showSection('tool-mail')" class="nav-link" data-section="tool-mail">API MAIL</a>
-<a onclick="showSection('tool-uid')" class="nav-link" data-section="tool-uid">UID CHECKER</a>
-</div>
-</div>
-</nav>
-
-<div id="home" class="section active">
-<div class="container">
-<header class="hero">
-<h1>Longisir VIP Portal:</h1>
-<p>THE NEXT GEN AUTOMATION HUB</p>
-<p class="hero-desc">Your unified solution for all security and productivity tools. Professionally built for efficiency, speed, and reliability. 100% FREE!</p>
-</header>
-
-<main class="home-grid">
-<div class="h-card" onclick="showSection('tool-2fa')">
-<i class="fa-solid fa-shield-halved"></i>
-<h3>2FA AUTH</h3>
-<p>Fast Code Gen</p>
-</div>
-
-<div class="h-card" onclick="showSection('tool-mail')">
-<i class="fa-solid fa-envelope"></i>
-<h3>API MAIL</h3>
-<p>Email Scraper</p>
-</div>
-
-<div class="h-card" onclick="showSection('tool-uid')">
-<i class="fa-solid fa-bolt"></i>
-<h3>UID CHECKER</h3>
-<p>Bulk Validator</p>
-</div>
-</main>
-</div>
-</div>
-
-<div id="about" class="section">
-<div class="container">
-<div class="page-header">
-<h1>About Longisir VIP</h1>
-<p>The Next Generation Automation Hub</p>
-</div>
-<div class="content-box">
-<h2>Our Mission & Ecosystem</h2>
-<p>Longisir VIP provides top-tier automation tools for professionals. Our infrastructure is optimized for multi-threaded performance, ensuring that your data processing is not only fast but also secure and reliable. All tools are 100% FREE with no limitations!</p>
-</div>
-</div>
-</div>
-
-<div id="privacy" class="section">
-<div class="container">
-<div class="page-header">
-<h1>Privacy Policy</h1>
-<p>Data Isolation and Integrity Framework</p>
-</div>
-<div class="content-box">
-<h2>Information Processing Statement</h2>
-<p>At Longisir VIP, user security and privacy are of utmost priority. We handle standard multi-protocol API verification structures designed explicitly for legitimate administrative account recovery operations. Our infrastructure operates completely stateless. When an account data line parameter is deployed through our client interface, the query parameters are securely packed and pushed immediately to the target validation node. Zero state sequences, logs, authorization tokens, or structural data arrays are intercepted or persistent inside our global servers.</p>
-</div>
-</div>
-</div>
-
-<div id="terms" class="section">
-<div class="container">
-<div class="page-header">
-<h1>Terms of Service</h1>
-<p>User Agreement and Operating Compliance</p>
-</div>
-<div class="content-box">
-<h2>Terms of Services Framework</h2>
-<p>Users are strictly bound to operate these automation workflows exclusively on configurations they legally own or manage. Automated distributed denial operations or raw packet request overload through unauthorized endpoints is actively protected and prohibited by default.</p>
-</div>
-</div>
-</div>
-
-<div id="tool-2fa" class="section">
-<div class="tool-wrapper">
-<iframe id="iframe-2fa" class="responsive-iframe" srcdoc="
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>🔐 Premium 2FA Authenticator Pro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longisir VIP Portal - Free Tools</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap');
         :root {
-            --bg: #060813;
-            --card-bg: #0b0f19;
-            --input-bg: #111726;
-            --primary: #a855f7;
-            --primary-glow: rgba(168, 85, 247, 0.3);
-            --btn-grad: linear-gradient(135deg, #a855f7, #3b82f6);
-            --text: #f1f5f9;
+            --primary: rgb(168, 85, 247);
+            --bg: rgb(10, 11, 18);
+            --card-bg: rgb(21, 23, 37);
+            --text-gray: rgb(156, 163, 175);
+            --btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(139, 92, 246));
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .wrapper { width: 100%; max-width: 500px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center; }
-        h1 { font-size: 22px; font-weight: 800; margin-bottom: 25px; background: linear-gradient(to right, #fff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        input { w-full; width: 100%; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
-        button { width: 100%; background: var(--btn-grad); border: none; border-radius: 12px; padding: 14px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
-        .output-box { background: var(--input-bg); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 16px; padding: 20px; margin-top: 25px; position: relative; cursor: pointer; }
-        .output-box:hover { border-color: var(--primary); }
-        .code { font-size: 36px; font-weight: 800; color: #fff; letter-spacing: 4px; font-mono; }
-        .history { margin-top: 25px; max-height: 150px; overflow-y: auto; text-align: left; }
-        .history-item { font-size: 12px; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #94a3b8; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: rgb(255, 255, 255); min-height: 100vh; display: flex; flex-direction: column; }
+        .section { display: none; width: 100%; }
+        .section.active { display: block; }
+        .top-nav { background: rgba(15, 17, 26, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 15px 0; position: sticky; top: 0; z-index: 1000; width: 100%; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; color: var(--primary); cursor: pointer; }
+        .logo i { font-size: 24px; }
+        .nav-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-gray); text-decoration: none; font-weight: 600; font-size: 13px; transition: all 0.3s; cursor: pointer; padding: 8px 12px; border-radius: 8px; }
+        .nav-links a:hover, .nav-links a.active { color: rgb(255, 255, 255); background: rgba(168, 85, 247, 0.1); }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; width: 100%; flex: 1; }
+        .hero { text-align: center; margin-bottom: 40px; }
+        .hero h1 { font-size: clamp(24px, 5vw, 54px); font-weight: 800; margin-bottom: 8px; }
+        .hero p { color: var(--text-gray); letter-spacing: 3px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; }
+        .hero-desc { color: var(--text-gray); font-size: 15px; max-width: 700px; margin: 0 auto 30px auto; line-height: 1.6; text-transform: none; }
+        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; width: 100%; }
+        .h-card { background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.05); padding: 40px 20px; border-radius: 20px; text-align: center; transition: 0.3s ease; cursor: pointer; }
+        .h-card i { font-size: 40px; color: var(--primary); margin-bottom: 15px; display: block; filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.5)); }
+        .h-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+        .h-card p { font-size: 13px; color: var(--text-gray); }
+        .h-card:hover { transform: translateY(-6px); border-color: rgba(168, 85, 247, 0.3); background: rgb(26, 29, 46); }
+        
+        /* UID Checker Style */
+        .uid-container { width: 100%; max-width: 800px; background: #111827; border-radius: 16px; padding: 25px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); margin: 0 auto; }
+        .panel-title { font-size: 24px; font-weight: 700; color: #818cf8; margin-bottom: 20px; text-align: center; letter-spacing: 0.5px; }
+        .input-area-wrapper { margin-bottom: 15px; }
+        textarea { width: 100%; height: 160px; background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 15px; font-size: 14px; color: #f3f4f6; outline: none; resize: vertical; font-weight: 500; line-height: 1.5; overflow-y: auto; }
+        textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
+        .action-row { display: flex; gap: 12px; margin-bottom: 18px; }
+        .btn-start { flex: 1; background: linear-gradient(135deg, #4f46e5, #3b82f6); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
+        .btn-clear { background: #dc2626; color: white; border: none; padding: 0 25px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
+        .console-box { width: 100%; height: 260px; background: #030712; border-radius: 12px; padding: 15px; font-family: 'Courier New', Courier, monospace; font-size: 13px; color: #34d399; overflow-y: auto; margin-bottom: 20px; border: 1px solid #1f2937; box-shadow: inset 0 4px 12px rgba(0,0,0,0.6); line-height: 1.6; }
+        .console-log { margin-bottom: 4px; word-break: break-all; }
+        .log-live { color: #34d399; font-weight: 600; }
+        .log-die { color: #f87171; }
+        .footer-row { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        @media (min-width: 600px) { .footer-row { flex-direction: row; justify-content: space-between; } }
+        .stats-group { display: flex; gap: 10px; width: 100%; }
+        @media (min-width: 600px) { .stats-group { width: auto; } }
+        .stat-card { background: #1f2937; border: 1px solid #374151; border-radius: 10px; padding: 10px 15px; text-align: center; flex: 1; min-width: 85px; }
+        .stat-num { font-size: 15px; font-weight: 700; display: block; margin-bottom: 2px; }
+        .stat-label { font-size: 10px; color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .total-color { color: #e5e7eb; }
+        .live-color { color: #34d399; }
+        .die-color { color: #f87171; }
+        .btn-download { width: 100%; background: #059669; color: white; border: none; padding: 15px 28px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4); text-transform: uppercase; }
+        @media (min-width: 600px) { .btn-download { width: auto; } }
+
+        .site-footer { background: rgba(15, 17, 26, 0.8); border-top: 1px solid rgba(255, 255, 255, 0.05); padding: 30px 20px; margin-top: auto; width: 100%; text-align: center; }
+        .footer-container { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .copyright-text { font-size: 11px; color: rgba(156, 163, 175, 0.4); }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class='wrapper'>
-        <h1>🔐 Premium 2FA Authenticator</h1>
-        <div class='input-group'>
-            <label>Paste Secret Key</label>
-            <input type='text' id='secret-key' placeholder='Enter 2FA Key...'>
+
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="logo" onclick="showSection('home')">
+                <i class="fa-solid fa-cube"></i>
+                <span>LONGISIR</span>
+            </div>
+            <div class="nav-links">
+                <a onclick="showSection('home')" class="nav-link active" data-section="home">Home</a>
+                <a onclick="showSection('tool-2fa')" class="nav-link" data-section="tool-2fa">2FA AUTH</a>
+                <a onclick="showSection('tool-mail')" class="nav-link" data-section="tool-mail">API MAIL</a>
+                <a onclick="showSection('tool-uid')" class="nav-link" data-section="tool-uid">UID CHECKER</a>
+            </div>
         </div>
-        <button onclick='generateAndSave()'>Get Token Code</button>
-        <div class='output-box' onclick='copyManual()'>
-            <div class='code' id='2fa-result'>000000</div>
-            <p style='font-size:10px; color:#94a3b8; margin-top:5px;'>Click Code to Copy</p>
+    </nav>
+
+    <div id="home" class="section active">
+        <div class="container">
+            <header class="hero">
+                <h1>Longisir VIP Portal:</h1>
+                <p>THE NEXT GEN AUTOMATION HUB</p>
+                <p class="hero-desc">Your unified solution for all security and productivity tools. Professionally built for efficiency, speed, and reliability. 100% FREE!</p>
+            </header>
+            <main class="home-grid">
+                <div class="h-card" onclick="showSection('tool-2fa')">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>2FA AUTH</h3>
+                    <p>Fast Code Gen</p>
+                </div>
+                <div class="h-card" onclick="showSection('tool-mail')">
+                    <i class="fa-solid fa-envelope"></i>
+                    <h3>API MAIL</h3>
+                    <p>Email Scraper</p>
+                </div>
+                <div class="h-card" onclick="showSection('tool-uid')">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h3>UID CHECKER</h3>
+                    <p>Bulk Validator</p>
+                </div>
+            </main>
         </div>
-        <div class='history' id='history-container'></div>
     </div>
-    <script>
-        const MAX_HISTORY = 20;
-        function generateAndSave() {
-            const keyInput = document.getElementById('secret-key');
-            const key = keyInput.value.trim();
-            if(!key) return;
-            const code = Math.floor(100000 + Math.random() * 900000);
-            document.getElementById('2fa-result').innerText = code;
-            navigator.clipboard.writeText(code.toString());
-            addToHistory(key, code);
-            keyInput.value = '';
+
+    <div id="tool-2fa" class="section">
+        <div class="container">
+            <div class="page-header">
+                <h1>🔐 Premium 2FA Authenticator Pro</h1>
+                <p>Generate secure live tokens instantly</p>
+            </div>
+            </div>
+    </div>
+
+    <div id="tool-mail" class="section">
+        <div class="container">
+            <div class="page-header">
+                <h1>📬 API Mail Cloud Hub</h1>
+                <p>Extract and synchronise validation arrays</p>
+            </div>
+            </div>
+    </div>
+
+    <div id="tool-uid" class="section">
+        <div class="container">
+            <div class="page-header">
+                <h1>Premium Bulk UID Checker Panel</h1>
+                <p>Validate Facebook profiles fast with multi-threaded engine</p>
+            </div>
+            
+            <div class="uid-container">
+                <div class="panel-title">Bulk UID Checker Pro</div>
+                
+                <div class="input-area-wrapper">
+                    <textarea id="inputData" placeholder="Paste data here... (Supports UID|PASS|2FA or Space/Tab separated formats)"></textarea>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn-start" id="startBtn" onclick="startScanner()">Start Scanner</button>
+                    <button class="btn-clear" onclick="clearTool()">Clear</button>
+                </div>
+
+                <div class="console-box" id="consoleScreen">Console ready...</div>
+
+                <div class="footer-row">
+                    <div class="stats-group">
+                        <div class="stat-card">
+                            <span class="stat-num total-color" id="totalCount">0</span>
+                            <span class="stat-label">Total</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num live-color" id="livePercent">0% LIVE</span>
+                            <span class="stat-label">Live</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num die-color" id="diePercent">0% DIE</span>
+                            <span class="stat-label">Die</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-download" onclick="downloadLiveCSV()">Download Live Accounts</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p class="copyright-text">© 2026 LONGISIR. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+<script>
+    // Navigation Logic
+    function showSection(sectionId) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+        
+        document.getElementById(sectionId).classList.add('active');
+        const activeLink = document.querySelector(`.nav-links a[data-section="${sectionId}"]`);
+        if(activeLink) activeLink.classList.add('active');
+    }
+
+    // UID Checker Core Engine
+    let liveAccounts = []; 
+    const CONCURRENCY_LIMIT = 5; 
+
+    async function checkFacebookUID(uid) {
+        try {
+            const cleanUID = uid.trim().replace(/[^a-zA-Z0-9.]/g, "");
+            if(!cleanUID) return "DEAD ❌";
+            
+            const response = await fetch(`https://graph.facebook.com/${cleanUID}/picture?type=normal&_ts=${Date.now()}`);
+            if (response.ok && response.url.includes('100x100')) {
+                return "LIVE ✅";
+            } else {
+                return "DEAD ❌";
+            }
+        } catch (error) {
+            return "ERROR ⚠️";
         }
-        function addToHistory(key, code) {
-            const container = document.getElementById('history-container');
-            const item = document.createElement('div');
-            item.className = 'history-item';
-            item.innerHTML = `<b>CODE: ${code}</b> | <span style='opacity:0.7'>KEY: ${key}</span>`;
-            container.insertBefore(item, container.firstChild);
-            if (container.getElementsByClassName('history-item').length > MAX_HISTORY) {
-                container.removeChild(container.lastChild);
+    }
+
+    async function startScanner() {
+        const inputStr = document.getElementById('inputData').value.trim();
+        const consoleScreen = document.getElementById('consoleScreen');
+        const startBtn = document.getElementById('startBtn');
+        
+        if (!inputStr) {
+            alert("Please paste your UID data first!");
+            return;
+        }
+
+        const lines = inputStr.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+        
+        consoleScreen.innerHTML = "Initializing fast multi-threaded engine...<br>";
+        liveAccounts = [];
+        let total = lines.length;
+        let live = 0;
+        let die = 0;
+
+        document.getElementById('totalCount').innerText = total;
+        startBtn.disabled = true;
+        startBtn.innerText = "Scanning Fast...";
+
+        function updateStats() {
+            const livePct = total > 0 ? Math.round((live / total) * 100) : 0;
+            const diePct = total > 0 ? Math.round((die / total) * 100) : 0;
+            document.getElementById('livePercent').innerText = `${livePct}% LIVE`;
+            document.getElementById('diePercent').innerText = `${diePct}% DIE`;
+        }
+
+        const queue = [...lines];
+        
+        async function worker() {
+            while (queue.length > 0) {
+                const currentLine = queue.shift();
+                if (!currentLine) continue;
+
+                let uid = '';
+                let pass = '';
+                let twoFA = '';
+
+                if (currentLine.includes('|')) {
+                    const parts = currentLine.split('|');
+                    uid = parts[0] ? parts[0].trim() : '';
+                    pass = parts[1] ? parts[1].trim() : '';
+                    twoFA = parts.slice(2).join('|').trim();
+                } else {
+                    const parts = currentLine.split(/\s+/);
+                    uid = parts[0] ? parts[0].trim() : '';
+                    pass = parts[1] ? parts[1].trim() : '';
+                    
+                    if (parts.length > 2) {
+                        const rawAfterPass = currentLine.substring(currentLine.indexOf(pass) + pass.length).trim();
+                        twoFA = rawAfterPass;
+                    }
+                }
+
+                if (!uid) continue;
+
+                const result = await checkFacebookUID(uid);
+                const logLine = document.createElement('div');
+                logLine.className = 'console-log';
+
+                if (result === "LIVE ✅") {
+                    logLine.className += ' log-live';
+                    logLine.innerText = `[LIVE] ID: ${uid}`;
+                    live++;
+                    liveAccounts.push({ uid, pass, twoFA });
+                } else {
+                    logLine.className += ' log-die';
+                    logLine.innerText = `[DIE] ID: ${uid}`;
+                    die++;
+                }
+
+                consoleScreen.appendChild(logLine);
+                consoleScreen.scrollTop = consoleScreen.scrollHeight; 
+                updateStats();
             }
         }
-        function copyManual() {
-            const code = document.getElementById('2fa-result').innerText;
-            navigator.clipboard.writeText(code);
-            alert('Code copied!');
+
+        const workers = [];
+        const activeThreads = Math.min(CONCURRENCY_LIMIT, queue.length);
+        
+        for (let i = 0; i < activeThreads; i++) {
+            workers.push(worker());
+        }
+
+        await Promise.all(workers);
+
+        const finalLog = document.createElement('div');
+        finalLog.style.color = '#818cf8';
+        finalLog.style.paddingTop = '10px';
+        finalLog.style.fontWeight = 'bold';
+        finalLog.innerText = `⚡ Completed! Total Live: ${live}, Total Die: ${die}`;
+        consoleScreen.appendChild(finalLog);
+        consoleScreen.scrollTop = consoleScreen.scrollHeight;
+        
+        startBtn.disabled = false;
+        startBtn.innerText = "Start Scanner";
+    }
+
+    // ফিক্স করা ডাউনলোড ফাংশন - কোনো বাড়তি কোটেশন চিহ্ন (" ") থাকবে না
+    function downloadLiveCSV() {
+        if (liveAccounts.length === 0) {
+            alert("No live accounts found to download!");
+            return;
+        }
+
+        let csvRows = [];
+
+        liveAccounts.forEach(account => {
+            // কোনো বাড়তি কমা বা কোটেশন ছাড়া সরাসরি র ড্যাটা বসবে
+            csvRows.push(`${account.uid}|${account.pass}|${account.twoFA}`);
+        });
+
+        const csvString = csvRows.join("\n");
+        const contentWithBOM = "\ufeff" + csvString;
+        
+        // ডাইরেক্ট টেক্সট ফরম্যাটে ডাউনলোড হবে যাতে উইন্ডোজ নোটপ্যাড কোনো কোটেশন বা ফালতু ক্যারেক্টার জেনারেট না করে
+        const blob = new Blob([contentWithBOM], { type: 'text/plain;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "live_accounts.txt");
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    }
+
+    function clearTool() {
+        document.getElementById('inputData').value = '';
+        document.getElementById('consoleScreen').innerHTML = 'Console ready...';
+        document.getElementById('totalCount').innerText = '0';
+        document.getElementById('livePercent').innerText = '0% LIVE';
+        document.getElementById('diePercent').innerText = '0% DIE';
+        liveAccounts = [];
+    }
+</script>
+
+</body>
+</html>
