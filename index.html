@@ -5,14 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Longisir VIP Portal - Free Tools</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap');
 
 :root {
 --primary: rgb(168, 85, 247);
+--primary-glow: rgba(168, 85, 247, 0.2);
 --bg: rgb(10, 11, 18);
 --card-bg: rgb(21, 23, 37);
 --text-gray: rgb(156, 163, 175);
 --btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(139, 92, 246));
+--emerald: rgb(52, 211, 153);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -22,7 +24,7 @@ background: var(--bg);
 color: rgb(255, 255, 255);
 min-height: 100vh;
 display: flex;
-flex-direction: column; /* এখানে টাইপো ঠিক করা হয়েছে */
+flex-direction: column;
 }
 
 .section {
@@ -92,7 +94,6 @@ color: rgb(255, 255, 255);
 background: rgba(168, 85, 247, 0.1);
 }
 
-/* সেন্ট্রাল কন্টেইনার ফিক্স */
 .container {
 max-width: 1100px;
 margin: 0 auto;
@@ -126,7 +127,7 @@ font-size: 15px;
 max-width: 700px;
 margin: 0 auto 30px auto;
 line-height: 1.6;
-text-transform: none; /* আপারকেস ফিক্স */
+text-transform: none;
 }
 
 .home-grid {
@@ -210,15 +211,143 @@ color: var(--text-gray);
 font-size: 15px;
 }
 
-.content-box {
+/* New Content Styles for About & Sales */
+.info-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+gap: 25px;
+margin-bottom: 40px;
+}
+
+.info-card {
 background: var(--card-bg);
 padding: 30px;
 border-radius: 20px;
 border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-card h2 {
+font-size: 20px;
+font-weight: 800;
+margin-bottom: 15px;
+display: flex;
+align-items: center;
+gap: 10px;
+color: #fff;
+}
+
+.info-card h2 i {
+color: var(--primary);
+}
+
+.info-card p {
+color: var(--text-gray);
+font-size: 14px;
+line-height: 1.6;
+margin-bottom: 15px;
+}
+
+.feature-list {
+list-style: none;
+}
+
+.feature-list li {
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 14px;
+color: #f1f5f9;
+margin-bottom: 10px;
+}
+
+.feature-list li i {
+color: var(--emerald);
+font-size: 12px;
+}
+
+/* Pricing / Sales Component */
+.pricing-container {
+display: flex;
+justify-content: center;
+gap: 30px;
+flex-wrap: wrap;
+margin-top: 20px;
+}
+
+.price-card {
+background: var(--card-bg);
+border: 2px solid rgba(168, 85, 247, 0.3);
+box-shadow: 0 10px 30px var(--primary-glow);
+padding: 40px 30px;
+border-radius: 24px;
+text-align: center;
+max-width: 400px;
+width: 100%;
+position: relative;
+}
+
+.badge {
+position: absolute;
+top: -15px;
+left: 50%;
+transform: translateX(-50%);
+background: var(--btn-grad);
+color: #fff;
+padding: 6px 16px;
+font-size: 11px;
+font-weight: 800;
+border-radius: 20px;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.price-card h2 {
+font-size: 24px;
+font-weight: 800;
+margin-bottom: 10px;
+}
+
+.price-card .cost {
+font-size: 48px;
+font-weight: 800;
+color: var(--emerald);
+margin-bottom: 10px;
+}
+
+.price-card .cost span {
+font-size: 16px;
+color: var(--text-gray);
+font-weight: 400;
+}
+
+.price-card p {
+color: var(--text-gray);
+font-size: 14px;
 margin-bottom: 25px;
 }
 
-/* Responsive Wrapper Config for iframe */
+.sales-btn {
+display: block;
+width: 100%;
+padding: 14px;
+background: var(--btn-grad);
+color: #fff;
+text-decoration: none;
+font-weight: 700;
+border-radius: 12px;
+margin-top: 25px;
+transition: 0.3s;
+cursor: pointer;
+border: none;
+font-size: 14px;
+}
+
+.sales-btn:hover {
+opacity: 0.9;
+transform: translateY(-2px);
+}
+
+/* Tool Wrapper Config */
 .tool-wrapper {
 width: 100%;
 min-height: calc(100vh - 70px);
@@ -236,14 +365,14 @@ border: none;
 display: block;
 }
 
-/* মোবাইলের জন্য কাস্টম রেসপন্সিভ ব্রেকপয়েন্ট */
 @media (max-width: 768px) {
 .top-nav { padding: 10px 0; }
 .nav-container { flex-direction: column; align-items: center; text-align: center; gap: 10px; }
 .nav-links { width: 100%; justify-content: center; gap: 4px; }
 .nav-links a { font-size: 11px; padding: 6px 8px; }
 .container { padding: 20px 12px; }
-.home-grid { grid-template-columns: 1fr; } /* মোবাইলে এক লাইনে একটা কার্ড দেখাবে */
+.home-grid { grid-template-columns: 1fr; }
+.info-grid { grid-template-columns: 1fr; }
 .responsive-iframe { min-height: calc(100vh - 120px); }
 .tool-wrapper { min-height: calc(100vh - 120px); }
 }
@@ -309,12 +438,25 @@ display: block;
 <div class="container">
 <div class="page-header">
 <h1>About Longisir VIP</h1>
-<p>The Next Generation Automation Hub</p>
+<p>The Ultimate Destination For Modern Automation & Security Tools</p>
 </div>
 
-<div class="content-box">
-<h2>Our Mission</h2>
-<p>Longisir VIP was built with one goal in mind: to provide professionals with the most powerful, efficient, and reliable automation tools available - completely FREE.</p>
+<div class="info-grid">
+<div class="info-card">
+<h2><i class="fa-solid fa-rocket"></i> Our Core Mission</h2>
+<p>Longisir VIP Portal was engineered to bridge the gap between complex scripts and seamless user experiences. We aim to provide powerful, professional-grade tools to automation experts, security researchers, and managers completely free of cost.</p>
+<p>By leveraging cloud architectures and clean front-end execution, our web platform delivers instant results without heavy dependencies.</p>
+</div>
+
+<div class="info-card">
+<h2><i class="fa-solid fa-bolt"></i> Key Infrastructure Advantages</h2>
+<ul class="feature-list">
+<li><i class="fa-solid fa-circle-check"></i> <strong>Multi-Threaded Efficiency:</strong> Scripts optimized for fast concurrent execution.</li>
+<li><i class="fa-solid fa-circle-check"></i> <strong>CORS & Secure Bridges:</strong> Safe, authenticated endpoints for data processing.</li>
+<li><i class="fa-solid fa-circle-check"></i> <strong>Mobile & Desktop Fluidity:</strong> Fully tailored responsive layout handles any layout.</li>
+<li><i class="fa-solid fa-circle-check"></i> <strong>Zero Logs & Privacy First:</strong> Your secret tokens and bulk data remain inside your session.</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -322,8 +464,25 @@ display: block;
 <div id="sales" class="section">
 <div class="container">
 <div class="page-header">
-<h1>💎 100% FREE Tools</h1>
-<p>No payment required - All features unlocked</p>
+<h1>Premium Licensing & Access</h1>
+<p>Transparent plans designed to serve professionals globally</p>
+</div>
+
+<div class="pricing-container">
+<div class="price-card">
+<span class="badge">Active Plan</span>
+<h2>VIP Community Pass</h2>
+<div class="cost">$0<span> / lifetime</span></div>
+<p>Get immediate unrestricted access to all deployment tools inside the Longisir ecosystem with no recurring hidden fees.</p>
+<ul class="feature-list" style="text-align: left;">
+<li><i class="fa-solid fa-check"></i> Unlimited 2FA Authenticator Tokens</li>
+<li><i class="fa-solid fa-check"></i> Fast Live Bulk FB UID Checker (Max Threads)</li>
+<li><i class="fa-solid fa-check"></i> API Mail OTP Extraction Module</li>
+<li><i class="fa-solid fa-check"></i> 24/7 Server Status Integration</li>
+<li><i class="fa-solid fa-check"></i> Periodic Core Script Updates</li>
+</ul>
+<button class="sales-btn" onclick="showSection('home')">Get Started For Free</button>
+</div>
 </div>
 </div>
 </div>
