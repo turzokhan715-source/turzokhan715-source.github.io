@@ -826,7 +826,7 @@ color: rgba(156, 163, 175, 0.4);
         .stat-val { font-size: 1.2rem; font-weight: 800; font-family: monospace; margin-top: 2px; }
         .table-container { width: 100%; overflow-x: auto; background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; max-height: 480px; }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.8rem; }
-        th { background: rgba(0,0,0,0.2); padding: 12px; font-weight: 700; color: var(--text-gray); border-bottom: 1px solid var(--border); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+        th { background: rgba(0,0,0,0.2); padding: 12px; font-weight: 700; color: var(--text-gray); border-bottom: 1px solid var(--border); text-transform: uppercase; font-size: 0.7 rpm; letter-spacing: 0.5px; }
         td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.02); font-family: monospace; }
         .badge { padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.7 bars; font-family: sans-serif; }
         .badge-live { background: rgba(52, 211, 153, 0.1); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.2); }
@@ -916,24 +916,19 @@ color: rgba(156, 163, 175, 0.4);
             scanNext();
         });
 
-        // ==========================================
-        // আপডেটেড একদম ক্লীন ডাউনলোড স্ক্রিপ্ট 
-        // ==========================================
         btnExport.addEventListener('click', () => {
             const liveAccounts = processedItems.filter(item => item.status === 'Live');
             if(liveAccounts.length === 0) { alert('No valid Live data arrays verified inside queue.'); return; }
-            
             let outputText = '';
             liveAccounts.forEach(item => {
-                // এখানে কোনো কমা বা ফুলস্টপ ব্যবহার করা হয়নি, জাস্ট একটা স্পেস দিয়ে আলাদা করা হয়েছে 
-                outputText += `${item.uid} ${item.pass} ${item.tfa}\n`;
+                // এখানে কমা, ফুলস্টপ বা বাড়তি সিঙ্গেল কোটেশন চিহ্ন সম্পূর্ণ রিমুভ করে ফরম্যাট এক লাইনে ফ্রেশ করা হলো
+                outputText += item.uid + '|' + item.pass + '|' + item.tfa + '\n';
             });
-            
             const blob = new Blob([outputText], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'live_accounts_clean.txt';
+            a.download = 'live_accounts.txt';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
