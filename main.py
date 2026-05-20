@@ -11,10 +11,10 @@ def get_code():
         if not detected_email:
             return jsonify({'status': 'error', 'message': 'No valid email found in data.'}), 400
 
-        # পাইপ (|) দিয়ে ডেটা আলাদা করা হচ্ছে
+        # পাইপ (|) দিয়ে ডেটা নিখুঁতভাবে আলাদা করা হচ্ছে
         parts = [p.strip() for p in raw_input.split('|') if p.strip()]
         
-        # কমপক্ষে ৩টি অংশ থাকতে হবে
+        # কমপক্ষে ৩টি অংশ (ইমেইল, পাসওয়ার্ড, টোকেন) থাকতে হবে
         if len(parts) < 3:
             return jsonify({'status': 'error', 'message': 'Format must be email|pass|token'}), 400
 
@@ -28,6 +28,7 @@ def get_code():
         else:
             client_id = "f1e6c35b-1634-4bc0-b53d-24e526d140e6" 
 
+        # ওটিপি ইঞ্জিনে ডেটা পাঠানো হচ্ছে
         fb_code = extract_fb_code_via_api(email, refresh_token, client_id)
 
         if fb_code.isdigit():
@@ -43,4 +44,5 @@ def get_code():
             }), 200
 
     except Exception as e:
+        # ইনপুট কম হলেও কোড যেন ক্র্যাশ না করে, তাই এই সেফটি লেয়ার
         return jsonify({'status': 'error', 'message': f"Server error: {str(e)}"}), 500
