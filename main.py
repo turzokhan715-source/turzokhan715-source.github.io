@@ -1,3 +1,95 @@
+import os
+import re
+import requests
+from flask import Flask, request, jsonify, render_template_string
+from flask_cors import CORS
+
+app = Flask(__name__)
+# 🌐 Browser block validation layer config ruleset
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# 🎯 Facebook Lite Endpoint Logic Core API
+def extract_fb_code_via_api(email, refresh_token, client_id):
+    token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
+        "Accept": "application/json"
+    }
+
+    payload = {
+        "client_id": client_id,
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
+        "scope": "https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read offline_access"
+    }
+
+    try:
+        # ১ম চেষ্টা: Graph API Scope
+        res = requests.post(token_url, headers=headers, data=payload, timeout=15)
+
+        # ২য় চেষ্টা: OWA Outlook Scope
+        if res.status_code != 200:
+            payload["scope"] = "https://outlook.office.com/IMAP.AccessAsUser.All offline_access"
+            res = requests.post(token_url, headers=headers, data=payload, timeout=15)
+
+        # ৩য় চেষ্টা: Basic auth fallback
+        if res.status_code != 200:
+            payload.pop("scope", None)
+            res = requests.post(token_url, headers=headers, data=payload, timeout=15)
+
+        if res.status_code != 200:
+            return f"Endpoint rejected token. Status: {res.status_code}"
+
+        res_data = res.json()
+        access_token = res_data.get("access_token")
+        if not access_token:
+            return "Access Token missing in token response."
+
+        # Facebook email parsing structure layers
+        messages_url = "https://graph.microsoft.com/v1.0/me/messages?$search=\"Facebook\"&$top=1"
+        api_headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K)"
+        }
+
+        msg_res = requests.get(messages_url, headers=api_headers, timeout=15)
+
+        if msg_res.status_code != 200:
+            messages_url = "https://outlook.office.com/api/v2.0/me/messages?$search=\"Facebook\"&$top=1"
+            msg_res = requests.get(messages_url, headers=api_headers, timeout=15)
+
+        if msg_res.status_code != 200:
+            return f"Connected, but failed to fetch inbox (Status: {msg_res.status_code})."
+
+        messages = msg_res.json().get("value", [])
+        if not messages:
+            return "No recent Facebook emails found in this inbox."
+
+        latest_message = messages[0]
+        body_content = latest_message.get("body", {}).get("content", "") or latest_message.get("Body", {}).get("Content", "")
+        subject = latest_message.get("subject", "") or latest_message.get("Subject", "")
+
+        combined_text = f"{subject} {body_content}"
+        code_match = re.search(r'\b(\d{5,6})\b', combined_text)
+
+        if code_match:
+            return code_match.group(1)
+        else:
+            return "Facebook email found, but couldn't parse code digits."
+
+    except Exception as e:
+        return f"System Connection Error: {str(e)}"
+
+# 🔍 Email Regex Filter Extractor
+def extract_email_from_string(text):
+    email_regex = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    match = re.search(email_regex, text)
+    return match.group(0).strip() if match else None
+
+# 🔮 Flask Web Route with explicit manual OPTIONS and Header responses for Render Cloud
 @app.route('/get-code', methods=['POST', 'OPTIONS'])
 def get_code():
     if request.method == 'OPTIONS':
@@ -8,35 +100,40 @@ def get_code():
         return response, 200
 
     try:
-        # ফ্রন্টএন্ড থেকে যেভাবে ডেটা পাঠানো হোক না কেন তা ক্যাচ করার ট্রাই করা হচ্ছে
-        data = request.get_json() or request.form or {}
-        
-        # যদি 'raw_input' নামে ডেটা না পাওয়া যায়, তবে ব্যাকআপ হিসেবে সরাসরি ডাটা ভ্যালু বা প্রথম কী চেক করবে
+        # ফ্রন্টএন্ড থেকে যেভাবে ডেটা পাঠানো হোক না কেন তা রিসিভ করার কোড
+        data = request.get_json() or {}
         raw_input = data.get('raw_input', '')
+        
+        # ব্যাকআপ চেক: যদি ফ্রন্টএন্ড অন্য কোনো ফরম্যাটে ডেটা পাঠায়
         if not raw_input and data:
-            # ফ্রন্টএন্ড যদি শুধু অবজেক্ট বা অন্য নামে ডেটা পাঠায়
             raw_input = list(data.values())[0] if isinstance(data, dict) and data.values() else ''
-
+            
         raw_input = str(raw_input).strip()
 
-        if not raw_input or '|' not in raw_input:
-            response = jsonify({'status': 'error', 'message': 'Invalid input format or empty data.'})
+        if not raw_input:
+            response = jsonify({'status': 'error', 'message': 'Input empty.'})
             response.headers.add("Access-Control-Allow-Origin", "*")
-            return response, 200  # ৫০০ এরর এড়াতে সাকসেস কোডে এরর মেসেজ পাঠানো হচ্ছে
+            return response, 400
 
-        # পাইপ (|) দিয়ে ডেটা নিখুঁতভাবে আলাদা করা হচ্ছে
+        detected_email = extract_email_from_string(raw_input)
+        if not detected_email:
+            response = jsonify({'status': 'error', 'message': 'No valid email found in data.'})
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response, 400
+
+        # পাইপ (|) দিয়ে ডেটা আলাদা করা হচ্ছে এবং ফাঁকা স্পেস কাটা হচ্ছে
         parts = [p.strip() for p in raw_input.split('|') if p.strip()]
         
         if len(parts) < 3:
-            response = jsonify({'status': 'error', 'message': 'Format must contain email|pass|token'})
+            response = jsonify({'status': 'error', 'message': 'Format must be email|pass|token'})
             response.headers.add("Access-Control-Allow-Origin", "*")
-            return response, 200
+            return response, 400
 
-        email = parts[0]
+        email = detected_email
         password = parts[1]
         refresh_token = parts[2]
         
-        # ৪ নম্বর অংশ (client_id) না থাকলে এই স্ট্যান্ডার্ড আইডিটি নিজে থেকে বসে যাবে
+        # যদি ইনপুটে ৪ নম্বর অংশ (client_id) থাকে তবে সেটি নিবে, না থাকলে এই ডিফল্ট আইডি বসবে
         if len(parts) >= 4:
             client_id = parts[3]
         else:
@@ -60,7 +157,15 @@ def get_code():
         return response, 200
 
     except Exception as e:
-        # কোনো অবস্থাতেই যেন রেন্ডার সার্ভার ৫০০ এরর না দেখায়, তাই নিরাপদ ক্যাচ লেয়ার
-        response = jsonify({'status': 'error', 'message': f"API Safe Layer: {str(e)}"})
+        response = jsonify({'status': 'error', 'message': f"Server error: {str(e)}"})
         response.headers.add("Access-Control-Allow-Origin", "*")
-        return response, 200
+        return response, 500
+
+@app.route('/')
+def home():
+    return "OTP Extractor API is Running Live!"
+
+if __name__ == '__main__':
+    # Cloud environments dynamic port assignments fallback
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
