@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -42,7 +42,12 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         if res.status_code != 200:
             return f"Endpoint rejected token. Status: {res.status_code}"
 
-        res_data = res.json()
+        # সেফটি লেয়ার: রেসপন্সটি আসলেই JSON কিনা তা চেক করা (যাতে ৫০০ এরর না আসে)
+        try:
+            res_data = res.json()
+        except Exception:
+            return f"Invalid server response format. Status: {res.status_code}"
+
         access_token = res_data.get("access_token")
         if not access_token:
             return "Access Token missing in token response."
@@ -64,7 +69,12 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         if msg_res.status_code != 200:
             return f"Connected, but failed to fetch inbox (Status: {msg_res.status_code})."
 
-        messages = msg_res.json().get("value", [])
+        try:
+            msg_data = msg_res.json()
+        except Exception:
+            return f"Failed to parse inbox data structure. Status: {msg_res.status_code}"
+
+        messages = msg_data.get("value", [])
         if not messages:
             return "No recent Facebook emails found in this inbox."
 
@@ -100,11 +110,10 @@ def get_code():
         return response, 200
 
     try:
-        # ফ্রন্টএন্ড থেকে যেভাবে ডেটা পাঠানো হোক না কেন তা রিসিভ করার কোড
+        # ফ্রন্টএন্ড ডেটা রিসিভার
         data = request.get_json() or {}
         raw_input = data.get('raw_input', '')
         
-        # ব্যাকআপ চেক: যদি ফ্রন্টএন্ড অন্য কোনো ফরম্যাটে ডেটা পাঠায়
         if not raw_input and data:
             raw_input = list(data.values())[0] if isinstance(data, dict) and data.values() else ''
             
@@ -121,7 +130,7 @@ def get_code():
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response, 400
 
-        # পাইপ (|) দিয়ে ডেটা আলাদা করা হচ্ছে এবং ফাঁকা স্পেস কাটা হচ্ছে
+        # পাইপ (|) দিয়ে ডেটা আলাদা করা হচ্ছে
         parts = [p.strip() for p in raw_input.split('|') if p.strip()]
         
         if len(parts) < 3:
@@ -133,7 +142,6 @@ def get_code():
         password = parts[1]
         refresh_token = parts[2]
         
-        # যদি ইনপুটে ৪ নম্বর অংশ (client_id) থাকে তবে সেটি নিবে, না থাকলে এই ডিফল্ট আইডি বসবে
         if len(parts) >= 4:
             client_id = parts[3]
         else:
@@ -148,6 +156,7 @@ def get_code():
                 'code': fb_code
             })
         else:
+            # যদি এপিআই কোড না এনে কোনো এরর মেসেজ দেয়, তা ফ্রন্টএন্ডে সেফলি পাঠানো হবে
             response = jsonify({
                 'status': 'error', 
                 'message': fb_code
@@ -157,15 +166,15 @@ def get_code():
         return response, 200
 
     except Exception as e:
-        response = jsonify({'status': 'error', 'message': f"Server error: {str(e)}"})
+        # গ্লোবাল ট্রাই-এক্সেপ্ট লেয়ার যাতে কোনো অবস্থাতেই ৫০০ এরর জেনারেট না হয়
+        response = jsonify({'status': 'error', 'message': f"Safe Execution Message: {str(e)}"})
         response.headers.add("Access-Control-Allow-Origin", "*")
-        return response, 500
+        return response, 200
 
 @app.route('/')
 def home():
     return "OTP Extractor API is Running Live!"
 
 if __name__ == '__main__':
-    # Cloud environments dynamic port assignments fallback
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
