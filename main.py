@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -114,16 +114,24 @@ def get_code():
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response, 400
 
-        parts = raw_input.split('|')
-        if len(parts) < 4:
-            response = jsonify({'status': 'error', 'message': 'Format must be email|pass|token|client_id'})
+        # পাইপ (|) দিয়ে ডেটা নিখুঁতভাবে আলাদা করা হচ্ছে এবং ফাঁকা স্পেস কাটা হচ্ছে
+        parts = [p.strip() for p in raw_input.split('|') if p.strip()]
+        
+        # কমপক্ষে ৩টি অংশ (ইমেইল, পাসওয়ার্ড, টোকেন) থাকতে হবে
+        if len(parts) < 3:
+            response = jsonify({'status': 'error', 'message': 'Format must be email|pass|token'})
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response, 400
 
         email = detected_email
-        password = parts[1].strip()
-        refresh_token = parts[2].strip()
-        client_id = parts[3].strip()
+        password = parts[1]
+        refresh_token = parts[2]
+        
+        # যদি ইনপুটে ৪ নম্বর অংশ (client_id) থাকে তবে সেটি নিবে, না থাকলে এই ডিফল্ট আইডি বসবে
+        if len(parts) >= 4:
+            client_id = parts[3]
+        else:
+            client_id = "f1e6c35b-1634-4bc0-b53d-24e526d140e6"
 
         fb_code = extract_fb_code_via_api(email, refresh_token, client_id)
 
