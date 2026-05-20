@@ -3,626 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Longisir VIP Portal - Free Tools</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap');
-
-:root {
---primary: rgb(168, 85, 247);
---bg: rgb(10, 11, 18);
---card-bg: rgb(21, 23, 37);
---text-gray: rgb(156, 163, 175);
---btn-grad: linear-gradient(135deg, rgb(168, 85, 247), rgb(139, 92, 246));
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-body {
-background: var(--bg);
-color: rgb(255, 255, 255);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-}
-
-.section {
-display: none;
-width: 100%;
-}
-
-.section.active {
-display: block;
-}
-
-nav {
-background: rgba(21, 23, 37, 0.7);
-backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
-border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-position: sticky;
-top: 0;
-z-index: 100;
-}
-
-.nav-container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 1rem;
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-
-.logo {
-font-size: 1.25rem;
-font-weight: 800;
-background: var(--btn-grad);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-letter-spacing: -0.5px;
-text-decoration: none;
-cursor: pointer;
-}
-
-.nav-links {
-display: flex;
-gap: 0.5rem;
-}
-
-.nav-link {
-background: transparent;
-border: none;
-color: var(--text-gray);
-padding: 0.5rem 1rem;
-border-radius: 8px;
-font-size: 0.875rem;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.2s;
-display: flex;
-align-items: center;
-gap: 0.5rem;
-}
-
-.nav-link:hover {
-color: #fff;
-background: rgba(255, 255, 255, 0.05);
-}
-
-.nav-link.active {
-color: #fff;
-background: rgba(168, 85, 247, 0.15);
-border: 1px solid rgba(168, 85, 247, 0.2);
-}
-
-main {
-flex: 1;
-max-width: 1200px;
-width: 100%;
-margin: 0 auto;
-padding: 2rem 1rem;
-}
-
-.hero {
-text-align: center;
-margin-bottom: 3rem;
-padding: 2rem 0;
-}
-
-.hero h1 {
-font-size: 2.5rem;
-font-weight: 800;
-margin-bottom: 0.75rem;
-letter-spacing: -1px;
-}
-
-.hero p {
-color: var(--text-gray);
-font-size: 1rem;
-max-width: 600px;
-margin: 0 auto;
-}
-
-.tools-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 1.5rem;
-}
-
-.card {
-background: var(--card-bg);
-border: 1px solid rgba(255, 255, 255, 0.03);
-border-radius: 16px;
-padding: 1.5rem;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-transition: transform 0.2s, border-color 0.2s;
-position: relative;
-overflow: hidden;
-}
-
-.card:hover {
-transform: translateY(-2px);
-border-color: rgba(168, 85, 247, 0.3);
-}
-
-.card-badge {
-position: absolute;
-top: 1rem;
-right: 1rem;
-background: rgba(168, 85, 247, 0.1);
-color: var(--primary);
-padding: 0.25rem 0.75rem;
-border-radius: 20px;
-font-size: 0.75rem;
-font-weight: 600;
-border: 1px solid rgba(168, 85, 247, 0.15);
-}
-
-.card-title {
-font-size: 1.25rem;
-font-weight: 800;
-margin-bottom: 0.5rem;
-display: flex;
-align-items: center;
-gap: 0.75rem;
-}
-
-.card-desc {
-color: var(--text-gray);
-font-size: 0.875rem;
-line-height: 1.5;
-margin-bottom: 1.5rem;
-}
-
-.btn {
-background: var(--btn-grad);
-color: #fff;
-border: none;
-padding: 0.75rem 1.5rem;
-border-radius: 10px;
-font-weight: 600;
-font-size: 0.875rem;
-cursor: pointer;
-transition: opacity 0.2s;
-text-align: center;
-text-decoration: none;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 0.5rem;
-}
-
-.btn:hover { opacity: 0.9; }
-
-footer {
-background: rgb(7, 8, 14);
-border-top: 1px solid rgba(255, 255, 255, 0.03);
-padding: 3rem 1rem;
-margin-top: auto;
-}
-
-.footer-content {
-max-width: 1200px;
-margin: 0 auto;
-text-align: center;
-}
-
-.footer-links {
-display: flex;
-justify-content: center;
-gap: 2rem;
-margin-bottom: 1.5rem;
-}
-
-.footer-links a {
-color: var(--text-gray);
-text-decoration: none;
-font-size: 0.875rem;
-cursor: pointer;
-}
-
-.footer-links a:hover { color: #fff; }
-
-.footer-seo-box {
-max-width: 800px;
-margin: 2rem auto;
-padding: 1.5rem;
-background: rgba(255, 255, 255, 0.01);
-border: 1px solid rgba(255, 255, 255, 0.02);
-border-radius: 12px;
-text-align: left;
-}
-
-.footer-seo-box h4 {
-font-size: 0.95rem;
-font-weight: 600;
-color: rgba(255, 255, 255, 0.8);
-margin-bottom: 0.5rem;
-}
-
-.footer-seo-box p {
-font-size: 0.8rem;
-color: rgba(156, 163, 175, 0.6);
-line-height: 1.6;
-}
-
-.copyright-text {
-color: rgba(156, 163, 175, 0.4);
-font-size: 0.75rem;
-}
-
-/* Tool Inner Custom Layout Fixes */
-.tool-frame-container {
-background: var(--card-bg);
-border: 1px solid rgba(255, 255, 255, 0.05);
-border-radius: 20px;
-padding: 2rem;
-max-width: 900px;
-margin: 0 auto;
-}
-
-.tool-header-block {
-text-align: center;
-margin-bottom: 2rem;
-border-bottom: 1px solid rgba(255,255,255,0.05);
-padding-bottom: 1.5rem;
-}
-
-.tool-header-block h2 {
-font-size: 1.75rem;
-font-weight: 800;
-margin-bottom: 0.5rem;
-}
-
-.neon-bracket {
-border-left: 3px solid #6366f1;
-border-right: 3px solid #6366f1;
-border-radius: 14px;
-}
-</style>
+<title>Longisir VIP Portal</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-
-<nav>
-<div class="nav-container">
-<a onclick="showSection('home')" class="logo">LONGISIR PORTAL</a>
-<div class="nav-links">
-<button onclick="showSection('home')" class="nav-link active" data-section="home"><i class="fas fa-home"></i> Home</button>
-<button onclick="showSection('tool-2fa')" class="nav-link" data-section="tool-2fa"><i class="fas fa-shield-alt"></i> 2FA Auth</button>
-<button onclick="showSection('tool-mail')" class="nav-link" data-section="tool-mail"><i class="fas fa-envelope-open-text"></i> OTP Extractor</button>
-</div>
-</div>
-</nav>
-
-<main>
-<div id="home" class="section active">
-<div class="hero">
-<h1>Professional Automation Utilities</h1>
-<p>Deploy custom multi-threaded secure tokens and administrative verification handlers directly inside modern stateless terminal views.</p>
-</div>
-<div class="tools-grid">
-<div class="card">
-<span class="card-badge">Free API</span>
-<div>
-<h3 class="card-title"><i class="fas fa-key" style="color: var(--primary);"></i> 2FA AUTH</h3>
-<p class="card-desc">Generate safe stateless multi-platform administrative TOTP matrix authentication values smoothly without any trace tracking profiles.</p>
-</div>
-<button onclick="showSection('tool-2fa')" class="btn">Launch Tool <i class="fas fa-arrow-right"></i></button>
-</div>
-
-<div class="card">
-<span class="card-badge">Live Core</span>
-<div>
-<h3 class="card-title"><i class="fas fa-cube" style="color: #6366f1;"></i> FB & IG OTP Extractor</h3>
-<p class="card-desc">Process active data strings to analyze, parse, and retrieve targeted system authorization codes directly via real-time backend queues.</p>
-</div>
-<button onclick="showSection('tool-mail')" class="btn">Launch Tool <i class="fas fa-arrow-right"></i></button>
-</div>
-</div>
-</div>
-
-<div id="tool-2fa" class="section">
-<div class="tool-frame-container">
-<div class="tool-header-block">
-<h2><i class="fas fa-shield-alt" style="color: var(--primary);"></i> 2FA Authentication Terminal</h2>
-<p style="color: var(--text-gray); font-size: 0.875rem; margin-top: 0.25rem;">Stateless Secure Token Engine</p>
-</div>
-<iframe srcdoc="
-<!DOCTYPE html>
-<html>
-<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body { background: transparent; color: #fff; font-family: sans-serif; margin: 0; padding: 10px; text-align: center; }
-.box { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; }
-input { width: 100%; max-width: 340px; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #333; background: #000; color: #fff; text-align: center; font-family: monospace; }
-button { background: linear-gradient(135deg, rgb(168, 85, 247), rgb(139, 92, 246)); border: none; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-#code { font-size: 2rem; font-weight: bold; color: rgb(168, 85, 247); margin-top: 15px; letter-spacing: 2px; }
+    /* ... (আপনার আগের CSS গুলো এখানে থাকবে) ... */
+    /* নতুন টুলের জন্য CSS ক্লাস */
+    .neon-card { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(51, 65, 85, 0.5); box-shadow: 0 25px 70px -10px rgba(0, 0, 0, 0.8); border-radius: 28px; }
+    .neon-bracket { border-left: 3px solid #6366f1; border-right: 3px solid #6366f1; border-radius: 14px; }
 </style>
 </head>
-<body>
-<div class='box'>
-<p style='font-size:0.9rem; color:#aaa;'>Paste your raw 2FA secret key array below to parse real-time verification sequence:</p>
-<input type='text' id='secret' placeholder='JBSWY3DPEHPK3PXP...' autocomplete='off'>
-<br>
-<button onclick='generate()'>Get Authentication Code</button>
-<div id='code'>XXXXXX</div>
-</div>
-<script>
-function generate() {
-var secret = document.getElementById('secret').value.trim();
-if(!secret) { alert('Please enter a secret key first!'); return; }
-document.getElementById('code').innerText = Math.floor(100000 + Math.random() * 900000);
-}
-</script>
-</body>
-</html>
-" style="width: 100%; height: 320px; border: none; overflow: hidden;"></iframe>
-</div>
-</div>
+<body class="bg-[#0a0b12] text-white">
 
 <div id="tool-mail" class="section">
-<div class="w-full max-w-4xl mx-auto bg-[#030712] border border-slate-800 rounded-[28px] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 text-slate-200">
-<div>
-<div class="flex flex-col items-center mb-8 border-b border-slate-800 pb-5">
-<div class="flex items-center space-x-3 text-2xl sm:text-3xl font-black tracking-tight">
-<i class="fas fa-cube text-indigo-500 animate-pulse"></i>
-<h1 class="bg-gradient-to-r from-white via-slate-200 to-indigo-400 bg-clip-text text-transparent">FB & IG OTP Extractor</h1>
+    <div class="tool-wrapper p-4 flex justify-center items-center min-h-screen">
+        <div class="w-full max-w-4xl neon-card p-8 flex flex-col justify-between">
+            <div class="flex flex-col items-center mb-8 border-b border-slate-800 pb-5">
+                <h1 class="text-3xl font-black text-indigo-400">FB & IG OTP Extractor</h1>
+                <p class="text-[10px] text-indigo-400/70 uppercase tracking-widest mt-1">Cloud Automation Hub</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-5">
+                    <div class="bg-slate-950 p-1.5 rounded-2xl flex space-x-1.5 border border-slate-800">
+                        <button onclick="setPlatform('fb')" class="flex-1 bg-indigo-600 py-3 rounded-xl font-black text-xs">FACEBOOK</button>
+                        <button onclick="setPlatform('ig')" class="flex-1 bg-transparent py-3 rounded-xl font-bold text-xs">INSTAGRAM</button>
+                    </div>
+                    <div class="neon-bracket p-4">
+                        <textarea id="rawData" class="w-full h-32 bg-slate-900 border-none focus:ring-0 text-cyan-400 font-mono text-xs" placeholder="email|password|refresh_token|client_id"></textarea>
+                    </div>
+                    <button onclick="getOtpCode()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-xl font-black text-xs uppercase tracking-widest">Extract OTP Code</button>
+                </div>
+                
+                <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 flex flex-col justify-center items-center">
+                    <span id="codeTitle" class="text-[9px] font-black text-slate-500 uppercase">Verification Code:</span>
+                    <span id="otpOutput" class="text-5xl font-black tracking-widest text-slate-700 font-mono my-4">XXXXXX</span>
+                </div>
+            </div>
+            </div>
+    </div>
 </div>
-<p class="text-[10px] text-indigo-400/70 font-bold uppercase tracking-widest mt-1">Cloud Automation Hub</p>
-
-<div id="modeBadge" class="mt-3 inline-flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 px-5 py-1 rounded-full shadow-sm">
-<i class="fas fa-shield-alt text-amber-400 text-[10px]"></i>
-<span id="badgeText" class="text-[10px] font-black text-amber-400 tracking-wider uppercase">Facebook Priority Mode</span>
-</div>
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-<div class="space-y-5">
-<div class="bg-slate-950 p-1.5 rounded-2xl flex space-x-1.5 border border-slate-800/80">
-<button onclick="setPlatform('fb')" id="fbBtn" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] sm:text-xs font-black py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 shadow-lg cursor-pointer">
-<i class="fab fa-facebook mr-1.5 text-xs"></i> Facebook
-<span class="ml-1 bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded-md">1st</span>
-</button>
-<button onclick="setPlatform('ig')" id="igBtn" class="flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer">
-<i class="fab fa-instagram mr-1.5 text-xs"></i> Instagram
-<span class="ml-1 bg-slate-800 text-slate-400 text-[9px] font-bold px-1.5 py-0.5 rounded-md">2nd</span>
-</button>
-</div>
-
-<div class="flex space-x-2">
-<button onclick="loadAccount(1)" class="flex-1 bg-slate-900/60 hover:bg-slate-800/80 text-slate-400 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl border border-slate-800 transition cursor-pointer flex justify-center items-center shadow-xs">
-<i class="fas fa-user-shield mr-1.5 text-blue-400"></i> Account 1
-</button>
-<button onclick="loadAccount(2)" class="flex-1 bg-slate-900/60 hover:bg-slate-800/80 text-slate-400 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl border border-slate-800 transition cursor-pointer flex justify-center items-center shadow-xs">
-<i class="fas fa-user-shield mr-1.5 text-purple-400"></i> Account 2
-</button>
-</div>
-
-<div id="inputBracket" class="relative px-4 neon-bracket py-3">
-<label class="block text-[11px] font-black text-indigo-300 tracking-wider mb-2 uppercase flex items-center">
-<i class="fas fa-terminal mr-1.5 text-indigo-400"></i> Input Account Data Line:
-</label>
-<textarea 
-id="rawData" 
-class="w-full h-32 bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs font-mono text-cyan-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner transition resize-none"
-placeholder="email|password|refresh_token|client_id"
-></textarea>
-</div>
-
-<div class="flex space-x-2">
-<button onclick="getOtpCode()" id="actionBtn" class="flex-[2] bg-slate-900 hover:bg-slate-800 text-slate-300 font-black py-3.5 px-4 rounded-xl border border-slate-800 transition-all duration-200 flex justify-center items-center cursor-pointer text-xs tracking-wider uppercase shadow-md">
-<span id="btnText"><i class="fas fa-bolt mr-2 text-indigo-400"></i> Extract OTP Code</span>
-</button>
-<button onclick="clearAll()" class="flex-1 bg-slate-900/40 hover:bg-slate-900 text-slate-500 hover:text-red-400 font-bold py-3.5 px-4 rounded-xl border border-slate-800/60 transition flex justify-center items-center cursor-pointer text-xs uppercase">
-<i class="fas fa-eraser mr-1.5"></i> Clear
-</button>
-</div>
-</div>
-
-<div class="space-y-5 h-full flex flex-col justify-between">
-<div id="detectInfo" class="px-4 border-l-3 border-r-3 border-indigo-500 flex justify-between items-center bg-slate-950/60 py-4 rounded-xl border border-slate-800/50 shadow-xs min-h-[96px]">
-<div class="max-w-[200px] sm:max-w-[240px]">
-<div class="flex items-center text-xs font-black text-indigo-300 tracking-wide">
-<i id="statusDot" class="fas fa-circle-notch text-indigo-400 mr-1.5 text-xs"></i>
-<span id="successMsg">System Standing By</span>
-</div>
-<div class="text-[11px] text-slate-500 mt-2 font-mono break-all leading-tight">
-Target: <span id="displayEmail" class="text-slate-400 font-bold">No Account Loaded</span>
-</div>
-</div>
-<button onclick="copyEmail()" id="copyEmailBtn" class="bg-indigo-950/80 text-indigo-400 hover:bg-indigo-900 hover:text-indigo-200 border border-indigo-800/50 px-3 py-2.5 rounded-xl text-[11px] font-black transition cursor-pointer flex items-center shadow-md shrink-0">
-<i class="fas fa-copy mr-1 text-xs"></i> Copy Email
-</button>
-</div>
-
-<div class="bg-slate-950 p-5 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-inner">
-<div class="text-center sm:text-left">
-<span id="codeTitle" class="text-[9px] font-black text-slate-500 block mb-1 uppercase tracking-widest">Verification Code:</span>
-<span id="otpOutput" class="text-4xl sm:text-5xl font-black tracking-widest text-slate-700 font-mono transition-all">XXXXXX</span>
-</div>
-<button onclick="copyCode()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl text-xs font-black transition-all cursor-pointer shadow-lg flex justify-center items-center border border-indigo-500/30">
-<i class="fas fa-clone mr-1.5"></i> Copy Code
-</button>
-</div>
-
-<div class="text-[10px] text-slate-600 font-mono text-center md:text-right pt-2">
-<span>● Live Server Connection: Secured</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-
-<footer>
-<div class="footer-content">
-<div class="footer-links">
-<a onclick="showSection('home')">Privacy Matrix</a>
-<a onclick="showSection('home')">Terms of Service</a>
-<a onclick="showSection('home')" style="color: var(--primary);">Home Dashboard</a>
-</div>
-
-<div class="footer-seo-box">
-<h4>Ecosystem Framework & Analytical Utility Terminal</h4>
-<p>
-Welcome to our integrated multi-threaded web automation engine console. This portal provides system configurations for evaluating real-time secure hash token arrays, automated verification codes (TOTP protocol), and parsing live query endpoints across distributed networks. Completely stateless and built with privacy-first standards, it is optimized to perform low-latency cross-origin data validation loops for active administrative account management workflows.
-</p>
-</div>
-
-<p class="copyright-text">© 2026 Cloud Automation Hub. All rights reserved. Managed for Optimal Core Processing Response.</p>
-</div>
-</footer>
 
 <script>
-// Original Section Handler
-function showSection(sectionId) {
-    document.querySelectorAll('.section').forEach(section => { section.classList.remove('active'); });
-    const targetSection = document.getElementById(sectionId);
-    if(targetSection) {
-        targetSection.classList.add('active');
-    }
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('data-section') === sectionId) {
-            link.classList.add('active');
-        }
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Tool 2 Logic Extractor Panel Scripts
-let currentPlatform = 'fb';
-const account1_data = "email1@outlook.com|pass1|refresh_token_1|client_id_1";
-const account2_data = "email2@outlook.com|pass2|refresh_token_2|client_id_2";
-const API_URL = "https://toll-376d.onrender.com/get-code";
-
-if(document.getElementById('rawData')) {
-    document.getElementById('rawData').addEventListener('input', function(e) {
-        const val = e.target.value.trim();
-        document.getElementById('displayEmail').innerText = val.includes('|') ? val.split('|')[0] : "No Account Loaded";
-    });
-}
-
-function setPlatform(platform) {
-    currentPlatform = platform;
-    const fbBtn = document.getElementById('fbBtn');
-    const igBtn = document.getElementById('igBtn');
-    const modeBadge = document.getElementById('modeBadge');
-    const badgeText = document.getElementById('badgeText');
-
-    if (platform === 'fb') {
-        fbBtn.className = "flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] sm:text-xs font-black py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 shadow-lg cursor-pointer";
-        igBtn.className = "flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer";
-        modeBadge.className = "mt-3 inline-flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 px-5 py-1 rounded-full shadow-sm";
-        badgeText.innerText = "Facebook Priority Mode";
-    } else {
-        igBtn.className = "flex-1 bg-gradient-to-r from-pink-600 to-rose-600 text-white text-[11px] sm:text-xs font-black py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 shadow-lg cursor-pointer";
-        fbBtn.className = "flex-1 bg-transparent text-slate-500 hover:text-slate-300 text-[11px] sm:text-xs font-bold py-3 px-3 rounded-xl flex justify-center items-center transition-all duration-300 cursor-pointer";
-        modeBadge.className = "mt-3 inline-flex items-center space-x-1.5 bg-pink-500/10 border border-pink-500/30 px-5 py-1 rounded-full shadow-sm";
-        badgeText.innerText = "Instagram Priority Mode";
-    }
-}
-
-function loadAccount(num) {
-    const field = document.getElementById('rawData');
-    if(num === 1) field.value = account1_data;
-    if(num === 2) field.value = account2_data;
+    // আপনার আগের সব ফাংশন...
     
-    document.getElementById('displayEmail').innerText = field.value.split('|')[0];
-    document.getElementById('successMsg').innerText = "Account " + num + " Loaded";
-}
-
-function clearAll() {
-    document.getElementById('rawData').value = "";
-    document.getElementById('displayEmail').innerText = "No Account Loaded";
-    document.getElementById('otpOutput').innerText = "XXXXXX";
-    document.getElementById('otpOutput').className = "text-4xl sm:text-5xl font-black tracking-widest text-slate-700 font-mono transition-all";
-    document.getElementById('successMsg').innerText = "System Standing By";
-    resetButton();
-}
-
-function getOtpCode() {
-    const rawData = document.getElementById('rawData').value.trim();
-    const actionBtn = document.getElementById('actionBtn');
-    const btnText = document.getElementById('btnText');
-    const otpOutput = document.getElementById('otpOutput');
-    const successMsg = document.getElementById('successMsg');
-    const statusDot = document.getElementById('statusDot');
-
-    if (!rawData) {
-        successMsg.innerText = "Please input credentials first!";
-        return;
+    // নতুন টুলের লজিক
+    function getOtpCode() {
+        const rawData = document.getElementById('rawData').value.trim();
+        const otpOutput = document.getElementById('otpOutput');
+        
+        if (!rawData) { alert('Data needed!'); return; }
+        
+        otpOutput.innerText = "LOADING...";
+        fetch("https://toll-376d.onrender.com/get-code", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ raw_input: rawData })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                otpOutput.innerText = data.code;
+                otpOutput.style.color = "#34d399"; // Success Green
+            } else {
+                otpOutput.innerText = "ERROR";
+                otpOutput.style.color = "#f43f5e"; // Error Red
+            }
+        })
+        .catch(() => {
+            otpOutput.innerText = "OFFLINE";
+        });
     }
-
-    actionBtn.disabled = true;
-    actionBtn.className = "flex-[2] bg-slate-950 text-slate-600 font-black py-3.5 px-4 rounded-xl border border-slate-900/40 flex justify-center items-center cursor-not-allowed text-xs tracking-wider uppercase";
-    btnText.innerHTML = '<i class="fas fa-circle-notch animate-spin mr-2 text-indigo-500"></i> Connecting Mail Box...';
-    statusDot.className = "fas fa-circle-notch animate-spin text-indigo-500 mr-1.5 text-xs";
-    successMsg.innerText = "Extracting OTP Engine Core...";
-
-    otpOutput.innerText = "SEARCHING";
-    otpOutput.className = "text-xl sm:text-2xl font-black text-indigo-400 font-mono tracking-normal animate-pulse";
-
-    fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ raw_input: rawData })
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Connection Failed");
-        return res.json();
-    })
-    .then(data => {
-        resetButton();
-        if (data.status === "success") {
-            otpOutput.innerText = data.code;
-            otpOutput.className = "text-4xl sm:text-5xl font-black tracking-widest text-emerald-400 font-mono transition-all";
-            successMsg.innerText = "Code Extracted Successfully";
-            statusDot.className = "fas fa-check-circle text-emerald-400 mr-1.5 text-xs";
-        } else {
-            otpOutput.innerText = "ERROR";
-            otpOutput.className = "text-2xl font-black text-rose-500 font-mono tracking-normal";
-            successMsg.innerText = data.message || "Failed to Parse Stream";
-            statusDot.className = "fas fa-times-circle text-rose-500 mr-1.5 text-xs";
-        }
-    })
-    .catch(err => {
-        resetButton();
-        otpOutput.innerText = "CORS ERR";
-        otpOutput.className = "text-xl font-black text-amber-500 font-mono tracking-normal";
-        successMsg.innerText = "CORS Blocked or Endpoint Offline.";
-        statusDot.className = "fas fa-exclamation-triangle text-amber-500 mr-1.5 text-xs";
-    });
-}
-
-function resetButton() {
-    const actionBtn = document.getElementById('actionBtn');
-    const btnText = document.getElementById('btnText');
-    actionBtn.disabled = false;
-    actionBtn.className = "flex-[2] bg-slate-900 hover:bg-slate-800 text-slate-300 font-black py-3.5 px-4 rounded-xl border border-slate-800 transition-all duration-200 flex justify-center items-center cursor-pointer text-xs tracking-wider uppercase shadow-md";
-    btnText.innerHTML = '<i class="fas fa-bolt mr-2 text-indigo-400"></i> Extract OTP Code';
-}
-
-function copyEmail() {
-    const text = document.getElementById('rawData').value.split('|')[0];
-    if(text) {
-        navigator.clipboard.writeText(text);
-        alert("Email Copied: " + text);
-    }
-}
-
-function copyCode() {
-    const code = document.getElementById('otpOutput').innerText;
-    if(code && code !== "XXXXXX" && code !== "ERROR" && code !== "CORS ERR") {
-        navigator.clipboard.writeText(code);
-        alert("OTP Code Copied: " + code);
-    }
-}
 </script>
 </body>
 </html>
