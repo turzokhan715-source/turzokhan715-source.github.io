@@ -32,12 +32,6 @@ width: 100%;
 
 .section.active {
 display: block;
-animation: fadeIn 0.4s ease-in-out;
-}
-
-@keyframes fadeIn {
-from { opacity: 0; transform: translateY(10px); }
-to { opacity: 1; transform: translateY(0); }
 }
 
 nav {
@@ -56,7 +50,7 @@ margin: 0 auto;
 padding: 1rem;
 display: flex;
 justify-content: space-between;
-items-center: center;
+align-items: center;
 }
 
 .logo {
@@ -259,7 +253,7 @@ color: rgba(156, 163, 175, 0.4);
 font-size: 0.75rem;
 }
 
-/* Tool Component Specifics */
+/* Tool Inner Custom Layout Fixes */
 .tool-frame-container {
 background: var(--card-bg);
 border: 1px solid rgba(255, 255, 255, 0.05);
@@ -267,13 +261,12 @@ border-radius: 20px;
 padding: 2rem;
 max-width: 900px;
 margin: 0 auto;
-box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
 .tool-header-block {
 text-align: center;
 margin-bottom: 2rem;
-border-b: 1px solid rgba(255,255,255,0.05);
+border-bottom: 1px solid rgba(255,255,255,0.05);
 padding-bottom: 1.5rem;
 }
 
@@ -283,12 +276,10 @@ font-weight: 800;
 margin-bottom: 0.5rem;
 }
 
-/* Custom styles for Tool 2 (OTP Extractor Panel Integration) */
 .neon-bracket {
 border-left: 3px solid #6366f1;
 border-right: 3px solid #6366f1;
 border-radius: 14px;
-background: rgba(3, 7, 18, 0.6);
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -329,7 +320,7 @@ background: rgba(3, 7, 18, 0.6);
 <h3 class="card-title"><i class="fas fa-cube" style="color: #6366f1;"></i> FB & IG OTP Extractor</h3>
 <p class="card-desc">Process active data strings to analyze, parse, and retrieve targeted system authorization codes directly via real-time backend queues.</p>
 </div>
-<button onclick="showSection('tool-mail')" class="btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">Launch Tool <i class="fas fa-arrow-right"></i></button>
+<button onclick="showSection('tool-mail')" class="btn">Launch Tool <i class="fas fa-arrow-right"></i></button>
 </div>
 </div>
 </div>
@@ -374,12 +365,12 @@ document.getElementById('code').innerText = Math.floor(100000 + Math.random() * 
 </div>
 
 <div id="tool-mail" class="section">
-<div class="max-w-4xl mx-auto bg-[#0f172a]/95 border border-slate-700/50 shadow-2xl rounded-[28px] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 text-slate-200">
+<div class="w-full max-w-4xl mx-auto bg-[#030712] border border-slate-800 rounded-[28px] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 text-slate-200">
 <div>
-<div class="flex flex-col items-center mb-6 border-b border-slate-800 pb-5">
+<div class="flex flex-col items-center mb-8 border-b border-slate-800 pb-5">
 <div class="flex items-center space-x-3 text-2xl sm:text-3xl font-black tracking-tight">
 <i class="fas fa-cube text-indigo-500 animate-pulse"></i>
-<h1 class="bg-gradient-to-r from-white via-slate-200 to-indigo-400 bg-clip-text text-transparent">FB & IG OTP Extractor panel</h1>
+<h1 class="bg-gradient-to-r from-white via-slate-200 to-indigo-400 bg-clip-text text-transparent">FB & IG OTP Extractor</h1>
 </div>
 <p class="text-[10px] text-indigo-400/70 font-bold uppercase tracking-widest mt-1">Cloud Automation Hub</p>
 
@@ -487,6 +478,7 @@ Welcome to our integrated multi-threaded web automation engine console. This por
 </footer>
 
 <script>
+// Original Section Handler
 function showSection(sectionId) {
     document.querySelectorAll('.section').forEach(section => { section.classList.remove('active'); });
     const targetSection = document.getElementById(sectionId);
@@ -500,20 +492,21 @@ function showSection(sectionId) {
             link.classList.add('active');
         }
     });
-    
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Tool 2 Automation Logics Panel
+// Tool 2 Logic Extractor Panel Scripts
 let currentPlatform = 'fb';
 const account1_data = "email1@outlook.com|pass1|refresh_token_1|client_id_1";
 const account2_data = "email2@outlook.com|pass2|refresh_token_2|client_id_2";
 const API_URL = "https://toll-376d.onrender.com/get-code";
 
-document.getElementById('rawData').addEventListener('input', function(e) {
-    const val = e.target.value.trim();
-    document.getElementById('displayEmail').innerText = val.includes('|') ? val.split('|')[0] : "No Account Loaded";
-});
+if(document.getElementById('rawData')) {
+    document.getElementById('rawData').addEventListener('input', function(e) {
+        const val = e.target.value.trim();
+        document.getElementById('displayEmail').innerText = val.includes('|') ? val.split('|')[0] : "No Account Loaded";
+    });
+}
 
 function setPlatform(platform) {
     currentPlatform = platform;
