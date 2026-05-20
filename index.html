@@ -406,23 +406,23 @@ color: rgba(156, 163, 175, 0.4);
     </style>
 </head>
 <body class="bg-[#030712] text-slate-200">
-    <div class="w-full max-w-4xl mx-auto neon-card p-6 sm:p-8">
-        <h1 class="text-2xl font-black text-white mb-6">FB & IG OTP Extractor</h1>
-        <textarea id="rawData" class="w-full h-32 bg-slate-950 border border-slate-800 rounded-xl p-3 text-cyan-400" placeholder="email|password|refresh_token|client_id"></textarea>
-        <button onclick="getOtpCode()" id="actionBtn" class="mt-4 w-full bg-indigo-600 text-white py-4 rounded-xl font-black hover:bg-indigo-500 transition">Extract OTP Code</button>
-        <div id="otpOutput" class="mt-8 text-center text-5xl font-black text-emerald-400 font-mono">XXXXXX</div>
+    <div class="w-full max-w-4xl mx-auto neon-card p-8">
+        <h1 class="text-white text-2xl font-black mb-4">FB & IG OTP Extractor</h1>
+        <textarea id="rawData" class="w-full h-32 bg-slate-950 border border-slate-800 p-3 text-cyan-400 rounded-xl" placeholder="email|password|refresh_token|client_id"></textarea>
+        <button onclick="getOtpCode()" id="actionBtn" class="mt-4 w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Extract OTP Code</button>
+        <div id="otpOutput" class="mt-6 text-center text-4xl font-black text-emerald-400">XXXXXX</div>
     </div>
     <script>
         const API_URL = "https://toll-376d.onrender.com/get-code";
         function getOtpCode() {
             const rawData = document.getElementById("rawData").value.trim();
             const otpOutput = document.getElementById("otpOutput");
-            if (!rawData) { alert("Data daw!"); return; }
+            if (!rawData) { alert("Input credentials!"); return; }
             otpOutput.innerText = "SEARCHING...";
             fetch(API_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams({ "raw_data": rawData })
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ raw_input: rawData })
             })
             .then(res => res.json())
             .then(data => { otpOutput.innerText = data.code || "Error"; })
