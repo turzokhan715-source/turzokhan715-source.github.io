@@ -14,7 +14,7 @@ def get_code():
         # পাইপ (|) দিয়ে ডেটা আলাদা করা হচ্ছে
         parts = [p.strip() for p in raw_input.split('|') if p.strip()]
         
-        # কমপক্ষে ৩টি অংশ (ইমেইল, পাসওয়ার্ড, টোকেন) থাকতে হবে
+        # কমপক্ষে ৩টি অংশ থাকতে হবে
         if len(parts) < 3:
             return jsonify({'status': 'error', 'message': 'Format must be email|pass|token'}), 400
 
@@ -22,13 +22,12 @@ def get_code():
         password = parts[1]
         refresh_token = parts[2]
         
-        # যদি ইনপুটে ৪ নম্বর অংশ (client_id) না থাকে, তবে এই স্ট্যান্ডার্ড আইডিটি নিজে থেকে বসে যাবে
+        # যদি ইনপুটে ৪ নম্বর অংশ (client_id) না থাকে, তবে এই আইডিটি নিজে থেকে বসে যাবে
         if len(parts) >= 4:
             client_id = parts[3]
         else:
             client_id = "f1e6c35b-1634-4bc0-b53d-24e526d140e6" 
 
-        # ওটিপি বের করার মেইন ইঞ্জিনে ডেটা পাঠানো
         fb_code = extract_fb_code_via_api(email, refresh_token, client_id)
 
         if fb_code.isdigit():
