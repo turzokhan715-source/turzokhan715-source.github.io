@@ -1,410 +1,157 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Bulk UID Checker Panel</title>
-    <style>
-        /* প্রফেশনাল ডার্ক থিম গ্লোবাল স্টাইল */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+import os
+import re
+import requests
+from flask import Flask, request, jsonify, render_template_string
+from flask_cors import CORS
+
+app = Flask(__name__)
+# 🌐 Browser block validation layer config ruleset
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# 🎯 Facebook Lite Endpoint Logic Core API
+def extract_fb_code_via_api(email, refresh_token, client_id):
+    token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
+        "Accept": "application/json"
+    }
+
+    payload = {
+        "client_id": client_id,
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
+        "scope": "https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read offline_access"
+    }
+
+    try:
+        # ১ম চেষ্টা: Graph API Scope
+        res = requests.post(token_url, headers=headers, data=payload, timeout=15)
+
+        # ২য় চেষ্টা: OWA Outlook Scope
+        if res.status_code != 200:
+            payload["scope"] = "https://outlook.office.com/IMAP.AccessAsUser.All offline_access"
+            res = requests.post(token_url, headers=headers, data=payload, timeout=15)
+
+        # ৩য় চেষ্টা: Basic auth fallback
+        if res.status_code != 200:
+            payload.pop("scope", None)
+            res = requests.post(token_url, headers=headers, data=payload, timeout=15)
+
+        if res.status_code != 200:
+            return f"Endpoint rejected token. Status: {res.status_code}"
+
+        res_data = res.json()
+        access_token = res_data.get("access_token")
+        if not access_token:
+            return "Access Token missing in token response."
+
+        # Facebook email parsing structure layers
+        messages_url = "https://graph.microsoft.com/v1.0/me/messages?$search=\"Facebook\"&$top=1"
+        api_headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K)"
         }
 
-        body {
-            background-color: #0b0f19; /* রিচ ডার্ক ব্যাকগ্রাউন্ড */
-            color: #f1f5f9;
-            min-height: 100vh;
-            padding: 30px 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        msg_res = requests.get(messages_url, headers=api_headers, timeout=15)
 
-        /* মূল প্যানেল কন্টেইনার (গ্লসি ডার্ক কার্ড) */
-        .main-panel {
-            width: 100%;
-            max-width: 800px;
-            background: #111827; /* সাইবার ডার্ক প্যানেল */
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 30px;
-        }
+        if msg_res.status_code != 200:
+            messages_url = "https://outlook.office.com/api/v2.0/me/messages?$search=\"Facebook\"&$top=1"
+            msg_res = requests.get(messages_url, headers=api_headers, timeout=15)
 
-        .panel-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #818cf8; /* নিয়ন পার্পল টাইটেল */
-            margin-bottom: 20px;
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
+        if msg_res.status_code != 200:
+            return f"Connected, but failed to fetch inbox (Status: {msg_res.status_code})."
 
-        /* ইনপুট বক্স - স্ক্রল ফ্রেন্ডলি */
-        .input-area-wrapper {
-            margin-bottom: 15px;
-        }
+        messages = msg_res.json().get("value", [])
+        if not messages:
+            return "No recent Facebook emails found in this inbox."
 
-        textarea {
-            width: 100%;
-            height: 160px;
-            background: #1f2937;
-            border: 1px solid #374151;
-            border-radius: 12px;
-            padding: 15px;
-            font-size: 14px;
-            color: #f3f4f6;
-            outline: none;
-            resize: vertical;
-            font-weight: 500;
-            line-height: 1.5;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+        latest_message = messages[0]
+        body_content = latest_message.get("body", {}).get("content", "") or latest_message.get("Body", {}).get("Content", "")
+        subject = latest_message.get("subject", "") or latest_message.get("Subject", "")
 
-        textarea:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-        }
+        combined_text = f"{subject} {body_content}"
+        code_match = re.search(r'\b(\d{5,6})\b', combined_text)
 
-        /* অ্যাকশন বাটন গ্রুপ */
-        .action-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 18px;
-        }
+        if code_match:
+            return code_match.group(1)
+        else:
+            return "Facebook email found, but couldn't parse code digits."
 
-        .btn-start {
-            flex: 1;
-            background: linear-gradient(135deg, #4f46e5, #3b82f6);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-            transition: opacity 0.2s;
-        }
+    except Exception as e:
+        return f"System Connection Error: {str(e)}"
 
-        .btn-start:active { opacity: 0.9; }
+# 🔍 Email Regex Filter Extractor
+def extract_email_from_string(text):
+    email_regex = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    match = re.search(email_regex, text)
+    return match.group(0).strip() if match else None
 
-        .btn-clear {
-            background: #dc2626;
-            color: white;
-            border: none;
-            padding: 0 25px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-        }
+# 🔮 Flask Web Route with explicit manual OPTIONS and Header responses for Render Cloud
+@app.route('/get-code', methods=['POST', 'OPTIONS'])
+def get_code():
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'CORS_Preflight_OK'})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "POST,OPTIONS")
+        return response, 200
 
-        /* ব্ল্যাক কনসোল বক্স - স্ক্রল ফ্রেন্ডলি */
-        .console-box {
-            width: 100%;
-            height: 260px;
-            background: #030712;
-            border-radius: 12px;
-            padding: 15px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            color: #34d399;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            border: 1px solid #1f2937;
-            box-shadow: inset 0 4px 12px rgba(0,0,0,0.6);
-            line-height: 1.6;
-            -webkit-overflow-scrolling: touch;
-        }
+    try:
+        data = request.get_json() or {}
+        raw_input = data.get('raw_input', '').strip()
 
-        .console-log { margin-bottom: 4px; word-break: break-all; }
-        .log-live { color: #34d399; font-weight: 600; }
-        .log-die { color: #f87171; }
+        if not raw_input:
+            response = jsonify({'status': 'error', 'message': 'Input empty.'})
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response, 400
 
-        /* ফুটারে থাকা কাউন্টার এবং ডাউনলোড বাটন */
-        .footer-row {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
+        detected_email = extract_email_from_string(raw_input)
+        if not detected_email:
+            response = jsonify({'status': 'error', 'message': 'No valid email found in data.'})
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response, 400
 
-        @media (min-width: 600px) {
-            .footer-row {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-        }
+        parts = raw_input.split('|')
+        if len(parts) < 4:
+            response = jsonify({'status': 'error', 'message': 'Format must be email|pass|token|client_id'})
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response, 400
 
-        .stats-group {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-        }
+        email = detected_email
+        password = parts[1].strip()
+        refresh_token = parts[2].strip()
+        client_id = parts[3].strip()
 
-        @media (min-width: 600px) {
-            .stats-group { width: auto; }
-        }
+        fb_code = extract_fb_code_via_api(email, refresh_token, client_id)
 
-        .stat-card {
-            background: #1f2937;
-            border: 1px solid #374151;
-            border-radius: 10px;
-            padding: 10px 15px;
-            text-align: center;
-            flex: 1;
-            min-width: 85px;
-        }
-
-        .stat-num {
-            font-size: 15px;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .stat-label {
-            font-size: 10px;
-            color: #9ca3af;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .total-color { color: #e5e7eb; }
-        .live-color { color: #34d399; }
-        .die-color { color: #f87171; }
-
-        .btn-download {
-            width: 100%;
-            background: #059669;
-            color: white;
-            border: none;
-            padding: 15px 28px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);
-            transition: background 0.2s;
-            text-align: center;
-            text-transform: uppercase;
-        }
-
-        @media (min-width: 600px) {
-            .btn-download { width: auto; }
-        }
-
-        .btn-download:hover { background: #047857; }
-    </style>
-</head>
-<body>
-
-    <div class="main-panel">
-        <div class="panel-title">Bulk UID Checker Pro</div>
-        
-        <div class="input-area-wrapper">
-            <textarea id="inputData" placeholder="Paste data here... (Supports UID|PASS|2FA or Space/Tab separated formats)"></textarea>
-        </div>
-
-        <div class="action-row">
-            <button class="btn-start" id="startBtn" onclick="startScanner()">Start Scanner</button>
-            <button class="btn-clear" onclick="clearTool()">Clear</button>
-        </div>
-
-        <div class="console-box" id="consoleScreen">Console ready...</div>
-
-        <div class="footer-row">
-            <div class="stats-group">
-                <div class="stat-card">
-                    <span class="stat-num total-color" id="totalCount">0</span>
-                    <span class="stat-label">Total</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-num live-color" id="livePercent">0% LIVE</span>
-                    <span class="stat-label">Live</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-num die-color" id="diePercent">0% DIE</span>
-                    <span class="stat-label">Die</span>
-                </div>
-            </div>
+        if fb_code.isdigit():
+            response = jsonify({
+                'status': 'success', 
+                'email': email, 
+                'code': fb_code
+            })
+        else:
+            response = jsonify({
+                'status': 'error', 
+                'message': fb_code
+            })
             
-            <button class="btn-download" onclick="downloadLiveCSV()">Download Live Accounts</button>
-        </div>
-    </div>
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response, 200
 
-<script>
-    let liveAccounts = []; 
-    const CONCURRENCY_LIMIT = 5; 
+    except Exception as e:
+        response = jsonify({'status': 'error', 'message': f"Server error: {str(e)}"})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response, 500
 
-    async function checkFacebookUID(uid) {
-        try {
-            const cleanUID = uid.trim().replace(/[^a-zA-Z0-9.]/g, "");
-            if(!cleanUID) return "DEAD ❌";
-            
-            const response = await fetch(`https://graph.facebook.com/${cleanUID}/picture?type=normal&_ts=${Date.now()}`);
-            if (response.ok && response.url.includes('100x100')) {
-                return "LIVE ✅";
-            } else {
-                return "DEAD ❌";
-            }
-        } catch (error) {
-            return "ERROR ⚠️";
-        }
-    }
+@app.route('/')
+def home():
+    return "OTP Extractor API is Running Live!"
 
-    async function startScanner() {
-        const inputStr = document.getElementById('inputData').value.trim();
-        const consoleScreen = document.getElementById('consoleScreen');
-        const startBtn = document.getElementById('startBtn');
-        
-        if (!inputStr) {
-            alert("Please paste your UID data first!");
-            return;
-        }
-
-        const lines = inputStr.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-        
-        consoleScreen.innerHTML = "Initializing fast multi-threaded engine...<br>";
-        liveAccounts = [];
-        let total = lines.length;
-        let live = 0;
-        let die = 0;
-
-        document.getElementById('totalCount').innerText = total;
-        startBtn.disabled = true;
-        startBtn.innerText = "Scanning Fast...";
-
-        function updateStats() {
-            const livePct = total > 0 ? Math.round((live / total) * 100) : 0;
-            const diePct = total > 0 ? Math.round((die / total) * 100) : 0;
-            document.getElementById('livePercent').innerText = `${livePct}% LIVE`;
-            document.getElementById('diePercent').innerText = `${diePct}% DIE`;
-        }
-
-        const queue = [...lines];
-        
-        async function worker() {
-            while (queue.length > 0) {
-                const currentLine = queue.shift();
-                if (!currentLine) continue;
-
-                let uid = '';
-                let pass = '';
-                let twoFA = '';
-
-                if (currentLine.includes('|')) {
-                    const parts = currentLine.split('|');
-                    uid = parts[0] ? parts[0].trim() : '';
-                    pass = parts[1] ? parts[1].trim() : '';
-                    twoFA = parts.slice(2).join('|').trim();
-                } else {
-                    const parts = currentLine.split(/\s+/);
-                    uid = parts[0] ? parts[0].trim() : '';
-                    pass = parts[1] ? parts[1].trim() : '';
-                    
-                    if (parts.length > 2) {
-                        const rawAfterPass = currentLine.substring(currentLine.indexOf(pass) + pass.length).trim();
-                        twoFA = rawAfterPass;
-                    }
-                }
-
-                if (!uid) continue;
-
-                const result = await checkFacebookUID(uid);
-                const logLine = document.createElement('div');
-                logLine.className = 'console-log';
-
-                if (result === "LIVE ✅") {
-                    logLine.className += ' log-live';
-                    logLine.innerText = `[LIVE] ID: ${uid}`;
-                    live++;
-                    liveAccounts.push({ uid, pass, twoFA });
-                } else {
-                    logLine.className += ' log-die';
-                    logLine.innerText = `[DIE] ID: ${uid}`;
-                    die++;
-                }
-
-                consoleScreen.appendChild(logLine);
-                consoleScreen.scrollTop = consoleScreen.scrollHeight; 
-                updateStats();
-            }
-        }
-
-        const workers = [];
-        const activeThreads = Math.min(CONCURRENCY_LIMIT, queue.length);
-        
-        for (let i = 0; i < activeThreads; i++) {
-            workers.push(worker());
-        }
-
-        await Promise.all(workers);
-
-        const finalLog = document.createElement('div');
-        finalLog.style.color = '#818cf8';
-        finalLog.style.paddingTop = '10px';
-        finalLog.style.fontWeight = 'bold';
-        finalLog.innerText = `⚡ Completed! Total Live: ${live}, Total Die: ${die}`;
-        consoleScreen.appendChild(finalLog);
-        consoleScreen.scrollTop = consoleScreen.scrollHeight;
-        
-        startBtn.disabled = false;
-        startBtn.innerText = "Start Scanner";
-    }
-
-    // ফিক্সড ডাউনলোড ফাংশন - কোটেশন সম্পূর্ণ রিমুভ করা হয়েছে
-    function downloadLiveCSV() {
-        if (liveAccounts.length === 0) {
-            alert("No live accounts found to download!");
-            return;
-        }
-
-        let csvRows = [];
-
-        liveAccounts.forEach(account => {
-            // কোনো কোটেশন বা কমা ছাড়া সরাসরি র ডেটা পুশ হবে
-            csvRows.push(`${account.uid}|${account.pass}|${account.twoFA}`);
-        });
-
-        const csvString = csvRows.join("\n");
-        const contentWithBOM = "\ufeff" + csvString;
-        
-        // ডাইরেক্ট .txt ফাইলে ডাউনলোড হবে যেন নোটপ্যাডে ওপেন করলে কোনো ডাবল ইনভার্টেড কমা না থাকে
-        const blob = new Blob([contentWithBOM], { type: 'text/plain;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", "live_accounts.txt");
-        
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        setTimeout(() => URL.revokeObjectURL(url), 100);
-    }
-
-    function clearTool() {
-        document.getElementById('inputData').value = '';
-        document.getElementById('consoleScreen').innerHTML = 'Console ready...';
-        document.getElementById('totalCount').innerText = '0';
-        document.getElementById('livePercent').innerText = '0% LIVE';
-        document.getElementById('diePercent').innerText = '0% DIE';
-        liveAccounts = [];
-    }
-</script>
-
-</body>
-</html>
+if __name__ == '__main__':
+    # Cloud environments dynamic port assignments fallback
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
