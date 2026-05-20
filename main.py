@@ -5,10 +5,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-# 🌐 Browser block validation layer config ruleset
+# 🌐 ব্রাউজার ব্লকিং এবং ক্রস-অরিজিন পলিসি শতভাগ পাস করার জন্য সিকিউরিটি লেয়ার
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# 🎯 Facebook Lite Endpoint Logic Core API
+# 🎯 ফেসবুক লাইটের অফিশিয়াল মাইক্রোসফট অথেন্টিকেশন মেথড কোর ইঞ্জিন
 def extract_fb_code_via_api(email, refresh_token, client_id):
     token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
 
@@ -42,7 +42,6 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         if res.status_code != 200:
             return f"Endpoint rejected token. Status: {res.status_code}"
 
-        # সেফটি লেয়ার: রেসপন্সটি আসলেই JSON কিনা তা চেক করা (যাতে ৫০০ এরর না আসে)
         try:
             res_data = res.json()
         except Exception:
@@ -93,7 +92,7 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
     except Exception as e:
         return f"System Connection Error: {str(e)}"
 
-# 🔍 Email Regex Filter Extractor
+# 🔍 ইমেইল এক্সট্রাকশন ফিল্টার
 def extract_email_from_string(text):
     email_regex = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
     match = re.search(email_regex, text)
@@ -112,36 +111,32 @@ def get_code():
     try:
         # ফ্রন্টএন্ড ডেটা রিসিভার
         data = request.get_json() or {}
-        raw_input = data.get('raw_input', '')
+        raw_input = data.get('raw_input', '').strip()
         
-        if not raw_input and data:
-            raw_input = list(data.values())[0] if isinstance(data, dict) and data.values() else ''
-            
-        raw_input = str(raw_input).strip()
-
         if not raw_input:
             response = jsonify({'status': 'error', 'message': 'Input empty.'})
             response.headers.add("Access-Control-Allow-Origin", "*")
-            return response, 400
+            return response, 200
 
         detected_email = extract_email_from_string(raw_input)
         if not detected_email:
             response = jsonify({'status': 'error', 'message': 'No valid email found in data.'})
             response.headers.add("Access-Control-Allow-Origin", "*")
-            return response, 400
+            return response, 200
 
-        # পাইপ (|) দিয়ে ডেটা আলাদা করা হচ্ছে
+        # পাইপ (|) দিয়ে ডেটা আলাদা করা হচ্ছে এবং ফাঁকা স্পেস ট্রিম করা হচ্ছে
         parts = [p.strip() for p in raw_input.split('|') if p.strip()]
         
         if len(parts) < 3:
             response = jsonify({'status': 'error', 'message': 'Format must be email|pass|token'})
             response.headers.add("Access-Control-Allow-Origin", "*")
-            return response, 400
+            return response, 200
 
         email = detected_email
         password = parts[1]
         refresh_token = parts[2]
         
+        # যদি ইনপুটে ৪ নম্বর অংশ (client_id) থাকে তবে সেটি নিবে, না থাকলে ডিফল্ট আইডি বসবে
         if len(parts) >= 4:
             client_id = parts[3]
         else:
@@ -156,7 +151,6 @@ def get_code():
                 'code': fb_code
             })
         else:
-            # যদি এপিআই কোড না এনে কোনো এরর মেসেজ দেয়, তা ফ্রন্টএন্ডে সেফলি পাঠানো হবে
             response = jsonify({
                 'status': 'error', 
                 'message': fb_code
@@ -166,7 +160,6 @@ def get_code():
         return response, 200
 
     except Exception as e:
-        # গ্লোবাল ট্রাই-এক্সেপ্ট লেয়ার যাতে কোনো অবস্থাতেই ৫০০ এরর জেনারেট না হয়
         response = jsonify({'status': 'error', 'message': f"Safe Execution Message: {str(e)}"})
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
