@@ -5,19 +5,17 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-# 🌐 ব্রাউজার ব্লকিং এবং ক্রস-অরিজিন পলিসি শতভাগ পাস করার জন্য সিকিউরিটি লেয়ার
+# 🌐 ব্রাউজার এবং রেন্ডার ক্লাউডের CORS পলিসি শতভাগ পাস করার সিকিউরিটি লেয়ার
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# 🎯 ফেসবুক লাইটের অফিশিয়াল মাইক্রোসফট অথেন্টিকেশন মেথড কোর ইঞ্জিন
+# 🎯 মাইক্রোসফট কোর ওটিপি এক্সট্রাকশন ইঞ্জিন
 def extract_fb_code_via_api(email, refresh_token, client_id):
     token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
-
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
         "Accept": "application/json"
     }
-
     payload = {
         "client_id": client_id,
         "grant_type": "refresh_token",
@@ -26,15 +24,15 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
     }
 
     try:
-        # ১ম চেষ্টা: Graph API Scope
+        # ১ম ট্রাই: Graph Scope
         res = requests.post(token_url, headers=headers, data=payload, timeout=15)
-
-        # ২য় চেষ্টা: OWA Outlook Scope
+        
+        # ২য় ট্রাই: Outlook Scope
         if res.status_code != 200:
             payload["scope"] = "https://outlook.office.com/IMAP.AccessAsUser.All offline_access"
             res = requests.post(token_url, headers=headers, data=payload, timeout=15)
 
-        # ৩য় চেষ্টা: Basic auth fallback
+        # ৩য় ট্রাই: Fallback
         if res.status_code != 200:
             payload.pop("scope", None)
             res = requests.post(token_url, headers=headers, data=payload, timeout=15)
@@ -49,9 +47,9 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
 
         access_token = res_data.get("access_token")
         if not access_token:
-            return "Access Token missing in token response."
+            return "Access Token missing in response."
 
-        # Facebook email parsing structure layers
+        # ফেসবুক মেইল সার্চিং ব্লক
         messages_url = "https://graph.microsoft.com/v1.0/me/messages?$search=\"Facebook\"&$top=1"
         api_headers = {
             "Authorization": f"Bearer {access_token}",
@@ -60,7 +58,6 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         }
 
         msg_res = requests.get(messages_url, headers=api_headers, timeout=15)
-
         if msg_res.status_code != 200:
             messages_url = "https://outlook.office.com/api/v2.0/me/messages?$search=\"Facebook\"&$top=1"
             msg_res = requests.get(messages_url, headers=api_headers, timeout=15)
@@ -71,11 +68,11 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
         try:
             msg_data = msg_res.json()
         except Exception:
-            return f"Failed to parse inbox data structure. Status: {msg_res.status_code}"
+            return f"Failed to parse inbox data. Status: {msg_res.status_code}"
 
         messages = msg_data.get("value", [])
         if not messages:
-            return "No recent Facebook emails found in this inbox."
+            return "No recent Facebook emails found."
 
         latest_message = messages[0]
         body_content = latest_message.get("body", {}).get("content", "") or latest_message.get("Body", {}).get("Content", "")
@@ -92,13 +89,13 @@ def extract_fb_code_via_api(email, refresh_token, client_id):
     except Exception as e:
         return f"System Connection Error: {str(e)}"
 
-# 🔍 ইমেইল এক্সট্রাকশন ফিল্টার
+# 🔍 ইমেইল এক্সট্রাক্টর ফিল্টার
 def extract_email_from_string(text):
     email_regex = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
     match = re.search(email_regex, text)
     return match.group(0).strip() if match else None
 
-# 🔮 Flask Web Route with explicit manual OPTIONS and Header responses for Render Cloud
+# 🔮 মেইন এপিআই রাউট
 @app.route('/get-code', methods=['POST', 'OPTIONS'])
 def get_code():
     if request.method == 'OPTIONS':
@@ -109,34 +106,35 @@ def get_code():
         return response, 200
 
     try:
-        # ফ্রন্টএন্ড ডেটা রিসিভার
-        data = request.get_json() or {}
-        raw_input = data.get('raw_input', '').strip()
+        # ফ্রন্টএন্ড থেকে যেভাবে বা যে কি-তেই ডেটা আসুক, রিসিভ করার ব্যাকআপ লেয়ার
+        data = request.get_json() or request.form or {}
+        raw_input = data.get('raw_input', '')
         
+        # যদি অন্য কোনো নামের কি (Key) ব্যবহার করা হয়ে থাকে ফ্রন্টএন্ডে
+        if not raw_input and data:
+            raw_input = list(data.values())[0] if isinstance(data, dict) and data.values() else ''
+            
+        raw_input = str(raw_input).strip()
+
         if not raw_input:
-            response = jsonify({'status': 'error', 'message': 'Input empty.'})
+            response = jsonify({'status': 'error', 'message': 'Input is empty or null.'})
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response, 200
 
         detected_email = extract_email_from_string(raw_input)
-        if not detected_email:
-            response = jsonify({'status': 'error', 'message': 'No valid email found in data.'})
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            return response, 200
-
-        # পাইপ (|) দিয়ে ডেটা আলাদা করা হচ্ছে এবং ফাঁকা স্পেস ট্রিম করা হচ্ছে
+        
+        # পাইপ (|) স্প্লিট মেথড
         parts = [p.strip() for p in raw_input.split('|') if p.strip()]
         
         if len(parts) < 3:
-            response = jsonify({'status': 'error', 'message': 'Format must be email|pass|token'})
+            response = jsonify({'status': 'error', 'message': 'Format incorrect. Must contain email|pass|token'})
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response, 200
 
-        email = detected_email
+        email = detected_email if detected_email else parts[0]
         password = parts[1]
         refresh_token = parts[2]
         
-        # যদি ইনপুটে ৪ নম্বর অংশ (client_id) থাকে তবে সেটি নিবে, না থাকলে ডিফল্ট আইডি বসবে
         if len(parts) >= 4:
             client_id = parts[3]
         else:
@@ -145,22 +143,15 @@ def get_code():
         fb_code = extract_fb_code_via_api(email, refresh_token, client_id)
 
         if fb_code.isdigit():
-            response = jsonify({
-                'status': 'success', 
-                'email': email, 
-                'code': fb_code
-            })
+            response = jsonify({'status': 'success', 'email': email, 'code': fb_code})
         else:
-            response = jsonify({
-                'status': 'error', 
-                'message': fb_code
-            })
+            response = jsonify({'status': 'error', 'message': fb_code})
             
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
 
     except Exception as e:
-        response = jsonify({'status': 'error', 'message': f"Safe Execution Message: {str(e)}"})
+        response = jsonify({'status': 'error', 'message': f"Server Exception Safety Layer: {str(e)}"})
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
 
