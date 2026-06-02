@@ -6,34 +6,28 @@
 <title>Video Enhancer Pro</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Poppins',sans-serif;background:#0a0f1a;color:#e6edf3;overflow-x:hidden}
-header{background:rgba(13,17,23,0.9);backdrop-filter:blur(10px);border-bottom:1px solid #1f2937;padding:20px 50px;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:1000}
-header h1{font-size:24px;color:#58a6ff;font-weight:600;letter-spacing:1px}
+body{font-family:'Poppins',sans-serif;background:#05070d;color:#e6edf3;overflow-x:hidden}
+header{background:rgba(10,15,25,0.9);backdrop-filter:blur(10px);border-bottom:1px solid #1f2937;padding:18px 60px;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:1000}
+header h1{font-size:22px;color:#58a6ff;font-weight:600;letter-spacing:1px}
 nav a{color:#c9d1d9;text-decoration:none;margin-left:25px;font-size:15px;transition:.3s}
 nav a:hover{color:#58a6ff}
 .hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:radial-gradient(circle at top,#0d1117 0%,#000 100%)}
-.hero h2{font-size:48px;color:#f0f6fc;margin-bottom:15px}
+.hero h2{font-size:46px;color:#f0f6fc;margin-bottom:15px}
 .hero p{font-size:18px;color:#8b949e;margin-bottom:40px;max-width:600px}
 .hero button{background:linear-gradient(90deg,#238636,#2ea043);color:#fff;border:none;padding:14px 36px;border-radius:8px;font-size:17px;cursor:pointer;transition:.3s}
 .hero button:hover{transform:scale(1.05);box-shadow:0 0 20px #2ea043}
 .features{padding:100px 20px;background:#0d1117;text-align:center}
 .features h2{font-size:32px;margin-bottom:40px;color:#f0f6fc}
-.feature-buttons{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:40px}
-.feature-buttons button{background:#161b22;border:1px solid #30363d;color:#c9d1d9;padding:14px 32px;border-radius:8px;font-size:17px;cursor:pointer;transition:.3s}
-.feature-buttons button.active,.feature-buttons button:hover{background:#238636;color:#fff;border-color:#2ea043;box-shadow:0 0 15px #2ea043}
-.feature-panel{display:none;max-width:800px;margin:0 auto;background:linear-gradient(145deg,#0f1623,#161b22);border:1px solid #30363d;border-radius:12px;padding:40px;text-align:left;animation:fadeIn .4s ease;box-shadow:0 0 25px rgba(35,134,54,0.2)}
-.feature-panel.active{display:block}
-.feature-panel h3{color:#58a6ff;margin-bottom:15px;font-size:22px}
-.feature-panel p{color:#8b949e;margin-bottom:25px;font-size:16px}
-.demo-box{background:#0d1117;border:1px dashed #30363d;border-radius:8px;padding:30px;text-align:center;color:#8b949e}
-.demo-box:hover{border-color:#2ea043;color:#fff;transition:.3s}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;max-width:1000px;margin:0 auto}
+.card{background:rgba(22,27,34,0.8);border:1px solid #30363d;border-radius:12px;padding:30px;text-align:center;transition:.3s;box-shadow:0 0 20px rgba(35,134,54,0.1)}
+.card:hover{transform:translateY(-5px);border-color:#2ea043;box-shadow:0 0 25px rgba(35,134,54,0.3)}
+.card h3{color:#58a6ff;margin-bottom:10px}
+.card p{color:#8b949e;font-size:15px}
 footer{background:#161b22;text-align:center;padding:25px;color:#8b949e;font-size:14px;border-top:1px solid #30363d;margin-top:100px}
 footer a{color:#58a6ff;text-decoration:none;margin:0 8px}
 footer a:hover{text-decoration:underline}
 @media(max-width:768px){
 .hero h2{font-size:32px}
-.feature-panel{padding:25px}
 }
 </style>
 </head>
@@ -41,9 +35,10 @@ footer a:hover{text-decoration:underline}
 <header>
 <h1>Video Enhancer Pro</h1>
 <nav>
-<a href="#">হোম</a>
-<a href="#features">ফিচার</a>
-<a href="#contact">যোগাযোগ</a>
+<a href="#">About</a>
+<a href="#">Privacy</a>
+<a href="#">Terms</a>
+<a href="#">Contact</a>
 </nav>
 </header>
 
@@ -55,47 +50,30 @@ footer a:hover{text-decoration:underline}
 
 <section id="features" class="features">
 <h2>স্মার্ট ফিচারসমূহ</h2>
-<div class="feature-buttons">
-<button class="active" onclick="showPanel(0)">🎧 Noise Removal</button>
-<button onclick="showPanel(1)">💬 Voice to Text</button>
-<button onclick="showPanel(2)">📺 4K Upscale</button>
+<div class="feature-grid">
+<div class="card">
+<h3>🎧 Noise Removal</h3>
+<p>ভিডিওর ব্যাকগ্রাউন্ড noise সরিয়ে crystal clear অডিও তৈরি করো।</p>
 </div>
-
-<div class="feature-panel active">
-<h3>🎧 ভিডিও Noise সরানো</h3>
-<p>AI প্রযুক্তি ব্যবহার করে ভিডিওর ব্যাকগ্রাউন্ড noise কমিয়ে পরিষ্কার অডিও তৈরি করো।</p>
-<div class="demo-box">Noise Removal ডেমো এখানে দেখা যাবে</div>
+<div class="card">
+<h3>💬 Voice to Text</h3>
+<p>ভিডিওর ভয়েসকে স্বয়ংক্রিয়ভাবে টেক্সটে রূপান্তর করো।</p>
 </div>
-
-<div class="feature-panel">
-<h3>💬 ভয়েস থেকে টেক্সট</h3>
-<p>ভিডিওতে যা বলা হচ্ছে তা স্বয়ংক্রিয়ভাবে নিচে টেক্সট আকারে দেখাও।</p>
-<div class="demo-box">Voice to Text ডেমো এখানে দেখা যাবে</div>
+<div class="card">
+<h3>📺 4K Upscale</h3>
+<p>পুরনো ভিডিওকে 4K রেজোলিউশনে উন্নত করো।</p>
 </div>
-
-<div class="feature-panel">
-<h3>📺 4K আপস্কেল</h3>
-<p>পুরনো বা লো-কোয়ালিটি ভিডিওকে 4K রেজোলিউশনে উন্নত করো।</p>
-<div class="demo-box">4K Upscale ডেমো এখানে দেখা যাবে</div>
 </div>
 </section>
 
-<footer id="contact">
+<footer>
 <p>© 2026 Video Enhancer Pro | সর্বস্বত্ব সংরক্ষিত</p>
 <p>
-<a href="#">গোপনীয়তা নীতি</a> |
-<a href="#">শর্তাবলী</a> |
-<a href="#">সহায়তা</a>
+<a href="#">About</a> |
+<a href="#">Privacy</a> |
+<a href="#">Terms</a> |
+<a href="#">Contact</a>
 </p>
 </footer>
-
-<script>
-function showPanel(index){
-const buttons=document.querySelectorAll('.feature-buttons button');
-const panels=document.querySelectorAll('.feature-panel');
-buttons.forEach((btn,i)=>{btn.classList.toggle('active',i===index)});
-panels.forEach((panel,i)=>{panel.classList.toggle('active',i===index)});
-}
-</script>
 </body>
 </html>
