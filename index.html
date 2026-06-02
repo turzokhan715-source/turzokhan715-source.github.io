@@ -6,58 +6,34 @@
 <title>Video Enhancer Pro</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;background:
-;color:
-;line-height:1.6}
-header{background:
-;border-bottom:1px solid 
-;padding:20px 40px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-header h1{font-size:22px;color:
-;font-weight:600}
-nav a{color:
-;text-decoration:none;margin-left:25px;font-size:15px;transition:.2s}
-nav a:hover{color:
-}
-.hero{padding:100px 20px;text-align:center;background:linear-gradient(180deg,
- 0%,
- 100%)}
-.hero h2{font-size:40px;margin-bottom:15px;color:
-}
-.hero p{font-size:18px;color:
-;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto}
-.hero button{background:
-;color:#fff;border:none;padding:14px 32px;border-radius:6px;font-size:16px;cursor:pointer;transition:.2s}
-.hero button:hover{background:
-}
-.features{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;padding:80px 20px;background:
-}
-.feature{background:
-;border:1px solid 
-;border-radius:10px;padding:35px;width:320px;text-align:center;transition:transform .2s,border-color .2s}
-.feature:hover{transform:translateY(-6px);border-color:
-}
-.feature h3{color:
-;margin-bottom:12px;font-size:20px}
-.feature p{color:
-;font-size:15px}
-.cta{background:
-;text-align:center;padding:80px 20px;border-top:1px solid 
-;border-bottom:1px solid 
-}
-.cta h2{font-size:28px;margin-bottom:15px;color:
-}
-.cta p{color:
-;margin-bottom:30px}
-.cta button{background:
-;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:16px;cursor:pointer}
-.cta button:hover{background:
-}
-footer{background:
-;text-align:center;padding:25px;color:
-;font-size:14px;border-top:1px solid 
-}
-footer a{color:
-;text-decoration:none;margin:0 8px}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3;line-height:1.6}
+header{background:#161b22;border-bottom:1px solid #30363d;padding:20px 40px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+header h1{font-size:22px;color:#58a6ff;font-weight:600}
+nav a{color:#c9d1d9;text-decoration:none;margin-left:25px;font-size:15px;transition:.2s}
+nav a:hover{color:#58a6ff}
+.hero{padding:100px 20px;text-align:center;background:linear-gradient(180deg,#0d1117 0%,#161b22 100%)}
+.hero h2{font-size:40px;margin-bottom:15px;color:#f0f6fc}
+.hero p{font-size:18px;color:#8b949e;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto}
+.hero button{background:#238636;color:#fff;border:none;padding:14px 32px;border-radius:6px;font-size:16px;cursor:pointer;transition:.2s}
+.hero button:hover{background:#2ea043}
+.upload{background:#0d1117;padding:60px 20px;text-align:center}
+.upload h2{font-size:26px;margin-bottom:15px;color:#f0f6fc}
+.upload p{color:#8b949e;margin-bottom:25px}
+.upload input[type=file]{background:#161b22;border:1px solid #30363d;color:#c9d1d9;padding:10px;border-radius:6px;cursor:pointer}
+.upload button{margin-top:20px;background:#58a6ff;color:#fff;border:none;padding:10px 24px;border-radius:6px;font-size:15px;cursor:pointer}
+.upload button:hover{background:#1f6feb}
+.features{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;padding:80px 20px;background:#161b22}
+.feature{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:35px;width:320px;text-align:center;transition:transform .2s,border-color .2s}
+.feature:hover{transform:translateY(-6px);border-color:#58a6ff}
+.feature h3{color:#58a6ff;margin-bottom:12px;font-size:20px}
+.feature p{color:#8b949e;font-size:15px}
+.cta{background:#161b22;text-align:center;padding:80px 20px;border-top:1px solid #30363d;border-bottom:1px solid #30363d}
+.cta h2{font-size:28px;margin-bottom:15px;color:#f0f6fc}
+.cta p{color:#8b949e;margin-bottom:30px}
+.cta button{background:#238636;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:16px;cursor:pointer}
+.cta button:hover{background:#2ea043}
+footer{background:#0d1117;text-align:center;padding:25px;color:#8b949e;font-size:14px;border-top:1px solid #30363d}
+footer a{color:#58a6ff;text-decoration:none;margin:0 8px}
 footer a:hover{text-decoration:underline}
 @media(max-width:768px){
 .hero h2{font-size:30px}
@@ -71,19 +47,29 @@ footer a:hover{text-decoration:underline}
 <h1>Video Enhancer Pro</h1>
 <nav>
 <a href="#">হোম</a>
-<a href="#">ফিচার</a>
-<a href="#">মূল্য</a>
-<a href="#">যোগাযোগ</a>
+<a href="#features">ফিচার</a>
+<a href="#upload">আপলোড</a>
+<a href="#contact">যোগাযোগ</a>
 </nav>
 </header>
 
 <section class="hero">
 <h2>ভিডিও উন্নত করার স্মার্ট সমাধান</h2>
 <p>AI-চালিত টুলস দিয়ে ভিডিওর noise সরাও, কথাকে টেক্সটে রূপান্তর করো, আর 4K কোয়ালিটিতে আপস্কেল করো — সব এক জায়গায়।</p>
-<button>এখনই শুরু করো</button>
+<button onclick="document.getElementById('upload').scrollIntoView({behavior:'smooth'})">এখনই শুরু করো</button>
 </section>
 
-<section class="features">
+<section id="upload" class="upload">
+<h2>ভিডিও আপলোড করো</h2>
+<p>ডেমো মোডে ভিডিও আপলোড করলে শুধু প্রিভিউ দেখা যাবে (কোনো সার্ভারে পাঠানো হবে না)।</p>
+<input type="file" id="videoInput" accept="video/*">
+<br>
+<video id="preview" width="320" controls style="display:none;margin-top:20px;border:1px solid #30363d;border-radius:6px"></video>
+<br>
+<button onclick="previewVideo()">প্রিভিউ দেখাও</button>
+</section>
+
+<section id="features" class="features">
 <div class="feature">
 <h3>🎧 ভিডিও Noise সরানো</h3>
 <p>AI প্রযুক্তি ব্যবহার করে ভিডিওর ব্যাকগ্রাউন্ড noise কমিয়ে পরিষ্কার অডিও তৈরি করো।</p>
@@ -104,7 +90,7 @@ footer a:hover{text-decoration:underline}
 <button>ফ্রি ট্রাই করো</button>
 </section>
 
-<footer>
+<footer id="contact">
 <p>© 2026 Video Enhancer Pro | সর্বস্বত্ব সংরক্ষিত</p>
 <p>
 <a href="#">গোপনীয়তা নীতি</a> |
@@ -112,5 +98,17 @@ footer a:hover{text-decoration:underline}
 <a href="#">সহায়তা</a>
 </p>
 </footer>
+
+<script>
+function previewVideo(){
+const input=document.getElementById('videoInput');
+const preview=document.getElementById('preview');
+if(input.files&&input.files[0]){
+const fileURL=URL.createObjectURL(input.files[0]);
+preview.src=fileURL;
+preview.style.display='block';
+}
+}
+</script>
 </body>
 </html>
