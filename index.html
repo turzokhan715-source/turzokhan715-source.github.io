@@ -6,39 +6,34 @@
 <title>Video Enhancer Pro</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3;line-height:1.6}
-header{background:#161b22;border-bottom:1px solid #30363d;padding:20px 40px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-header h1{font-size:22px;color:#58a6ff;font-weight:600}
-nav a{color:#c9d1d9;text-decoration:none;margin-left:25px;font-size:15px;transition:.2s}
+body{font-family:'Poppins',sans-serif;background:#0a0f1a;color:#e6edf3;overflow-x:hidden}
+header{background:rgba(13,17,23,0.9);backdrop-filter:blur(10px);border-bottom:1px solid #1f2937;padding:20px 50px;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:1000}
+header h1{font-size:24px;color:#58a6ff;font-weight:600;letter-spacing:1px}
+nav a{color:#c9d1d9;text-decoration:none;margin-left:25px;font-size:15px;transition:.3s}
 nav a:hover{color:#58a6ff}
-.hero{padding:100px 20px;text-align:center;background:linear-gradient(180deg,#0d1117 0%,#161b22 100%)}
-.hero h2{font-size:40px;margin-bottom:15px;color:#f0f6fc}
-.hero p{font-size:18px;color:#8b949e;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto}
-.hero button{background:#238636;color:#fff;border:none;padding:14px 32px;border-radius:6px;font-size:16px;cursor:pointer;transition:.2s}
-.hero button:hover{background:#2ea043}
-.upload{background:#0d1117;padding:60px 20px;text-align:center}
-.upload h2{font-size:26px;margin-bottom:15px;color:#f0f6fc}
-.upload p{color:#8b949e;margin-bottom:25px}
-.upload input[type=file]{background:#161b22;border:1px solid #30363d;color:#c9d1d9;padding:10px;border-radius:6px;cursor:pointer}
-.upload button{margin-top:20px;background:#58a6ff;color:#fff;border:none;padding:10px 24px;border-radius:6px;font-size:15px;cursor:pointer}
-.upload button:hover{background:#1f6feb}
-.features{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;padding:80px 20px;background:#161b22}
-.feature{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:35px;width:320px;text-align:center;transition:transform .2s,border-color .2s}
-.feature:hover{transform:translateY(-6px);border-color:#58a6ff}
-.feature h3{color:#58a6ff;margin-bottom:12px;font-size:20px}
-.feature p{color:#8b949e;font-size:15px}
-.cta{background:#161b22;text-align:center;padding:80px 20px;border-top:1px solid #30363d;border-bottom:1px solid #30363d}
-.cta h2{font-size:28px;margin-bottom:15px;color:#f0f6fc}
-.cta p{color:#8b949e;margin-bottom:30px}
-.cta button{background:#238636;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:16px;cursor:pointer}
-.cta button:hover{background:#2ea043}
-footer{background:#0d1117;text-align:center;padding:25px;color:#8b949e;font-size:14px;border-top:1px solid #30363d}
-footer a{color:#58a6ff;text-decoration:none;margin:0 8px}
+.hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:radial-gradient(circle at top, #161b22 0%,#000 100%)}
+.hero h2{font-size:48px;color:#fff;margin-bottom:15px}
+.hero p{font-size:18px;color:#8b949e;margin-bottom:40px;max-width:600px}
+.hero button{background:linear-gradient(90deg,#58a6ff,#2ea043);color:#fff;border:none;padding:14px 36px;border-radius:8px;font-size:17px;cursor:pointer;transition:.3s}
+.hero button:hover{transform:scale(1.05);box-shadow:0 0 20px #58a6ff}
+.features{padding:100px 20px;background:#0d1117;text-align:center}
+.features h2{font-size:32px;margin-bottom:40px;color:#f0f6fc}
+.feature-buttons{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:40px}
+.feature-buttons button{background:transparent;border:1px solid #30363d;color:#8b949e;padding:12px 28px;border-radius:6px;font-size:16px;cursor:pointer;transition:.3s}
+.feature-buttons button.active,.feature-buttons button:hover{background:#58a6ff;color:#fff;border-color:#58a6ff}
+.feature-panel{display:none;max-width:700px;margin:0 auto;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:40px;text-align:left;animation:fadeIn .4s ease}
+.feature-panel.active{display:block}
+.feature-panel h3{color:#58a6ff;margin-bottom:15px}
+.feature-panel p{color:#c9d1d9;margin-bottom:20px}
+.feature-panel button{background:#238636;color:#fff;border:none;padding:10px 24px;border-radius:6px;font-size:15px;cursor:pointer}
+.feature-panel button:hover{background:#2ea043}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+footer{background:#0a0f1a;text-align:center;padding:25px;color:#8b949e;font-size:14px;border-top:1px solid #1f2937;margin-top:100px}
+footer a{color:#8b949e;text-decoration:none;margin:0 8px}
 footer a:hover{text-decoration:underline}
 @media(max-width:768px){
-.hero h2{font-size:30px}
-.features{flex-direction:column;align-items:center}
-.feature{width:90%}
+.hero h2{font-size:32px}
+.feature-panel{padding:25px}
 }
 </style>
 </head>
@@ -48,46 +43,41 @@ footer a:hover{text-decoration:underline}
 <nav>
 <a href="#">হোম</a>
 <a href="#features">ফিচার</a>
-<a href="#upload">আপলোড</a>
 <a href="#contact">যোগাযোগ</a>
 </nav>
 </header>
 
 <section class="hero">
-<h2>ভিডিও উন্নত করার স্মার্ট সমাধান</h2>
-<p>AI-চালিত টুলস দিয়ে ভিডিওর noise সরাও, কথাকে টেক্সটে রূপান্তর করো, আর 4K কোয়ালিটিতে আপস্কেল করো — সব এক জায়গায়।</p>
-<button onclick="document.getElementById('upload').scrollIntoView({behavior:'smooth'})">এখনই শুরু করো</button>
-</section>
-
-<section id="upload" class="upload">
-<h2>ভিডিও আপলোড করো</h2>
-<p>ডেমো মোডে ভিডিও আপলোড করলে শুধু প্রিভিউ দেখা যাবে (কোনো সার্ভারে পাঠানো হবে না)।</p>
-<input type="file" id="videoInput" accept="video/*">
-<br>
-<video id="preview" width="320" controls style="display:none;margin-top:20px;border:1px solid #30363d;border-radius:6px"></video>
-<br>
-<button onclick="previewVideo()">প্রিভিউ দেখাও</button>
+<h2>ভিডিও উন্নত করার প্রিমিয়াম সমাধান</h2>
+<p>AI-চালিত টুলস দিয়ে ভিডিওর মান বাড়াও, noise সরাও, আর 4K কোয়ালিটিতে আপস্কেল করো — সব এক জায়গায়।</p>
+<button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">ফিচার দেখো</button>
 </section>
 
 <section id="features" class="features">
-<div class="feature">
+<h2>স্মার্ট ফিচারসমূহ</h2>
+<div class="feature-buttons">
+<button class="active" onclick="showPanel(0)">🎧 Noise Removal</button>
+<button onclick="showPanel(1)">💬 Voice to Text</button>
+<button onclick="showPanel(2)">📺 4K Upscale</button>
+</div>
+
+<div class="feature-panel active">
 <h3>🎧 ভিডিও Noise সরানো</h3>
-<p>AI প্রযুক্তি ব্যবহার করে ভিডিওর ব্যাকগ্রাউন্ড noise কমিয়ে পরিষ্কার অডিও তৈরি করো।</p>
+<p>AI প্রযুক্তি ব্যবহার করে ভিডিওর ব্যাকগ্রাউন্ড noise কমিয়ে পরিষ্কার অডিও তৈরি করো।</p>
+<button>ডেমো চালাও</button>
 </div>
-<div class="feature">
+
+<div class="feature-panel">
 <h3>💬 ভয়েস থেকে টেক্সট</h3>
-<p>ভিডিওতে যা বলা হচ্ছে তা স্বয়ংক্রিয়ভাবে নিচে টেক্সট আকারে দেখাও।</p>
+<p>ভিডিওতে যা বলা হচ্ছে তা স্বয়ংক্রিয়ভাবে নিচে টেক্সট আকারে দেখাও।</p>
+<button>ডেমো চালাও</button>
 </div>
-<div class="feature">
+
+<div class="feature-panel">
 <h3>📺 4K আপস্কেল</h3>
 <p>পুরনো বা লো-কোয়ালিটি ভিডিওকে 4K রেজোলিউশনে উন্নত করো।</p>
+<button>ডেমো চালাও</button>
 </div>
-</section>
-
-<section class="cta">
-<h2>ভিডিও উন্নত করা এখন আরও সহজ</h2>
-<p>এক ক্লিকে ভিডিওর মান বাড়াও, সময় বাঁচাও, আর পেশাদার ফলাফল পাও।</p>
-<button>ফ্রি ট্রাই করো</button>
 </section>
 
 <footer id="contact">
@@ -100,14 +90,11 @@ footer a:hover{text-decoration:underline}
 </footer>
 
 <script>
-function previewVideo(){
-const input=document.getElementById('videoInput');
-const preview=document.getElementById('preview');
-if(input.files&&input.files[0]){
-const fileURL=URL.createObjectURL(input.files[0]);
-preview.src=fileURL;
-preview.style.display='block';
-}
+function showPanel(index){
+const buttons=document.querySelectorAll('.feature-buttons button');
+const panels=document.querySelectorAll('.feature-panel');
+buttons.forEach((btn,i)=>{btn.classList.toggle('active',i===index)});
+panels.forEach((panel,i)=>{panel.classList.toggle('active',i===index)});
 }
 </script>
 </body>
